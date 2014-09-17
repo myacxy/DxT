@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DashClock Twitch</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="pref_user_name_title">User Name</string>
+    <string name="pref_custom_visibility_title">Custom Visibility</string>
+    <string name="pref_following_selection_title">Select Custom Channels</string>
+    <string name="settings_title">DashClock Twitch Settings</string>
+    <string name="action_json">json</string>
+    <string name="pref_following_selection_progress_title">Fetching data...</string>
+    <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_update_interval">Update Interval</string>
+</resources>

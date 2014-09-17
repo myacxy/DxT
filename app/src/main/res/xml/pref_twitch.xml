@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:orientation="vertical">
+
+    <EditTextPreference
+        android:defaultValue="test_user1"
+        android:selectAllOnFocus="true"
+        android:key="pref_user_name"
+        android:title="@string/pref_user_name_title"
+        android:singleLine="true"
+        android:maxLines="1"/>
+    <CheckBoxPreference
+        android:key="pref_custom_visibility"
+        android:title="@string/pref_custom_visibility_title"/>
+    <de.htw_berlin.imi.s0527535.dashclocktwitch.FollowingSelectionPreference
+        android:key="pref_following_selection"
+        android:dependency="pref_custom_visibility"
+        android:title="@string/pref_following_selection_title"
+        />
+
+    <Preference
+        android:key="pref_update_interval"
+        android:title="@string/pref_update_interval"/>
+
+</PreferenceScreen>
