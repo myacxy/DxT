@@ -13,9 +13,11 @@
         android:title="@string/pref_user_name_title"
         android:singleLine="true"
         android:maxLines="1"/>
+
     <CheckBoxPreference
         android:key="pref_custom_visibility"
         android:title="@string/pref_custom_visibility_title"/>
+
     <de.htw_berlin.imi.s0527535.dashclocktwitch.FollowingSelectionPreference
         android:key="pref_following_selection"
         android:dependency="pref_custom_visibility"

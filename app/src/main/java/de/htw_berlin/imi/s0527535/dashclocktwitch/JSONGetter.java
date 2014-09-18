@@ -22,10 +22,10 @@ import java.io.InputStreamReader;
  * executed in order to retrieve a JSON Object via HTTP. Upon creating a JSONGetter a Progress
  * Dialog will be shown until the task has finished working in the background.
  */
-public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
+public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
 {
     // Main Activity's context
-    protected Context context;
+    protected Context mContext;
     // Dialog displaying the progress for the async task getting json from http
     protected ProgressDialog dialog;
 
@@ -36,9 +36,9 @@ public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
      *
      * @param context activity from which the class has been called
      */
-    public JSONGetter(Context context)
+    public JsonGetter(Context context)
     {
-        this.context = context;
+        mContext = context;
     }
 
 
@@ -46,9 +46,9 @@ public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
     protected void onPreExecute() {
         super.onPreExecute();
         // initialize dialog before trying to fetch the data
-        dialog = new ProgressDialog(context);
+        dialog = new ProgressDialog(mContext);
         dialog.setIndeterminate(true);
-        dialog.setMessage(context.getResources().getString(R.string.pref_following_selection_progress_title));
+        dialog.setMessage(mContext.getResources().getString(R.string.pref_following_selection_progress_title));
         dialog.show();
     }
 
@@ -59,7 +59,7 @@ public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
         if (dialog.isShowing()) {
             // display Toast on error
             if (jsonObject == null) {
-                Toast.makeText(context, context.getResources().getString(R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
             }
             dialog.dismiss();
         }
@@ -70,7 +70,7 @@ public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
     @Override
     protected JSONObject doInBackground(String... params)
     {
-        return getJSONFromURL(params[0]);
+        return getJsonFromURL(params[0]);
     }
 
     /**
@@ -80,7 +80,7 @@ public class JSONGetter extends AsyncTask<String, Integer, JSONObject>
      * @param url String representing the full URL
      * @return JSONObject of the url's target location
      */
-    protected JSONObject getJSONFromURL(String url)
+    protected JSONObject getJsonFromURL(String url)
     {
         //initialize
         JSONObject jsonObject = null;

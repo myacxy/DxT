@@ -8,24 +8,34 @@
     android:paddingTop="4dp"
     android:paddingBottom="4dp">
 
-    <TextView android:id="@android:id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-
-    <TextView android:id="@android:id/text2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_alignStart="@android:id/text1"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <CheckBox android:id="@+id/calendar_checkbox"
+    <CheckBox android:id="@+id/dialog_following_selection_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:clickable="false" />
+
+    <TextView android:id="@+id/dialog_following_selection_display_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+    <TextView android:id="@+id/dialog_following_selection_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_following_selection_display_name"
+        android:layout_alignStart="@id/dialog_following_selection_display_name"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView android:id="@+id/dialog_following_selection_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_following_selection_game"
+        android:layout_alignStart="@id/dialog_following_selection_display_name"
+        android:layout_alignEnd="@id/dialog_following_selection_checkbox"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
 
 </RelativeLayout>

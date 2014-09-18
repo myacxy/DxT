@@ -58,9 +58,9 @@ public class TwitchActivity extends Activity {
     }
 
     static void updateTwitchChannels(Context context, final Callback callback) {
-        final TwitchJSONGetter twitchJSONGetter = new TwitchJSONGetter(context);
+        final TwitchJsonGetter twitchJsonGetter = new TwitchJsonGetter(context);
 
-        twitchJSONGetter.update(new Callback() {
+        twitchJsonGetter.update(new Callback() {
             @Override
             public void run(Object object) {
                 JSONArray jsonAllFollowedChannels = null;
@@ -71,14 +71,15 @@ public class TwitchActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                ArrayList<TwitchChannel> allFollowedChannels = twitchJSONGetter.parseJSONObject(jsonAllFollowedChannels);
+                ArrayList<TwitchChannel> allFollowedChannels = twitchJsonGetter.parseJsonObject(jsonAllFollowedChannels);
                 if (allFollowedChannels != null) {
-                    twitchJSONGetter.saveTwitchChannels(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
-                    ArrayList<TwitchChannel> selectedFollowedChannels = twitchJSONGetter.getSelectedFollowedChannels(allFollowedChannels);
+                    twitchJsonGetter.saveTwitchChannelsToPreferences(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
+                    twitchJsonGetter.saveTwitchChannelsToDb(allFollowedChannels);
+                    ArrayList<TwitchChannel> selectedFollowedChannels = twitchJsonGetter.getSelectedFollowedChannels(allFollowedChannels);
                     if (selectedFollowedChannels != null) {
-                        twitchJSONGetter.saveTwitchChannels(selectedFollowedChannels, TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS);
+                        twitchJsonGetter.saveTwitchChannelsToPreferences(selectedFollowedChannels, TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS);
                     }
-                    twitchJSONGetter.saveCurrentTime();
+                    twitchJsonGetter.saveCurrentTime();
                 }
 
                 if (callback != null) {

@@ -14,6 +14,7 @@ public class TwitchChannel
     String game;
     String displayName;
     int followers;
+    int id;
     boolean online;
 
     public TwitchChannel()
@@ -28,10 +29,11 @@ public class TwitchChannel
      */
     public TwitchChannel(JSONObject channelObject)
     {
-        status = getStringFromJSON(channelObject, "status");
-        game = getStringFromJSON(channelObject, "game");
-        displayName = getStringFromJSON(channelObject, "display_name");
-        followers = getIntFromJSON(channelObject, "followers");
+        status = getStringFromJson(channelObject, "status");
+        game = getStringFromJson(channelObject, "game");
+        displayName = getStringFromJson(channelObject, "display_name");
+        followers = getIntFromJson(channelObject, "followers");
+        id = getIntFromJson(channelObject, "_id");
     }
 
     /**
@@ -41,7 +43,7 @@ public class TwitchChannel
      * @param name Name of the String that needs to be retrieved
      * @return Value of the sought Object
      */
-    private String getStringFromJSON(JSONObject channelObject, String name)
+    private String getStringFromJson(JSONObject channelObject, String name)
     {
         try {
             if(channelObject.get(name) != null)
@@ -61,7 +63,7 @@ public class TwitchChannel
      * @param name Name of the Integer that needs to be retrieved
      * @return Value of the sought Object
      */
-    private int getIntFromJSON(JSONObject channelObject, String name)
+    private int getIntFromJson(JSONObject channelObject, String name)
     {
         try {
             if(channelObject.get(name) != null)
