@@ -5,13 +5,16 @@ import android.provider.BaseColumns;
 /**
  * @see <a href="http://goo.gl/vk1g8o">Android Developer</a>
  */
-public class TwitchContract {
+public final class TwitchContract {
 
     /**
      * empty constructor to prevent accidental instantiation
      */
     public TwitchContract() {}
 
+    /**
+     * Inner class that defines the table contents
+     */
     public static abstract class ChannelEntry implements BaseColumns
     {
         public static final String TABLE_NAME = "entry";

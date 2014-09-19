@@ -17,17 +17,22 @@ public class TwitchChannel
     int id;
     boolean online;
 
-    public TwitchChannel()
-    {
-        // default constructor
-    }
-
     /**
      * Constructor that initializes the class members automatically from given JSON data
      *
      * @param channelObject JSON Data of a Twitch Channel
      */
     public TwitchChannel(JSONObject channelObject)
+    {
+        init(channelObject);
+    }
+
+    /**
+     * Initializes the members of this instance with the data provided from the JSONObject.
+     *
+     * @param channelObject JSON Data of a Twitch Channel
+     */
+    public void init(JSONObject channelObject)
     {
         status = getStringFromJson(channelObject, "status");
         game = getStringFromJson(channelObject, "game");

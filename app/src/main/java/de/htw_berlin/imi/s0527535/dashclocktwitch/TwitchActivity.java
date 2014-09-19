@@ -3,7 +3,9 @@ package de.htw_berlin.imi.s0527535.dashclocktwitch;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class TwitchActivity extends Activity {
@@ -22,9 +26,6 @@ public class TwitchActivity extends Activity {
     public static String PREF_SELECTED_FOLLOWED_CHANNELS = "pref_selected_followed_channels";
     public static String PREF_UPDATE_INTERVAL = "pref_update_interval";
     public static String PREF_LAST_UPDATE = "pref_last_update";
-
-    public ArrayList<TwitchChannel> allFollowedChannels;
-    public ArrayList<TwitchChannel> selectedFollowedChannels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +58,20 @@ public class TwitchActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    static void updateTwitchChannels(Context context, final Callback callback) {
+    /**
+     * TODO: javadoc
+     *
+     * @param context
+     * @param callback
+     */
+    static void updateTwitchChannels(final Context context, final Callback callback) {
+        // initialize JsonGetter
         final TwitchJsonGetter twitchJsonGetter = new TwitchJsonGetter(context);
 
         twitchJsonGetter.update(new Callback() {
             @Override
             public void run(Object object) {
+                // retrieve followed channels
                 JSONArray jsonAllFollowedChannels = null;
                 try {
                     JSONObject jsonObject = (JSONObject) object;
@@ -71,17 +80,26 @@ public class TwitchActivity extends Activity {
                     e.printStackTrace();
                 }
 
+                // analyse json data and parse it
                 ArrayList<TwitchChannel> allFollowedChannels = twitchJsonGetter.parseJsonObject(jsonAllFollowedChannels);
+
                 if (allFollowedChannels != null) {
+                    // save all followed channels to shared preferences
                     twitchJsonGetter.saveTwitchChannelsToPreferences(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
-                    twitchJsonGetter.saveTwitchChannelsToDb(allFollowedChannels);
-                    ArrayList<TwitchChannel> selectedFollowedChannels = twitchJsonGetter.getSelectedFollowedChannels(allFollowedChannels);
-                    if (selectedFollowedChannels != null) {
-                        twitchJsonGetter.saveTwitchChannelsToPreferences(selectedFollowedChannels, TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS);
-                    }
+                    // save all followed channels to database
+                    new TwitchDbHelper(context).saveChannels(allFollowedChannels);
+                    // retrieve selected followed channels
+
+                    // TODO: display selected channels
+//                    ArrayList<TwitchChannel> selectedFollowedChannels = getSelectedFollowedChannels(allFollowedChannels);
+//                    if (selectedFollowedChannels != null) {
+//                        twitchJsonGetter.saveTwitchChannelsToPreferences(selectedFollowedChannels, TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS);
+//                    }
+                    // save the time of this update
                     twitchJsonGetter.saveCurrentTime();
                 }
 
+                // allow injectable code by callback
                 if (callback != null) {
                     callback.run(allFollowedChannels);
                 }
@@ -89,8 +107,29 @@ public class TwitchActivity extends Activity {
         });
     } // updateTwitchChannels
 
-    public static void updateTwitchChannels(Context context)
+    public void updateTwitchChannels(Context context)
     {
         updateTwitchChannels(context, null);
     } // updateTwitchChannels
+
+
+    /**
+     * TODO: javadoc
+     *
+     * @param allFollowedChannels
+     * @return
+     */
+    protected ArrayList<TwitchChannel> getSelectedFollowedChannels(ArrayList<TwitchChannel> allFollowedChannels)
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean customVisibility = sp.getBoolean(TwitchActivity.PREF_CUSTOM_VISIBILITY, false);
+        Set<String> selectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, null);
+
+        if(!customVisibility || selectedFollowedChannels == null)
+        {
+            selectedFollowedChannels = new HashSet<String>();
+
+        }
+        return null;
+    }
 } // TwitchActivity

@@ -1,8 +1,11 @@
 package de.htw_berlin.imi.s0527535.dashclocktwitch;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 /**
  * @see <a href="http://goo.gl/vk1g8o">Android Developer</a>
@@ -47,5 +50,56 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    /**
+     * Saves the provided TwitchChannels to the database. The corresponding table will be
+     * deleted beforehand in order to avoid duplicates and keep the database up-to-date.
+     *
+     * @param twitchChannels List of TwitchChannels
+     */
+    public void saveChannels(ArrayList<TwitchChannel> twitchChannels)
+    {
+        // delete old data
+        getWritableDatabase().execSQL(SQL_DELETE_ENTRIES);
+
+        for(TwitchChannel tc : twitchChannels)
+        {
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID, tc.id);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME, tc.displayName);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME, tc.game);
+
+            // Insert the new row, returning the primary key value of the new row
+            long newRowId;
+            newRowId = getWritableDatabase().insert(
+                    TwitchContract.ChannelEntry.TABLE_NAME,
+                    null,
+                    values);
+        }
+    }
+
+    /**
+     * Helps a cursor querying the database by providing a projection of the entries and their ids
+     */
+    public interface ChannelQuery
+    {
+        // Defines a projection that specifies which columns from the database
+        // you will actually use for querying
+        public String[] projection = new String[] {
+                TwitchContract.ChannelEntry._ID,
+                TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID,
+                TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME,
+                TwitchContract.ChannelEntry.COLUMN_NAME_STATUS,
+                TwitchContract.ChannelEntry.COLUMN_NAME_GAME,
+        };
+
+        public int id = 0;
+        public int entryId = 1;
+        public int displayName = 2;
+        public int status = 3;
+        public int game = 4;
     }
 }

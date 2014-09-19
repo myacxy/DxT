@@ -31,6 +31,12 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         this(context, null);
     }
 
+    /**
+     * TODO: javadoc
+     *
+     * @param context
+     * @param attrs
+     */
     public FollowingSelectionPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -53,14 +59,16 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         }
     }
 
-
+    /**
+     * TODO: javadoc / comments
+     */
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
 
         Cursor cursor = mDb.query(
                 TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
-                TwitchChannelQuery.projection,          // the columns to return
+                TwitchDbHelper.ChannelQuery.projection,          // the columns to return
                 null,                                   // the columns for the WHERE clause
                 null,                                   // the values for the WHERE clause
                 null,                                   // don't group the rows
@@ -72,6 +80,9 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         buildDialog(builder);
     }
 
+    /**
+     * TODO: javadoc / comments
+     */
     void buildDialog(AlertDialog.Builder builder)
     {
         builder.setAdapter(mAdapter, null);
@@ -87,6 +98,9 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         });
     }
 
+    /**
+     * TODO: javadoc / comments
+     */
     public class ListAdapter extends ResourceCursorAdapter
     {
 
@@ -102,16 +116,16 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
 
-            final String displayName = cursor.getString(TwitchChannelQuery.displayName);
+            final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
             TextView selectionDisplayName = (TextView) view.findViewById(R.id.dialog_following_selection_display_name);
             selectionDisplayName.setText(displayName);
 
             TextView selectionGame = (TextView) view.findViewById(R.id.dialog_following_selection_game);
             selectionGame.setText(R.string.dialog_following_selection_game
-                    + ": " + cursor.getString(TwitchChannelQuery.game));
+                    + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
 
             TextView selectionStatus = (TextView) view.findViewById(R.id.dialog_following_selection_status);
-            selectionStatus.setText(cursor.getString(TwitchChannelQuery.status));
+            selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
 
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.dialog_following_selection_checkbox);
 
@@ -130,22 +144,5 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
                 }
             });
         }
-    }
-
-    interface TwitchChannelQuery
-    {
-        public String[] projection = new String[] {
-                TwitchContract.ChannelEntry._ID,
-                TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID,
-                TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME,
-                TwitchContract.ChannelEntry.COLUMN_NAME_STATUS,
-                TwitchContract.ChannelEntry.COLUMN_NAME_GAME,
-        };
-
-        public int id = 0;
-        public int entryId = 1;
-        public int displayName = 2;
-        public int status = 3;
-        public int game = 4;
     }
 }
