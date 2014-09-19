@@ -25,8 +25,14 @@ public class TwitchSettingsActivity extends PreferenceActivity
 
         addPreferencesFromResource(R.xml.pref_twitch);
 
-        bindPreferenceSummaryToValue(findPreference("pref_user_name"));
+        // set up user name preference
+        final Preference prefUserName = findPreference("pref_user_name");
+        // change the view's summary text to its value
+        bindPreferenceSummaryToValue(prefUserName);
+
+        // set up update interval preference
         bindPreferenceSummaryToValue(findPreference("pref_update_interval"));
+        // TODO: refactor
         findPreference("pref_update_interval").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
         {
             @Override

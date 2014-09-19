@@ -64,7 +64,9 @@ public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
             dialog.dismiss();
         }
 
-        callback.run(jsonObject);
+        if(callback != null) {
+            callback.run(jsonObject);
+        }
     }
 
     @Override

@@ -54,16 +54,17 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     /**
      * Saves the provided TwitchChannels to the database. The corresponding table will be
-     * deleted beforehand in order to avoid duplicates and keep the database up-to-date.
+     * deleted beforehand in order to avoid duplicates and keep the database up-to-date because a
+     * channel possesses too many properties that would have to be checked one by one.
      *
-     * @param twitchChannels List of TwitchChannels
+     * @param followedChannels List of followed TwitchChannels
      */
-    public void saveChannels(ArrayList<TwitchChannel> twitchChannels)
+    public void saveChannels(ArrayList<TwitchChannel> followedChannels)
     {
         // delete old data
-        getWritableDatabase().execSQL(SQL_DELETE_ENTRIES);
+        getWritableDatabase().delete(TwitchContract.ChannelEntry.TABLE_NAME, null, null);
 
-        for(TwitchChannel tc : twitchChannels)
+        for(TwitchChannel tc : followedChannels)
         {
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();

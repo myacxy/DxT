@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,7 +76,17 @@ public class TwitchActivity extends Activity {
                 JSONArray jsonAllFollowedChannels = null;
                 try {
                     JSONObject jsonObject = (JSONObject) object;
+                    if(jsonObject.has("status") && jsonObject.getString("status").equals("404"))
+                    {
+                        Toast.makeText(context, "User does not exist.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
+                    if (jsonAllFollowedChannels == null)
+                    {
+                        Toast.makeText(context, "No channels found.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:orientation="vertical">
 
-    <EditTextPreference
+    <de.htw_berlin.imi.s0527535.dashclocktwitch.UserNamePreference
         android:defaultValue="test_user1"
         android:selectAllOnFocus="true"
         android:key="pref_user_name"
