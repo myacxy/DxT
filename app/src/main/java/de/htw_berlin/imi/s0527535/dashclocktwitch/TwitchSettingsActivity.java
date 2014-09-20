@@ -24,7 +24,6 @@ public class TwitchSettingsActivity extends PreferenceActivity
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.pref_twitch);
-
         // set up user name preference
         final Preference prefUserName = findPreference("pref_user_name");
         // change the view's summary text to its value

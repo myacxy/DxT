@@ -9,6 +9,10 @@ import android.util.AttributeSet;
 
 import java.util.HashSet;
 
+/**
+ * Simple EditTextPreference that reacts to clicking the OK button.
+ *
+ */
 public class UserNamePreference extends EditTextPreference
 {
     public UserNamePreference(Context context) {
@@ -26,11 +30,17 @@ public class UserNamePreference extends EditTextPreference
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            TwitchActivity.updateTwitchChannels(getContext(), null);
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-            sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
-                    new HashSet<String>()).commit();
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
+                    new HashSet<String>());
+            String userName = getEditText().getText().toString();
+            userName = userName.replaceAll("\\s+", "");
+            editor.putString(TwitchActivity.PREF_USER_NAME, userName);
+            editor.commit();
+            TwitchActivity.updateTwitchChannels(getContext(), null);
         }
         super.onClick(dialog, which);
     }
+
 }

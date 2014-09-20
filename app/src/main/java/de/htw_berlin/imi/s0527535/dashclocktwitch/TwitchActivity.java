@@ -21,6 +21,7 @@ import java.util.Set;
 
 public class TwitchActivity extends Activity {
 
+    // initialize shared preference keys
     public static String PREF_USER_NAME = "pref_user_name";
     public static String PREF_CUSTOM_VISIBILITY = "pref_custom_visibility";
     public static String PREF_ALL_FOLLOWED_CHANNELS = "pref_all_followed_channels";

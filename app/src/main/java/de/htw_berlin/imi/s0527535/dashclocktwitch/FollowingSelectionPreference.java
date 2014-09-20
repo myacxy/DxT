@@ -111,6 +111,7 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // save currently selected channels
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sp.edit();
                 mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
@@ -122,7 +123,7 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // get previously selected channels
+                // set to previously selected channels
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
                 sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, mSelectedFollowedChannels)
                          .commit();
@@ -154,7 +155,7 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
             selectionDisplayName.setText(displayName);
             // initialize view for game
             TextView selectionGame = (TextView) view.findViewById(R.id.dialog_following_selection_game);
-            selectionGame.setText(R.string.dialog_following_selection_game
+            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
                     + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
             // initialize view for status
             TextView selectionStatus = (TextView) view.findViewById(R.id.dialog_following_selection_status);
