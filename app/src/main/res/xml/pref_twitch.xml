@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:orientation="vertical">
 
-    <de.htw_berlin.imi.s0527535.dashclocktwitch.UserNamePreference
+    <de.htw_berlin.imi.s0527535.dashclocktwitch.UserNameDialog
         android:defaultValue="test_user1"
         android:selectAllOnFocus="true"
         android:key="pref_user_name"
@@ -18,14 +18,14 @@
         android:key="pref_custom_visibility"
         android:title="@string/pref_custom_visibility_title"/>
 
-    <de.htw_berlin.imi.s0527535.dashclocktwitch.FollowingSelectionPreference
+    <de.htw_berlin.imi.s0527535.dashclocktwitch.FollowingSelectionDialog
         android:key="pref_following_selection"
         android:dependency="pref_custom_visibility"
         android:title="@string/pref_following_selection_title"
         />
 
-    <Preference
+    <de.htw_berlin.imi.s0527535.dashclocktwitch.NumberPickerDialog
         android:key="pref_update_interval"
-        android:title="@string/pref_update_interval"/>
+        android:title="@string/pref_update_interval_title"/>
 
 </PreferenceScreen>

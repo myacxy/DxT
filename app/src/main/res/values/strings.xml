@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">DashClock Twitch</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -13,5 +12,7 @@
     <string name="pref_following_selection_progress_title">Fetching data...</string>
     <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
     <string name="pref_ringtone_silent">Silent</string>
-    <string name="pref_update_interval">Update Interval</string>
+    <string name="pref_update_interval_title">Update Interval</string>
+    <string name="pref_update_interval_summary">Choose an interval in minutes</string>
+    <string name="dialog_update_interval_title">Pick an interval</string>
 </resources>

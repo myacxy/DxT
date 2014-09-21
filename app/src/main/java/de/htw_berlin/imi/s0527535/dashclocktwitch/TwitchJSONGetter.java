@@ -26,7 +26,7 @@ public class TwitchJsonGetter extends JsonGetter {
      *
      * @return List of all the user's followed channels
      */
-    private void updateAllFollowedChannels(Callback callback)
+    public void updateAllFollowedChannels(Callback callback)
     {
         this.callback = callback;
         ArrayList<String> allFollowedChannels = new ArrayList<String>();
@@ -68,10 +68,22 @@ public class TwitchJsonGetter extends JsonGetter {
         return followedTwitchChannels;
     } // parseJsonObject
 
-    public void update(Callback callback)
+    /**
+     * Checks the Shared Preferences for the time of the last update.
+     *
+     * @return  returns true if channels were updated within the update interval
+     *          return false if channels were updated later than the update interval
+     */
+    public static boolean checkRecentlyUpdated(Context context)
     {
-        updateAllFollowedChannels(callback);
-    } // update
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        float lastUpdate = sp.getFloat(TwitchActivity.PREF_LAST_UPDATE, 0);
+        // calculate difference in minutes
+        float difference = (System.currentTimeMillis() - lastUpdate) / 60000f;
+        int updateInterval = sp.getInt(TwitchActivity.PREF_UPDATE_INTERVAL, 5);
+
+        return difference <= updateInterval;
+    }
 
     /**
      * Saves the current system time in milliseconds to the shared preferences so that it can later

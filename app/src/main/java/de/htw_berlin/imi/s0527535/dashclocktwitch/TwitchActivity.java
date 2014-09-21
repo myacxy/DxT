@@ -55,7 +55,7 @@ public class TwitchActivity extends Activity {
         }
         else if(id == R.id.action_json)
         {
-            updateTwitchChannels(this);
+            updateTwitchChannels(this, null);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -66,22 +66,24 @@ public class TwitchActivity extends Activity {
      * @param context
      * @param callback
      */
-    static void updateTwitchChannels(final Context context, final Callback callback) {
+    public static void updateTwitchChannels(final Context context, final Callback callback) {
         // initialize JsonGetter
         final TwitchJsonGetter twitchJsonGetter = new TwitchJsonGetter(context);
 
-        twitchJsonGetter.update(new Callback() {
+        twitchJsonGetter.updateAllFollowedChannels(new Callback() {
             @Override
             public void run(Object object) {
                 // retrieve followed channels
                 JSONArray jsonAllFollowedChannels = null;
                 try {
                     JSONObject jsonObject = (JSONObject) object;
-                    if(jsonObject.has("status") && jsonObject.getString("status").equals("404"))
+                    // user does not exist
+                    if(jsonObject.has("status"))
                     {
-                        Toast.makeText(context, "User does not exist.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                         return;
                     }
+                    // no channels being followed
                     jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
                     if (jsonAllFollowedChannels == null)
                     {
@@ -118,12 +120,6 @@ public class TwitchActivity extends Activity {
             }
         });
     } // updateTwitchChannels
-
-    public void updateTwitchChannels(Context context)
-    {
-        updateTwitchChannels(context, null);
-    } // updateTwitchChannels
-
 
     /**
      * TODO: javadoc

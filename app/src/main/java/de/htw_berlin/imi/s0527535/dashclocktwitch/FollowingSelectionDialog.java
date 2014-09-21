@@ -14,31 +14,25 @@ import android.widget.CheckBox;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class FollowingSelectionPreference extends MultiSelectListPreference
+public class FollowingSelectionDialog extends MultiSelectListPreference
 {
+    // previously selected / saved channels
     private Set<String> mSelectedFollowedChannels;
+    // currently selected / unsaved channels
     private Set<String> mSelectedFollowedChannelsTemp;
-    private ArrayList<TwitchChannel> mAllFollowedChannels;
     private Context mContext;
     private ListAdapter mAdapter;
     private SQLiteDatabase mDb;
 
-    public FollowingSelectionPreference(Context context) {
+    public FollowingSelectionDialog(Context context) {
         this(context, null);
     }
 
-    /**
-     * TODO: javadoc
-     *
-     * @param context
-     * @param attrs
-     */
-    public FollowingSelectionPreference(Context context, AttributeSet attrs) {
+    public FollowingSelectionDialog(Context context, AttributeSet attrs) {
         super(context, attrs);
         // initialize
         mContext = context;
@@ -48,33 +42,6 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSelectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, new HashSet<String>());
         mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
-
-        if(checkRecentlyUpdated())
-        {
-            TwitchActivity.updateTwitchChannels(mContext, new Callback() {
-                @Override
-                public void run(Object object) {
-                    mAllFollowedChannels = (ArrayList<TwitchChannel>) object;
-                }
-            });
-        }
-    }
-
-    /**
-     * Checks the Shared Preferences for the time of the last update.
-     *
-     * @return  returns true if channels were updated within the update interval
-     *          return false if channels were updated later than the update interval
-     */
-    private boolean checkRecentlyUpdated()
-    {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        float lastUpdate = sp.getFloat(TwitchActivity.PREF_LAST_UPDATE, 0);
-        // calculate difference in minutes
-        float difference = (System.currentTimeMillis() - lastUpdate) / 60000f;
-        int updateInterval = sp.getInt(TwitchActivity.PREF_UPDATE_INTERVAL, 0);
-
-        return difference <= updateInterval;
     }
 
     /**
@@ -164,7 +131,7 @@ public class FollowingSelectionPreference extends MultiSelectListPreference
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.dialog_following_selection_checkbox);
             checkBox.setChecked(mSelectedFollowedChannels.contains(displayName));
 
-//            // set click listener
+            // enable clicking the check box
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

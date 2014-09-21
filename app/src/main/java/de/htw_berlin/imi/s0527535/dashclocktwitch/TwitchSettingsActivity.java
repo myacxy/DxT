@@ -1,7 +1,5 @@
 package de.htw_berlin.imi.s0527535.dashclocktwitch;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -12,9 +10,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 
 public class TwitchSettingsActivity extends PreferenceActivity
 {
@@ -24,55 +19,8 @@ public class TwitchSettingsActivity extends PreferenceActivity
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.pref_twitch);
-        // set up user name preference
-        final Preference prefUserName = findPreference("pref_user_name");
         // change the view's summary text to its value
-        bindPreferenceSummaryToValue(prefUserName);
-
-        // set up update interval preference
-        bindPreferenceSummaryToValue(findPreference("pref_update_interval"));
-        // TODO: refactor
-        findPreference("pref_update_interval").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                RelativeLayout linearLayout = new RelativeLayout(preference.getContext());
-                final NumberPicker aNumberPicker = new NumberPicker(preference.getContext());
-                aNumberPicker.setMaxValue(50);
-                aNumberPicker.setMinValue(1);
-
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
-                RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                numPicerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-                linearLayout.setLayoutParams(params);
-                linearLayout.addView(aNumberPicker,numPicerParams);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(preference.getContext());
-                alertDialogBuilder.setTitle("Select the number");
-                alertDialogBuilder.setView(linearLayout);
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Ok",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        Log.e("", "New Quantity Value : " + aNumberPicker.getValue());
-
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-                return false;
-            }
-        });
+        bindPreferenceSummaryToValue(findPreference("pref_user_name"));
     }
 
     /**

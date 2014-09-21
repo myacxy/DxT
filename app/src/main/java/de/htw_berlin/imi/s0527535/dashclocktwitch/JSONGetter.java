@@ -80,7 +80,7 @@ public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
      *
      * @see <a href="http://goo.gl/opGukX">Antoine Rivière</a>
      * @param url String representing the full URL
-     * @return JSONObject of the url's target location
+     * @return JSONObject of url's target location
      */
     protected JSONObject getJsonFromURL(String url)
     {
