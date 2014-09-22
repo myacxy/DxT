@@ -30,6 +30,7 @@ public class TwitchChannelGetter extends JsonGetter {
         {
             try {
                 Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                mProgressDialog.dismiss();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -41,6 +42,7 @@ public class TwitchChannelGetter extends JsonGetter {
             if (jsonAllFollowedChannels == null)
             {
                 Toast.makeText(mContext, "No channels being followed.", Toast.LENGTH_LONG).show();
+                mProgressDialog.dismiss();
                 return;
             }
         } catch (JSONException e) {
@@ -61,10 +63,10 @@ public class TwitchChannelGetter extends JsonGetter {
             saveCurrentTime();
         }
 
+        // check online status of each channel
         for(final TwitchChannel tc : allFollowedChannels)
         {
-            if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc))
-            {
+            if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc)) {
                 new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, true);
             } else {
                 new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, false);
@@ -142,7 +144,8 @@ public class TwitchChannelGetter extends JsonGetter {
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putFloat(TwitchActivity.PREF_LAST_UPDATE, System.currentTimeMillis());
+        long currentMillis = System.currentTimeMillis();
+        editor.putFloat(TwitchActivity.PREF_LAST_UPDATE, currentMillis);
         editor.commit();
     } // saveCurrentTime
 

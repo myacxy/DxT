@@ -4,14 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.ResourceCursorAdapter;
+import android.widget.TextView;
 
 
 public class TwitchActivity extends Activity {
@@ -28,8 +30,87 @@ public class TwitchActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitch_main);
+
+        initView();
     }
 
+    @Override
+    protected void onResume() {
+        initView();
+        super.onResume();
+    }
+
+    /**
+     * TODO: javadoc / comments
+     */
+    public void initView()
+    {
+        ListView listView = (ListView) TwitchActivity.this.findViewById(R.id.main_list);
+        ListAdapter mAdapter = new ListAdapter(this);
+        SQLiteDatabase mDb = new TwitchDbHelper(this).getReadableDatabase();
+
+        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
+
+        String selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?" +
+                " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+        String[] selectionArgs = new String[] { "1", "1" };
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(!sp.getBoolean(PREF_CUSTOM_VISIBILITY, false)){
+            selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
+            selectionArgs = new String[] { "1" };
+        }
+        // get all entries of the table from the database
+        Cursor cursor = mDb.query(
+                TwitchContract.ChannelEntry.TABLE_NAME,         // the table to query
+                TwitchDbHelper.ChannelQuery.projection,         // the columns to return
+                selection, // the columns for the WHERE clause
+                selectionArgs,                                  // the values for the WHERE clause
+                null,                                           // don't group the rows
+                null,                                           // don't filter by row groups
+                sortOrder                                       // the sort order
+        );
+        // reassign the cursor
+        mAdapter.swapCursor(cursor);
+        listView.setAdapter(mAdapter);
+    }
+    public class ListAdapter extends ResourceCursorAdapter
+    {
+
+        public ListAdapter(Context context)
+        {
+            // inflate row layout
+            super(context, R.layout.list_item_following_short, null, false);
+        }
+
+
+        /**
+         * Set elements of each row
+         */
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            // initialize view for display name
+            final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            TextView selectionDisplayName = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_display_name);
+            selectionDisplayName.setText(displayName);
+            // initialize view for game
+            TextView selectionGame = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_game);
+            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
+                    + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
+            // initialize view for status
+            TextView selectionStatus = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_status);
+            selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                } // onClick
+            });
+        } // bindView
+    } // ListAdapter
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,22 +148,4 @@ public class TwitchActivity extends Activity {
         twitchChannelGetter.updateAllFollowedChannels();
     } // updateTwitchChannels
 
-    /**
-     * TODO: javadoc
-     *
-     * @param allFollowedChannels
-     * @return
-     */
-    protected ArrayList<TwitchChannel> getSelectedFollowedChannels(ArrayList<TwitchChannel> allFollowedChannels)
-    {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean customVisibility = sp.getBoolean(TwitchActivity.PREF_CUSTOM_VISIBILITY, false);
-        Set<String> selectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, null);
-
-        if(!customVisibility || selectedFollowedChannels == null)
-        {
-            selectedFollowedChannels = new HashSet<String>();
-        }
-        return null;
-    }
 } // TwitchActivity

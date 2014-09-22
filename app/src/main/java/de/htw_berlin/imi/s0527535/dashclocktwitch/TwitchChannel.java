@@ -15,7 +15,7 @@ public class TwitchChannel
     String game;
     String displayName;
     int followers;
-    int id;
+    int entryId;
     boolean online;
 
     public TwitchChannel()
@@ -34,7 +34,8 @@ public class TwitchChannel
     }
 
     /**
-     * Initializes the members of this instance with the data provided from the JSONObject.
+     * Initializes the members of this instance with the data provided from
+     * the JSONObject of a channel.
      *
      * @param channelObject JSON Data of a Twitch Channel
      */
@@ -46,6 +47,6 @@ public class TwitchChannel
         game = twitchChannelGetter.getString(channelObject, "game");
         displayName = twitchChannelGetter.getString(channelObject, "display_name");
         followers = twitchChannelGetter.getInt(channelObject, "followers");
-        id = twitchChannelGetter.getInt(channelObject, "_id");
+        entryId = twitchChannelGetter.getInt(channelObject, "_id");
     }
 }

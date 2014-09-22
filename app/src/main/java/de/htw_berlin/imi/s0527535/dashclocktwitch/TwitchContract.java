@@ -23,5 +23,6 @@ public final class TwitchContract {
         public static final String COLUMN_NAME_STATUS = "status";
         public static final String COLUMN_NAME_GAME = "game";
         public static final String COLUMN_NAME_ONLINE = "online";
+        public static final String COLUMN_NAME_SELECTED = "selected";
     }
 }

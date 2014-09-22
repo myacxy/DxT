@@ -85,7 +85,10 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
                 editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels);
-                editor.commit();
+                editor.apply();
+                TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
+
+                twitchDbHelper.updateSelectionStatus(mSelectedFollowedChannels);
             }
         });
         // Set Cancel Button
@@ -96,7 +99,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
                 sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels)
-                         .commit();
+                         .apply();
                 mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
             }
         });
@@ -115,7 +118,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         }
 
         /**
-         * Set elements of the row
+         * Set elements of each row
          */
         @Override
         public void bindView(View view, Context context, Cursor cursor) {

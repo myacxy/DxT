@@ -11,11 +11,6 @@ public class TwitchOnlineChecker extends JsonGetter
     protected TwitchChannel mTwitchChannel;
     protected boolean mDismissProgressDialog;
 
-    /**
-     * The activity's context is necessary in order to display the progress dialog.
-     *
-     * @param context activity from which the class has been called
-     */
     public TwitchOnlineChecker(Context context) {
         super(context);
     }
@@ -33,6 +28,7 @@ public class TwitchOnlineChecker extends JsonGetter
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
+        // check if stream is online
         try {
             if (jsonObject.getString("stream").equals("null")) {
                 mTwitchChannel.online = false;
@@ -42,14 +38,17 @@ public class TwitchOnlineChecker extends JsonGetter
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        // update database
         TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
         twitchDbHelper.updateOnlineStatus(mTwitchChannel);
+        // dismiss progress dialog
         if(mDismissProgressDialog) mProgressDialog.dismiss();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
+        // display current progress
         mProgressDialog.setMessage("Checking " + values[0] + "...");
     }
 
@@ -69,7 +68,7 @@ public class TwitchOnlineChecker extends JsonGetter
         mDismissProgressDialog = dismiss;
         mTwitchChannel = twitchChannel;
         String url = "https://api.twitch.tv/kraken/streams/" + twitchChannel.displayName;
-        mProgressDialogMessage = mContext.getResources().getString(R.string.pref_following_selection_progress_title2);
+        // execute tasks one after the other
         executeOnExecutor(SERIAL_EXECUTOR, url);
     }
 }
