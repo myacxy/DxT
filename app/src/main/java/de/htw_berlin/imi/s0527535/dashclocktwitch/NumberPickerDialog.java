@@ -35,7 +35,8 @@ public class NumberPickerDialog extends Preference {
         builder.setTitle(getContext().getResources().getString(R.string.dialog_update_interval_title));
         // set layout
         RelativeLayout layout = new RelativeLayout(getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layout.setLayoutParams(params);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layout.addView(numberPicker, params);
@@ -48,7 +49,8 @@ public class NumberPickerDialog extends Preference {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, numberPicker.getValue()).commit();
+                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, numberPicker.getValue())
+                        .commit();
                 if (TwitchJsonGetter.checkRecentlyUpdated(getContext())) {
                     TwitchActivity.updateTwitchChannels(getContext(), null);
                 }
@@ -58,7 +60,8 @@ public class NumberPickerDialog extends Preference {
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, previousValue).commit();
+                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, previousValue)
+                        .commit();
             }
         });
         builder.create();

@@ -40,7 +40,8 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         mDb = new TwitchDbHelper(context).getReadableDatabase();
         // get previously selected channels
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mSelectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, new HashSet<String>());
+        mSelectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
+                new HashSet<String>());
         mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
     }
 
@@ -82,7 +83,8 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sp.edit();
                 mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
-                editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, mSelectedFollowedChannels);
+                editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
+                        mSelectedFollowedChannels);
                 editor.commit();
             }
         });
@@ -92,7 +94,8 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             public void onClick(DialogInterface dialog, int which) {
                 // set to previously selected channels
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-                sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS, mSelectedFollowedChannels)
+                sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
+                        mSelectedFollowedChannels)
                          .commit();
                 mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
             }
@@ -118,17 +121,21 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
             final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            TextView selectionDisplayName = (TextView) view.findViewById(R.id.dialog_following_selection_display_name);
+            TextView selectionDisplayName = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_display_name);
             selectionDisplayName.setText(displayName);
             // initialize view for game
-            TextView selectionGame = (TextView) view.findViewById(R.id.dialog_following_selection_game);
+            TextView selectionGame = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_game);
             selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
                     + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
             // initialize view for status
-            TextView selectionStatus = (TextView) view.findViewById(R.id.dialog_following_selection_status);
+            TextView selectionStatus = (TextView) view.findViewById(
+                    R.id.dialog_following_selection_status);
             selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
             // check the checkbox if was selected beforehand
-            final CheckBox checkBox = (CheckBox) view.findViewById(R.id.dialog_following_selection_checkbox);
+            final CheckBox checkBox = (CheckBox) view.findViewById(
+                    R.id.dialog_following_selection_checkbox);
             checkBox.setChecked(mSelectedFollowedChannels.contains(displayName));
 
             // enable clicking the check box

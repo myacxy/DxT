@@ -131,4 +131,44 @@ public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
 
         return jsonObject;
     }
+
+    /**
+     * Retrieves the value of a String from given JSON Data
+     *
+     * @param channelObject JSON Data of a Twitch Channel
+     * @param name Name of the String that needs to be retrieved
+     * @return Value of the sought Object
+     */
+    public String getString(JSONObject channelObject, String name)
+    {
+        try {
+            if(channelObject.get(name) != null)
+            {
+                return channelObject.getString(name);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * Retrieves the value of an Integer from given JSON Data
+     *
+     * @param channelObject JSON Data of a Twitch Channel
+     * @param name Name of the Integer that needs to be retrieved
+     * @return Value of the sought Object
+     */
+    public int getInt(JSONObject channelObject, String name)
+    {
+        try {
+            if(channelObject.get(name) != null)
+            {
+                return channelObject.getInt(name);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 } //JSONGetter

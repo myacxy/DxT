@@ -1,6 +1,5 @@
 package de.htw_berlin.imi.s0527535.dashclocktwitch;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -34,50 +33,11 @@ public class TwitchChannel
      */
     public void init(JSONObject channelObject)
     {
-        status = getStringFromJson(channelObject, "status");
-        game = getStringFromJson(channelObject, "game");
-        displayName = getStringFromJson(channelObject, "display_name");
-        followers = getIntFromJson(channelObject, "followers");
-        id = getIntFromJson(channelObject, "_id");
-    }
-
-    /**
-     * Retrieves the value of a String from given JSON Data
-     *
-     * @param channelObject JSON Data of a Twitch Channel
-     * @param name Name of the String that needs to be retrieved
-     * @return Value of the sought Object
-     */
-    private String getStringFromJson(JSONObject channelObject, String name)
-    {
-        try {
-            if(channelObject.get(name) != null)
-            {
-                return channelObject.getString(name);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    /**
-     * Retrieves the value of an Integer from given JSON Data
-     *
-     * @param channelObject JSON Data of a Twitch Channel
-     * @param name Name of the Integer that needs to be retrieved
-     * @return Value of the sought Object
-     */
-    private int getIntFromJson(JSONObject channelObject, String name)
-    {
-        try {
-            if(channelObject.get(name) != null)
-            {
-                return channelObject.getInt(name);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return 0;
+        JsonGetter jsonGetter = new JsonGetter(null);
+        status = jsonGetter.getString(channelObject, "status");
+        game = jsonGetter.getString(channelObject, "game");
+        displayName = jsonGetter.getString(channelObject, "display_name");
+        followers = jsonGetter.getInt(channelObject, "followers");
+        id = jsonGetter.getInt(channelObject, "_id");
     }
 }
