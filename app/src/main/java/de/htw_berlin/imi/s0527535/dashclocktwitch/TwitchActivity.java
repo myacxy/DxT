@@ -8,11 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,7 +50,7 @@ public class TwitchActivity extends Activity {
         }
         else if(id == R.id.action_json)
         {
-            updateTwitchChannels(this, null);
+            updateTwitchChannels(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -64,61 +59,12 @@ public class TwitchActivity extends Activity {
      * TODO: javadoc
      *
      * @param context
-     * @param callback
      */
-    public static void updateTwitchChannels(final Context context, final Callback callback) {
+    public static void updateTwitchChannels(final Context context) {
         // initialize JsonGetter
-        final TwitchJsonGetter twitchJsonGetter = new TwitchJsonGetter(context);
+        final TwitchChannelGetter twitchChannelGetter = new TwitchChannelGetter(context);
 
-        twitchJsonGetter.updateAllFollowedChannels(new Callback() {
-            @Override
-            public void run(Object object) {
-                // retrieve followed channels
-                JSONArray jsonAllFollowedChannels = null;
-                try {
-                    JSONObject jsonObject = (JSONObject) object;
-                    // user does not exist
-                    if(jsonObject.has("status"))
-                    {
-                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    // no channels being followed
-                    jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
-                    if (jsonAllFollowedChannels == null)
-                    {
-                        Toast.makeText(context, "No channels found.", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                // analyse json data and parse it
-                ArrayList<TwitchChannel> allFollowedChannels = twitchJsonGetter.parseJsonObject(jsonAllFollowedChannels);
-
-                if (allFollowedChannels != null) {
-                    // save all followed channels to shared preferences
-                    twitchJsonGetter.saveTwitchChannelsToPreferences(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
-                    // save all followed channels to database
-                    new TwitchDbHelper(context).saveChannels(allFollowedChannels);
-                    // retrieve selected followed channels
-
-                    // TODO: display selected channels
-//                    ArrayList<TwitchChannel> selectedFollowedChannels = getSelectedFollowedChannels(allFollowedChannels);
-//                    if (selectedFollowedChannels != null) {
-//                        twitchJsonGetter.saveTwitchChannelsToPreferences(selectedFollowedChannels, TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS);
-//                    }
-                    // save the time of this update
-                    twitchJsonGetter.saveCurrentTime();
-                }
-
-                // allow injectable code by callback
-                if (callback != null) {
-                    callback.run(allFollowedChannels);
-                }
-            }
-        });
+        twitchChannelGetter.updateAllFollowedChannels();
     } // updateTwitchChannels
 
     /**
@@ -136,7 +82,6 @@ public class TwitchActivity extends Activity {
         if(!customVisibility || selectedFollowedChannels == null)
         {
             selectedFollowedChannels = new HashSet<String>();
-
         }
         return null;
     }

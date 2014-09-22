@@ -41,7 +41,7 @@ public class UserNameDialog extends EditTextPreference
             userName = userName.replaceAll("\\s+", "");
             editor.putString(TwitchActivity.PREF_USER_NAME, userName).commit();
             // update channels for new user name
-            TwitchActivity.updateTwitchChannels(getContext(), null);
+            TwitchActivity.updateTwitchChannels(getContext());
         }
         super.onClick(dialog, which);
     }

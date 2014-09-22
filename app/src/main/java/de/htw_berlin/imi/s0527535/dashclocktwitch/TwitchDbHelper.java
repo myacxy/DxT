@@ -20,7 +20,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
             TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME + TEXT_TYPE + COMMA_SEP +
             TwitchContract.ChannelEntry.COLUMN_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_GAME + TEXT_TYPE +
+            TwitchContract.ChannelEntry.COLUMN_NAME_GAME + TEXT_TYPE + COMMA_SEP +
+            TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + TEXT_TYPE +
             " )";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -52,6 +53,24 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    public void updateOnlineStatus(TwitchChannel twitchChannel)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // New value for one column
+        ContentValues values = new ContentValues();
+        values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, twitchChannel.online);
+
+        // Which row to update, based on the ID
+        String selection = TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(twitchChannel.id) };
+
+        int count = db.update(
+                TwitchContract.ChannelEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+    }
     /**
      * Saves the provided TwitchChannels to the database. The corresponding table will be
      * deleted beforehand in order to avoid duplicates and keep the database up-to-date because a
@@ -72,6 +91,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME, tc.displayName);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME, tc.game);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, tc.online ? 1 : 0);
 
             // Insert the new row, returning the primary key value of the new row
             long newRowId;
@@ -95,6 +115,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME,
                 TwitchContract.ChannelEntry.COLUMN_NAME_STATUS,
                 TwitchContract.ChannelEntry.COLUMN_NAME_GAME,
+                TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE,
         };
 
         public int id = 0;
@@ -102,5 +123,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         public int displayName = 2;
         public int status = 3;
         public int game = 4;
+        public int online = 5;
     }
 }

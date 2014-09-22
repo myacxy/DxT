@@ -121,9 +121,10 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
             final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            boolean online = cursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
             TextView selectionDisplayName = (TextView) view.findViewById(
                     R.id.dialog_following_selection_display_name);
-            selectionDisplayName.setText(displayName);
+            selectionDisplayName.setText(displayName + " (" + (online ? "online" : "offline") + ")");
             // initialize view for game
             TextView selectionGame = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);

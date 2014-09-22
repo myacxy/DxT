@@ -1,5 +1,7 @@
 package de.htw_berlin.imi.s0527535.dashclocktwitch;
 
+import android.content.Context;
+
 import org.json.JSONObject;
 
 /**
@@ -16,14 +18,19 @@ public class TwitchChannel
     int id;
     boolean online;
 
+    public TwitchChannel()
+    {
+        // default constructor
+    }
     /**
-     * Constructor that initializes the class members automatically from given JSON data
+     * Constructor that initializes the class members automatically from given JSON data.
      *
      * @param channelObject JSON Data of a Twitch Channel
+     * @param context
      */
-    public TwitchChannel(JSONObject channelObject)
+    public TwitchChannel(JSONObject channelObject, Context context)
     {
-        init(channelObject);
+        init(channelObject, context);
     }
 
     /**
@@ -31,13 +38,14 @@ public class TwitchChannel
      *
      * @param channelObject JSON Data of a Twitch Channel
      */
-    public void init(JSONObject channelObject)
+    public void init(JSONObject channelObject, final Context context)
     {
-        JsonGetter jsonGetter = new JsonGetter(null);
-        status = jsonGetter.getString(channelObject, "status");
-        game = jsonGetter.getString(channelObject, "game");
-        displayName = jsonGetter.getString(channelObject, "display_name");
-        followers = jsonGetter.getInt(channelObject, "followers");
-        id = jsonGetter.getInt(channelObject, "_id");
+        final TwitchChannelGetter twitchChannelGetter = new TwitchChannelGetter(context);
+
+        status = twitchChannelGetter.getString(channelObject, "status");
+        game = twitchChannelGetter.getString(channelObject, "game");
+        displayName = twitchChannelGetter.getString(channelObject, "display_name");
+        followers = twitchChannelGetter.getInt(channelObject, "followers");
+        id = twitchChannelGetter.getInt(channelObject, "_id");
     }
 }

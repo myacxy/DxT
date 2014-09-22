@@ -3,6 +3,7 @@ package de.htw_berlin.imi.s0527535.dashclocktwitch;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,14 +12,64 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class TwitchJsonGetter extends JsonGetter {
+public class TwitchChannelGetter extends JsonGetter {
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
      * @param context activity from which the class has been called
      */
-    public TwitchJsonGetter(Context context) {
+    public TwitchChannelGetter(Context context) {
         super(context);
+    }
+
+    @Override
+    protected void onPostExecute(JSONObject jsonObject) {
+        JSONArray jsonAllFollowedChannels = null;
+        // status error
+        if(jsonObject.has("status"))
+        {
+            try {
+                Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        // no channels being followed
+        try {
+            jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
+            if (jsonAllFollowedChannels == null)
+            {
+                Toast.makeText(mContext, "No channels being followed.", Toast.LENGTH_LONG).show();
+                return;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mProgressDialog.setMessage("Parsing data...");
+        // analyse json data and parse it
+        ArrayList<TwitchChannel> allFollowedChannels = parseJsonObject(jsonAllFollowedChannels);
+
+        if (allFollowedChannels != null) {
+            // save all followed channels to shared preferences
+            mProgressDialog.setMessage("Saving data...");
+            saveTwitchChannelsToPreferences(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
+            // save all followed channels to database
+            new TwitchDbHelper(mContext).saveChannels(allFollowedChannels);
+            // save the time of this update
+            saveCurrentTime();
+        }
+
+        for(final TwitchChannel tc : allFollowedChannels)
+        {
+            if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc))
+            {
+                new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, true);
+            } else {
+                new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, false);
+            }
+        }
     }
 
     /**
@@ -26,17 +77,15 @@ public class TwitchJsonGetter extends JsonGetter {
      *
      * @return List of all the user's followed channels
      */
-    public void updateAllFollowedChannels(Callback callback)
+    public void updateAllFollowedChannels()
     {
-        this.callback = callback;
-        ArrayList<String> allFollowedChannels = new ArrayList<String>();
         // get user name from preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userName = sharedPreferences.getString(TwitchActivity.PREF_USER_NAME, "test_user1");
         // initialize url
         String url = "https://api.twitch.tv/kraken/users/" + userName + "/follows/channels";
         // start async task to retrieve json file
-        execute(url);
+        executeOnExecutor(THREAD_POOL_EXECUTOR, url);
     }
 
     /**
@@ -60,7 +109,7 @@ public class TwitchJsonGetter extends JsonGetter {
                 e.printStackTrace();
             }
             // parse json to TwitchChannel
-            TwitchChannel tc = new TwitchChannel(channelObject);
+            TwitchChannel tc = new TwitchChannel(channelObject, mContext);
             // add channel to list
             followedTwitchChannels.add(tc);
         }
@@ -82,7 +131,7 @@ public class TwitchJsonGetter extends JsonGetter {
         float difference = (System.currentTimeMillis() - lastUpdate) / 60000f;
         int updateInterval = sp.getInt(TwitchActivity.PREF_UPDATE_INTERVAL, 5);
 
-        return difference <= updateInterval;
+        return difference < updateInterval;
     }
 
     /**

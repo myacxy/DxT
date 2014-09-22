@@ -17,10 +17,11 @@ public final class TwitchContract {
      */
     public static abstract class ChannelEntry implements BaseColumns
     {
-        public static final String TABLE_NAME = "entry";
-        public static final String COLUMN_NAME_ENTRY_ID = "entryid";
+        public static final String TABLE_NAME = "channelEntry";
+        public static final String COLUMN_NAME_ENTRY_ID = "entryId";
         public static final String COLUMN_NAME_DISPLAY_NAME = "displayName";
         public static final String COLUMN_NAME_STATUS = "status";
         public static final String COLUMN_NAME_GAME = "game";
+        public static final String COLUMN_NAME_ONLINE = "online";
     }
 }

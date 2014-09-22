@@ -22,15 +22,17 @@ import java.io.InputStreamReader;
  * executed in order to retrieve a JSON Object via HTTP. Upon creating a JSONGetter a Progress
  * Dialog will be shown until the task has finished working in the background.
  */
-public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
+public class JsonGetter extends AsyncTask<String, String, JSONObject>
 {
     // Main Activity's context
     protected Context mContext;
     // Dialog displaying the progress for the async task getting json from http
-    protected ProgressDialog dialog;
+    protected ProgressDialog mProgressDialog;
+    protected String mProgressDialogMessage;
 
-    protected Callback callback;
-
+    public JsonGetter(){
+        // default constructor
+    }
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
@@ -39,34 +41,34 @@ public class JsonGetter extends AsyncTask<String, Integer, JSONObject>
     public JsonGetter(Context context)
     {
         mContext = context;
+        mProgressDialogMessage = mContext.getResources().getString(
+                R.string.pref_following_selection_progress_title);
     }
+
 
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         // initialize dialog before trying to fetch the data
-        dialog = new ProgressDialog(mContext);
-        dialog.setIndeterminate(true);
-        dialog.setMessage(mContext.getResources().getString(R.string.pref_following_selection_progress_title));
-        dialog.show();
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage(mProgressDialogMessage);
+        mProgressDialog.show();
     }
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         // close dialog after having fetched the data
-        if (dialog.isShowing()) {
+        if (mProgressDialog.isShowing()) {
             // display Toast on error
             if (jsonObject == null) {
-                Toast.makeText(mContext, mContext.getResources().getString(R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getResources().getString(
+                        R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
             }
-            dialog.dismiss();
         }
-
-        if(callback != null) {
-            callback.run(jsonObject);
-        }
+        mProgressDialog.dismiss();
     }
 
     @Override

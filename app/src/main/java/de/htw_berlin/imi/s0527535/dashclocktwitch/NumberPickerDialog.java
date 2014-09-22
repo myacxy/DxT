@@ -51,8 +51,8 @@ public class NumberPickerDialog extends Preference {
             public void onClick(DialogInterface dialog, int which) {
                 sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, numberPicker.getValue())
                         .commit();
-                if (TwitchJsonGetter.checkRecentlyUpdated(getContext())) {
-                    TwitchActivity.updateTwitchChannels(getContext(), null);
+                if (!TwitchChannelGetter.checkRecentlyUpdated(getContext())) {
+                    TwitchActivity.updateTwitchChannels(getContext());
                 }
             }
         });
