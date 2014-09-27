@@ -6,5 +6,5 @@ This is the repository for DashClock Twitch, an extension for DashClock Widget o
 TODO
 ====
 * improve performance (e.g. async database queries)
-* choose priority of channels
+* custom channel order
 * more data
