@@ -20,7 +20,7 @@ public class TwitchSettingsActivity extends PreferenceActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setIcon(R.drawable.ic_launcher);
+        getActionBar().setIcon(R.drawable.ic_twitch_purple);
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

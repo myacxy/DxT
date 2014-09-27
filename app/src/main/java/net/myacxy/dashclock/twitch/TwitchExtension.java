@@ -50,8 +50,6 @@ public class TwitchExtension extends DashClockExtension {
             twitchChannel.online = mCursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
             twitchChannels.add(twitchChannel);
         }
-        mCursor.close();
-        mDbHelper.close();
         return twitchChannels;
     }
 
@@ -81,17 +79,20 @@ public class TwitchExtension extends DashClockExtension {
                 for (TwitchChannel tc : onlineChannels)
                 {
                     expandedBody += String.format("%s playing %s: %s", tc.displayName, tc.game, tc.status);
-                    if(onlineChannels.indexOf(tc) < onlineChannels.size()) expandedBody += "\n";
+                    if(onlineChannels.indexOf(tc) < onlineChannels.size() - 1) expandedBody += "\n";
                 }
 
                 Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);
                 publishUpdate(new ExtensionData()
                         .visible(onlineCount > 0)
-                        .icon(R.drawable.ic_launcher)
+                        .icon(R.drawable.ic_twitch_purple)
                         .status(status)
                         .expandedTitle(expandedTitle)
                         .expandedBody(expandedBody)
                         .clickIntent(intent));
+
+                mCursor.close();
+                mDbHelper.close();
             }
         });
     }

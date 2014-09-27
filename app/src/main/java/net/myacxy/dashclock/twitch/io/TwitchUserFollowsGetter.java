@@ -79,7 +79,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
             TwitchChannelOnlineChecker onlineChecker =
                     new TwitchChannelOnlineChecker(mContext, mProgressDialog);
             if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc)) {
-                onlineChecker.setAsyncTaskListener(mListener.get());
+                onlineChecker.setAsyncTaskListener(mListener);
                 onlineChecker.run(tc, true);
             } else {
                 onlineChecker.run(tc, false);
@@ -100,7 +100,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         // initialize url
         String url = "https://api.twitch.tv/kraken/users/" + userName + "/follows/channels";
         // start async task to retrieve json file
-        executeOnExecutor(SERIAL_EXECUTOR, url);
+        executeOnExecutor(THREAD_POOL_EXECUTOR, url);
     }
 
     /**

@@ -65,7 +65,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     public Cursor getChannelsCursor(boolean selected, boolean online)
     {
-        SQLiteDatabase db = getReadableDatabase();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
@@ -90,7 +89,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             }
         }
         // get all entries of the table from the database
-        Cursor cursor = db.query(
+        Cursor cursor = getReadableDatabase().query(
                 TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
                 TwitchDbHelper.ChannelQuery.projection, // the columns to return
                 selection,                              // the columns for the WHERE clause
@@ -104,7 +103,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     public void updateOnlineStatus(TwitchChannel twitchChannel)
     {
-        SQLiteDatabase db = getReadableDatabase();
 
         // New value for one column
         ContentValues values = new ContentValues();
@@ -114,12 +112,12 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         String selection = TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(twitchChannel.entryId) };
 
-        int count = db.update(
+        int count = getReadableDatabase().update(
                 TwitchContract.ChannelEntry.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
-        db.close();
+        close();
     }
 
     /**

@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 
 /**
  * Network Access cannot be made on the UI / Main Thread and therefore an AsyncTask needs to be
@@ -33,7 +32,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected ProgressDialog mProgressDialog;
     protected String mProgressDialogMessage;
 
-    protected WeakReference<AsyncTaskListener> mListener;
+    protected AsyncTaskListener mListener;
 
     public JsonGetter(){
         // default constructor
@@ -41,15 +40,15 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
 
     public void setAsyncTaskListener(AsyncTaskListener listener)
     {
-        mListener = new WeakReference<AsyncTaskListener>(listener);
+        mListener = listener;
     }
 
 
     protected void asyncTaskFinished()
     {
-        if(mListener != null && mListener.get() != null)
+        if(mListener != null)
         {
-            mListener.get().handleAsyncTaskFinished();
+            mListener.handleAsyncTaskFinished();
         }
     }
     /**

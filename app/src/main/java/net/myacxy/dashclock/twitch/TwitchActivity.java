@@ -39,23 +39,10 @@ public class TwitchActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        initView();
-        super.onResume();
-    }
-
-    @Override
     protected void onStop() {
         mDbHelper.close();
         mCursor.close();
         super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        mDbHelper.close();
-        mCursor.close();
-        super.onPause();
     }
 
     /**
