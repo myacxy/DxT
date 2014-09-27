@@ -1,25 +1,35 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.io;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
+
+import net.myacxy.dashclock.twitch.models.TwitchChannel;
+import net.myacxy.dashclock.twitch.TwitchExtension;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 
-public class TwitchChannelGetter extends JsonGetter {
+public class TwitchUserFollowsGetter extends JsonGetter {
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
      * @param context activity from which the class has been called
      */
-    public TwitchChannelGetter(Context context) {
+    public TwitchUserFollowsGetter(Context context) {
         super(context);
+    }
+
+    @Override
+    protected void onPreExecute() {
+//        super.onPreExecute();
     }
 
     @Override
@@ -30,7 +40,7 @@ public class TwitchChannelGetter extends JsonGetter {
         {
             try {
                 Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                mProgressDialog.dismiss();
+                if(mProgressDialog != null) mProgressDialog.dismiss();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -42,21 +52,21 @@ public class TwitchChannelGetter extends JsonGetter {
             if (jsonAllFollowedChannels == null)
             {
                 Toast.makeText(mContext, "No channels being followed.", Toast.LENGTH_LONG).show();
-                mProgressDialog.dismiss();
+                if(mProgressDialog != null) mProgressDialog.dismiss();
                 return;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mProgressDialog.setMessage("Parsing data...");
+        if(mProgressDialog != null) mProgressDialog.setMessage("Parsing data...");
         // analyse json data and parse it
         ArrayList<TwitchChannel> allFollowedChannels = parseJsonObject(jsonAllFollowedChannels);
 
         if (allFollowedChannels != null) {
             // save all followed channels to shared preferences
-            mProgressDialog.setMessage("Saving data...");
-            saveTwitchChannelsToPreferences(allFollowedChannels, TwitchActivity.PREF_ALL_FOLLOWED_CHANNELS);
+            if(mProgressDialog != null) mProgressDialog.setMessage("Saving data...");
+            saveTwitchChannelsToPreferences(allFollowedChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
             // save all followed channels to database
             new TwitchDbHelper(mContext).saveChannels(allFollowedChannels);
             // save the time of this update
@@ -66,10 +76,13 @@ public class TwitchChannelGetter extends JsonGetter {
         // check online status of each channel
         for(final TwitchChannel tc : allFollowedChannels)
         {
+            TwitchChannelOnlineChecker onlineChecker =
+                    new TwitchChannelOnlineChecker(mContext, mProgressDialog);
             if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc)) {
-                new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, true);
+                onlineChecker.setAsyncTaskListener(mListener.get());
+                onlineChecker.run(tc, true);
             } else {
-                new TwitchOnlineChecker(mContext, mProgressDialog).run(tc, false);
+                onlineChecker.run(tc, false);
             }
         }
     }
@@ -83,11 +96,11 @@ public class TwitchChannelGetter extends JsonGetter {
     {
         // get user name from preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userName = sharedPreferences.getString(TwitchActivity.PREF_USER_NAME, "test_user1");
+        String userName = sharedPreferences.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
         // initialize url
         String url = "https://api.twitch.tv/kraken/users/" + userName + "/follows/channels";
         // start async task to retrieve json file
-        executeOnExecutor(THREAD_POOL_EXECUTOR, url);
+        executeOnExecutor(SERIAL_EXECUTOR, url);
     }
 
     /**
@@ -128,11 +141,11 @@ public class TwitchChannelGetter extends JsonGetter {
     public static boolean checkRecentlyUpdated(Context context)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        float lastUpdate = sp.getFloat(TwitchActivity.PREF_LAST_UPDATE, 0);
+        long lastUpdate = sp.getLong(TwitchExtension.PREF_LAST_UPDATE, 0);
         // calculate difference in minutes
-        float difference = (System.currentTimeMillis() - lastUpdate) / 60000f;
-        int updateInterval = sp.getInt(TwitchActivity.PREF_UPDATE_INTERVAL, 5);
-
+        double difference = (Calendar.getInstance().getTimeInMillis() - lastUpdate) / 60000f;
+        int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        Log.d("Debug", "Difference=" + difference);
         return difference < updateInterval;
     }
 
@@ -144,9 +157,9 @@ public class TwitchChannelGetter extends JsonGetter {
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sp.edit();
-        long currentMillis = System.currentTimeMillis();
-        editor.putFloat(TwitchActivity.PREF_LAST_UPDATE, currentMillis);
-        editor.commit();
+        long currentMillis = Calendar.getInstance().getTimeInMillis();
+        editor.putLong(TwitchExtension.PREF_LAST_UPDATE, currentMillis);
+        editor.apply();
     } // saveCurrentTime
 
     /**
@@ -170,6 +183,6 @@ public class TwitchChannelGetter extends JsonGetter {
         }
         // save
         editor.putStringSet(key, values);
-        editor.commit();
+        editor.apply();
     } // saveTwitchChannelsToPreferences
 }

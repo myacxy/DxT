@@ -1,6 +1,8 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.models;
 
 import android.content.Context;
+
+import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 import org.json.JSONObject;
 
@@ -11,12 +13,12 @@ import org.json.JSONObject;
  */
 public class TwitchChannel
 {
-    String status;
-    String game;
-    String displayName;
-    int followers;
-    int entryId;
-    boolean online;
+    public String status;
+    public String game;
+    public String displayName;
+    public int followers;
+    public int entryId;
+    public boolean online;
 
     public TwitchChannel()
     {
@@ -41,12 +43,12 @@ public class TwitchChannel
      */
     public void init(JSONObject channelObject, final Context context)
     {
-        final TwitchChannelGetter twitchChannelGetter = new TwitchChannelGetter(context);
+        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context);
 
-        status = twitchChannelGetter.getString(channelObject, "status");
-        game = twitchChannelGetter.getString(channelObject, "game");
-        displayName = twitchChannelGetter.getString(channelObject, "display_name");
-        followers = twitchChannelGetter.getInt(channelObject, "followers");
-        entryId = twitchChannelGetter.getInt(channelObject, "_id");
+        status = twitchUserFollowsGetter.getString(channelObject, "status");
+        game = twitchUserFollowsGetter.getString(channelObject, "game");
+        displayName = twitchUserFollowsGetter.getString(channelObject, "display_name");
+        followers = twitchUserFollowsGetter.getInt(channelObject, "followers");
+        entryId = twitchUserFollowsGetter.getInt(channelObject, "_id");
     }
 }

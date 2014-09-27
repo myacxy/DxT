@@ -1,9 +1,11 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.io;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import net.myacxy.dashclock.twitch.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 
 /**
  * Network Access cannot be made on the UI / Main Thread and therefore an AsyncTask needs to be
@@ -30,8 +33,24 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected ProgressDialog mProgressDialog;
     protected String mProgressDialogMessage;
 
+    protected WeakReference<AsyncTaskListener> mListener;
+
     public JsonGetter(){
         // default constructor
+    }
+
+    public void setAsyncTaskListener(AsyncTaskListener listener)
+    {
+        mListener = new WeakReference<AsyncTaskListener>(listener);
+    }
+
+
+    protected void asyncTaskFinished()
+    {
+        if(mListener != null && mListener.get() != null)
+        {
+            mListener.get().handleAsyncTaskFinished();
+        }
     }
     /**
      * The activity's context is necessary in order to display the progress dialog.
@@ -44,8 +63,6 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         mProgressDialogMessage = mContext.getResources().getString(
                 R.string.pref_following_selection_progress_title);
     }
-
-
 
     @Override
     protected void onPreExecute() {
@@ -69,6 +86,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
             }
         }
         mProgressDialog.dismiss();
+        asyncTaskFinished();
     }
 
     @Override

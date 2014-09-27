@@ -1,19 +1,20 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
+
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.ui.MainDialog;
 
 
 public class TwitchActivity extends Activity {
@@ -36,8 +37,8 @@ public class TwitchActivity extends Activity {
 
     @Override
     protected void onResume() {
-        initView();
         super.onResume();
+        initView();
     }
 
     /**
@@ -46,32 +47,14 @@ public class TwitchActivity extends Activity {
     public void initView()
     {
         ListView listView = (ListView) TwitchActivity.this.findViewById(R.id.main_list);
-        ListAdapter mAdapter = new ListAdapter(this);
-        SQLiteDatabase mDb = new TwitchDbHelper(this).getReadableDatabase();
 
-        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
+        ListAdapter adapter = new ListAdapter(this);
+        TwitchDbHelper dbHelper = new TwitchDbHelper(this);
+        Cursor cursor = dbHelper.getCursorAllChannels();
 
-        String selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?" +
-                " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
-        String[] selectionArgs = new String[] { "1", "1" };
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if(!sp.getBoolean(PREF_CUSTOM_VISIBILITY, false)){
-            selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
-            selectionArgs = new String[] { "1" };
-        }
-        // get all entries of the table from the database
-        Cursor cursor = mDb.query(
-                TwitchContract.ChannelEntry.TABLE_NAME,         // the table to query
-                TwitchDbHelper.ChannelQuery.projection,         // the columns to return
-                selection, // the columns for the WHERE clause
-                selectionArgs,                                  // the values for the WHERE clause
-                null,                                           // don't group the rows
-                null,                                           // don't filter by row groups
-                sortOrder                                       // the sort order
-        );
         // reassign the cursor
-        mAdapter.swapCursor(cursor);
-        listView.setAdapter(mAdapter);
+        adapter.swapCursor(cursor);
+        listView.setAdapter(adapter);
     }
     public class ListAdapter extends ResourceCursorAdapter
     {
@@ -83,9 +66,7 @@ public class TwitchActivity extends Activity {
         }
 
 
-        /**
-         * Set elements of each row
-         */
+        /** Set elements of each row */
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
@@ -129,23 +110,12 @@ public class TwitchActivity extends Activity {
             Intent intent = new Intent(getApplicationContext(), TwitchSettingsActivity.class);
             startActivity(intent);
         }
-        else if(id == R.id.action_json)
+        else if (id == R.id.action_dialog)
         {
-            updateTwitchChannels(this);
+            FragmentManager fragmentManager = getFragmentManager();
+            MainDialog dialog = new MainDialog();
+            dialog.show(fragmentManager, "dialog");
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * TODO: javadoc
-     *
-     * @param context
-     */
-    public static void updateTwitchChannels(final Context context) {
-        // initialize JsonGetter
-        final TwitchChannelGetter twitchChannelGetter = new TwitchChannelGetter(context);
-
-        twitchChannelGetter.updateAllFollowedChannels();
-    } // updateTwitchChannels
-
 } // TwitchActivity

@@ -1,21 +1,23 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.io;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 
+import net.myacxy.dashclock.twitch.models.TwitchChannel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TwitchOnlineChecker extends JsonGetter
+public class TwitchChannelOnlineChecker extends JsonGetter
 {
     protected TwitchChannel mTwitchChannel;
     protected boolean mDismissProgressDialog;
 
-    public TwitchOnlineChecker(Context context) {
+    public TwitchChannelOnlineChecker(Context context) {
         super(context);
     }
 
-    public TwitchOnlineChecker(Context context, ProgressDialog progressDialog)
+    public TwitchChannelOnlineChecker(Context context, ProgressDialog progressDialog)
     {
         super(context);
         mProgressDialog = progressDialog;
@@ -42,14 +44,16 @@ public class TwitchOnlineChecker extends JsonGetter
         TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
         twitchDbHelper.updateOnlineStatus(mTwitchChannel);
         // dismiss progress dialog
-        if(mDismissProgressDialog) mProgressDialog.dismiss();
+        if(mDismissProgressDialog && mProgressDialog != null) mProgressDialog.dismiss();
+
+        asyncTaskFinished();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
         // display current progress
-        mProgressDialog.setMessage("Checking " + values[0] + "...");
+        if(mProgressDialog != null) mProgressDialog.setMessage("Checking " + values[0] + "...");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,9 +14,13 @@ import android.widget.CheckBox;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import net.myacxy.dashclock.twitch.R;
+import net.myacxy.dashclock.twitch.io.TwitchContract;
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.TwitchExtension;
+
 import java.util.HashSet;
 import java.util.Set;
-
 
 public class FollowingSelectionDialog extends MultiSelectListPreference
 {
@@ -36,20 +40,19 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         super(context, attrs);
         // initialize
         mContext = context;
-        mAdapter = new ListAdapter(context);
-        mDb = new TwitchDbHelper(context).getReadableDatabase();
-        // get previously selected channels
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mSelectedFollowedChannels = sp.getStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
-                new HashSet<String>());
-        mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
     }
 
-    /**
-     * TODO: javadoc / comments
-     */
+    /** TODO: javadoc / comments */
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
+
+        mAdapter = new ListAdapter(mContext);
+        mDb = new TwitchDbHelper(mContext).getReadableDatabase();
+        // get previously selected channels
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSelectedFollowedChannels = sp.getStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
+                new HashSet<String>());
+        mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
 
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
 
@@ -68,9 +71,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         buildDialog(builder);
     }
 
-    /**
-     * TODO: javadoc / comments
-     */
+    /** TODO: javadoc / comments */
     void buildDialog(AlertDialog.Builder builder)
     {
         builder.setAdapter(mAdapter, null);
@@ -83,11 +84,10 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
                 SharedPreferences.Editor editor = sp.edit();
                 mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
-                editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
-                        mSelectedFollowedChannels);
-                editor.apply();
+                editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
+                        mSelectedFollowedChannels).apply();
+                // update database
                 TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
-
                 twitchDbHelper.updateSelectionStatus(mSelectedFollowedChannels);
             }
         });
@@ -97,17 +97,14 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             public void onClick(DialogInterface dialog, int which) {
                 // set to previously selected channels
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-                sp.edit().putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
-                        mSelectedFollowedChannels)
-                         .apply();
+                sp.edit().putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
+                        mSelectedFollowedChannels).apply();
                 mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
             }
         });
     } // buildDialog
 
-    /**
-     * TODO: javadoc / comments
-     */
+    /** TODO: javadoc / comments */
     public class ListAdapter extends ResourceCursorAdapter
     {
 
@@ -117,9 +114,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             super(context, R.layout.list_item_following, null, false);
         }
 
-        /**
-         * Set elements of each row
-         */
+        /** Set elements of each row */
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name

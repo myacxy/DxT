@@ -1,4 +1,4 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+
+import net.myacxy.dashclock.twitch.TwitchExtension;
 
 import java.util.HashSet;
 
@@ -34,14 +36,14 @@ public class UserNameDialog extends EditTextPreference
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor = sp.edit();
             // deselect previously selected channels
-            editor.putStringSet(TwitchActivity.PREF_SELECTED_FOLLOWED_CHANNELS,
-                    new HashSet<String>()).commit();
+            editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
+                    new HashSet<String>()).apply();
             // remove whitespaces
             String userName = getEditText().getText().toString();
             userName = userName.replaceAll("\\s+", "");
-            editor.putString(TwitchActivity.PREF_USER_NAME, userName).commit();
+            editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
-            TwitchActivity.updateTwitchChannels(getContext());
+            TwitchExtension.updateTwitchChannels(getContext(), null);
         }
         super.onClick(dialog, which);
     }

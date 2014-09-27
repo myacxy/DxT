@@ -5,6 +5,6 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
-    <item android:id="@+id/action_json"
-        android:title="@string/action_json"/>
+    <item android:id="@+id/action_dialog"
+        android:title="dialog"/>
 </menu>

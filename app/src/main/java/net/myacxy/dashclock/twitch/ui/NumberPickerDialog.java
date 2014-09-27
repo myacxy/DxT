@@ -1,4 +1,4 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,6 +9,10 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+
+import net.myacxy.dashclock.twitch.R;
+import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
+import net.myacxy.dashclock.twitch.TwitchExtension;
 
 public class NumberPickerDialog extends Preference {
 
@@ -43,16 +47,16 @@ public class NumberPickerDialog extends Preference {
         builder.setView(layout);
         // retrieve previous setting
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final int previousValue = sp.getInt(TwitchActivity.PREF_UPDATE_INTERVAL, 5);
+        final int previousValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
         numberPicker.setValue(previousValue);
         // save current value on ok
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, numberPicker.getValue())
-                        .commit();
-                if (!TwitchChannelGetter.checkRecentlyUpdated(getContext())) {
-                    TwitchActivity.updateTwitchChannels(getContext());
+                sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, numberPicker.getValue())
+                        .apply();
+                if (!TwitchUserFollowsGetter.checkRecentlyUpdated(getContext())) {
+                    TwitchExtension.updateTwitchChannels(getContext(), null);
                 }
             }
         });
@@ -60,8 +64,8 @@ public class NumberPickerDialog extends Preference {
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchActivity.PREF_UPDATE_INTERVAL, previousValue)
-                        .commit();
+                sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, previousValue)
+                        .apply();
             }
         });
         builder.create();

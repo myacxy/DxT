@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/main"
-    android:orientation="vertical">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <de.htw_berlin.imi.s0527535.dashclocktwitch.UserNameDialog
+    <net.myacxy.dashclock.twitch.ui.UserNameDialog
         android:defaultValue="test_user1"
         android:selectAllOnFocus="true"
         android:key="pref_user_name"
@@ -18,13 +14,13 @@
         android:key="pref_custom_visibility"
         android:title="@string/pref_custom_visibility_title"/>
 
-    <de.htw_berlin.imi.s0527535.dashclocktwitch.FollowingSelectionDialog
+    <net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog
         android:key="pref_following_selection"
         android:dependency="pref_custom_visibility"
         android:title="@string/pref_following_selection_title"
         />
 
-    <de.htw_berlin.imi.s0527535.dashclocktwitch.NumberPickerDialog
+    <net.myacxy.dashclock.twitch.ui.NumberPickerDialog
         android:key="pref_update_interval"
         android:title="@string/pref_update_interval_title"/>
 

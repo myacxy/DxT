@@ -1,10 +1,15 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch.io;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
+
+import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -14,6 +19,7 @@ import java.util.Set;
  */
 public class TwitchDbHelper extends SQLiteOpenHelper
 {
+    private Context mContext;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
@@ -36,6 +42,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     public TwitchDbHelper(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
     }
 
     public void onCreate(SQLiteDatabase db)
@@ -56,6 +63,31 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    public Cursor getCursorAllChannels()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
+
+        String selection = null;
+        String[] selectionArgs = null;
+        if (sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false)) {
+            selection = TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+            selectionArgs = new String[]{ "1" };
+        }
+        // get all entries of the table from the database
+        Cursor cursor = getReadableDatabase().query(
+                TwitchContract.ChannelEntry.TABLE_NAME,         // the table to query
+                TwitchDbHelper.ChannelQuery.projection,         // the columns to return
+                selection, // the columns for the WHERE clause
+                selectionArgs,                                  // the values for the WHERE clause
+                null,                                           // don't group the rows
+                null,                                           // don't filter by row groups
+                sortOrder                                       // the sort order
+        );
+
+        return cursor;
+    }
     public void updateOnlineStatus(TwitchChannel twitchChannel)
     {
         SQLiteDatabase db = getReadableDatabase();

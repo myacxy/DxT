@@ -1,4 +1,4 @@
-package de.htw_berlin.imi.s0527535.dashclocktwitch;
+package net.myacxy.dashclock.twitch;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
