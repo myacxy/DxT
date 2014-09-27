@@ -63,31 +63,45 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public Cursor getCursorAllChannels()
+    public Cursor getChannelsCursor(boolean selected, boolean online)
     {
+        SQLiteDatabase db = getReadableDatabase();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
 
         String selection = null;
         String[] selectionArgs = null;
-        if (sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false)) {
-            selection = TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+        if(online)
+        {
+            selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
             selectionArgs = new String[]{ "1" };
         }
+        if (selected && sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false)) {
+            if(online)
+            {
+                selection += " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+                selectionArgs = new String[]{ "1", "1" };
+            }
+            else
+            {
+                selection = TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+                selectionArgs = new String[]{ "1" };
+            }
+        }
         // get all entries of the table from the database
-        Cursor cursor = getReadableDatabase().query(
-                TwitchContract.ChannelEntry.TABLE_NAME,         // the table to query
-                TwitchDbHelper.ChannelQuery.projection,         // the columns to return
-                selection, // the columns for the WHERE clause
-                selectionArgs,                                  // the values for the WHERE clause
-                null,                                           // don't group the rows
-                null,                                           // don't filter by row groups
-                sortOrder                                       // the sort order
+        Cursor cursor = db.query(
+                TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
+                TwitchDbHelper.ChannelQuery.projection, // the columns to return
+                selection,                              // the columns for the WHERE clause
+                selectionArgs,                          // the values for the WHERE clause
+                null,                                   // don't group the rows
+                null,                                   // don't filter by row groups
+                sortOrder                               // the sort order
         );
-
         return cursor;
     }
+
     public void updateOnlineStatus(TwitchChannel twitchChannel)
     {
         SQLiteDatabase db = getReadableDatabase();

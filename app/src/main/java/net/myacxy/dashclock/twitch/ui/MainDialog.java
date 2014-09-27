@@ -23,6 +23,9 @@ import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 public class MainDialog extends DialogFragment {
 
     protected DialogListener mListener;
+    protected TwitchDbHelper mDbHelper;
+    protected Cursor mCursor;
+
     public interface DialogListener
     {
         public void onDialogDismiss(DialogInterface dialog);
@@ -87,6 +90,8 @@ public class MainDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         mListener.onDialogDismiss(dialog);
+        mDbHelper.close();
+        mCursor.close();
         super.onDismiss(dialog);
     }
 
@@ -96,13 +101,13 @@ public class MainDialog extends DialogFragment {
     public void initView(View view) {
         // initialize
         ListAdapter adapter = new ListAdapter(getActivity());
-        TwitchDbHelper dbHelper = new TwitchDbHelper(getActivity());
+        mDbHelper = new TwitchDbHelper(getActivity());
         // get list from the dialog view
         ListView listView = (ListView) view.findViewById(R.id.dialog_main_list);
         // get cursor for all channels
-        Cursor cursor = dbHelper.getCursorAllChannels();
+        mCursor = mDbHelper.getChannelsCursor(false, true);
         // reassign the cursor
-        adapter.swapCursor(cursor);
+        adapter.swapCursor(mCursor);
         listView.setAdapter(adapter);
     }
 

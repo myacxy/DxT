@@ -27,6 +27,9 @@ public class TwitchActivity extends Activity {
     public static String PREF_UPDATE_INTERVAL = "pref_update_interval";
     public static String PREF_LAST_UPDATE = "pref_last_update";
 
+    protected TwitchDbHelper mDbHelper;
+    protected Cursor mCursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +40,22 @@ public class TwitchActivity extends Activity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         initView();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        mDbHelper.close();
+        mCursor.close();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        mDbHelper.close();
+        mCursor.close();
+        super.onPause();
     }
 
     /**
@@ -49,11 +66,11 @@ public class TwitchActivity extends Activity {
         ListView listView = (ListView) TwitchActivity.this.findViewById(R.id.main_list);
 
         ListAdapter adapter = new ListAdapter(this);
-        TwitchDbHelper dbHelper = new TwitchDbHelper(this);
-        Cursor cursor = dbHelper.getCursorAllChannels();
+        mDbHelper = new TwitchDbHelper(this);
+        mCursor = mDbHelper.getChannelsCursor(true, true);
 
         // reassign the cursor
-        adapter.swapCursor(cursor);
+        adapter.swapCursor(mCursor);
         listView.setAdapter(adapter);
     }
     public class ListAdapter extends ResourceCursorAdapter

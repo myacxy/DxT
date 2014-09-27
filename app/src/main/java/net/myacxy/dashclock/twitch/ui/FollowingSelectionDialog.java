@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
@@ -15,9 +14,8 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
-import net.myacxy.dashclock.twitch.io.TwitchContract;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +28,8 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
     private Set<String> mSelectedFollowedChannelsTemp;
     private Context mContext;
     private ListAdapter mAdapter;
-    private SQLiteDatabase mDb;
+    protected TwitchDbHelper mDbHelper;
+    protected Cursor mCursor;
 
     public FollowingSelectionDialog(Context context) {
         this(context, null);
@@ -47,28 +46,24 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
 
         mAdapter = new ListAdapter(mContext);
-        mDb = new TwitchDbHelper(mContext).getReadableDatabase();
+        mDbHelper = new TwitchDbHelper(mContext);
         // get previously selected channels
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSelectedFollowedChannels = sp.getStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                 new HashSet<String>());
         mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
 
-        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
-
-        // get all entries of the table from the database
-        Cursor cursor = mDb.query(
-                TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
-                TwitchDbHelper.ChannelQuery.projection, // the columns to return
-                null,                                   // the columns for the WHERE clause
-                null,                                   // the values for the WHERE clause
-                null,                                   // don't group the rows
-                null,                                   // don't filter by row groups
-                sortOrder                               // the sort order
-        );
+        mCursor = mDbHelper.getChannelsCursor(false, false);
         // reassign the cursor
-        mAdapter.swapCursor(cursor);
+        mAdapter.swapCursor(mCursor);
         buildDialog(builder);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        mCursor.close();
+        mDbHelper.close();
+        super.onDismiss(dialog);
     }
 
     /** TODO: javadoc / comments */

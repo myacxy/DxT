@@ -26,28 +26,32 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_UPDATE_INTERVAL = "pref_update_interval";
     public static String PREF_LAST_UPDATE = "pref_last_update";
 
+    protected Cursor mCursor;
+    protected TwitchDbHelper mDbHelper;
+
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    protected ArrayList<TwitchChannel> getAllChannels()
+    protected ArrayList<TwitchChannel> getAllChannels(boolean selected)
     {
         ArrayList<TwitchChannel> twitchChannels = new ArrayList<TwitchChannel>();
-        TwitchDbHelper dbHelper = new TwitchDbHelper(this);
+        mDbHelper = new TwitchDbHelper(this);
 
-        Cursor cursor = dbHelper.getCursorAllChannels();
+        mCursor = mDbHelper.getChannelsCursor(selected, false);
 
-        while(cursor.moveToNext())
+        while(mCursor.moveToNext())
         {
             TwitchChannel twitchChannel = new TwitchChannel();
-            twitchChannel.displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            twitchChannel.game = cursor.getString((TwitchDbHelper.ChannelQuery.game));
-            twitchChannel.status = cursor.getString(TwitchDbHelper.ChannelQuery.status);
-            twitchChannel.online = cursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
+            twitchChannel.displayName = mCursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            twitchChannel.game = mCursor.getString((TwitchDbHelper.ChannelQuery.game));
+            twitchChannel.status = mCursor.getString(TwitchDbHelper.ChannelQuery.status);
+            twitchChannel.online = mCursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
             twitchChannels.add(twitchChannel);
         }
-        cursor.close();
+        mCursor.close();
+        mDbHelper.close();
         return twitchChannels;
     }
 
@@ -68,7 +72,7 @@ public class TwitchExtension extends DashClockExtension {
             @Override
             public void handleAsyncTaskFinished() {
                 Log.d("DEBUG", "handleAsyncTaskFinished");
-                ArrayList<TwitchChannel> onlineChannels = filterOnlineChannels(getAllChannels());
+                ArrayList<TwitchChannel> onlineChannels = filterOnlineChannels(getAllChannels(true));
                 int onlineCount = onlineChannels.size();
                 String status = String.format("%d Live", onlineCount);
                 String expandedTitle = String.format("%s Channel%s", status, onlineCount > 1 ? "s" : "");
