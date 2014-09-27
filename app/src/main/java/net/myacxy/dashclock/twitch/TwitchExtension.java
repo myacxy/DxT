@@ -68,8 +68,7 @@ public class TwitchExtension extends DashClockExtension {
             @Override
             public void handleAsyncTaskFinished() {
                 Log.d("DEBUG", "handleAsyncTaskFinished");
-//                ArrayList<TwitchChannel> onlineChannels = filterOnlineChannels(getAllChannels());
-                ArrayList<TwitchChannel> onlineChannels = getAllChannels();
+                ArrayList<TwitchChannel> onlineChannels = filterOnlineChannels(getAllChannels());
                 int onlineCount = onlineChannels.size();
                 String status = String.format("%d Live", onlineCount);
                 String expandedTitle = String.format("%s Channel%s", status, onlineCount > 1 ? "s" : "");

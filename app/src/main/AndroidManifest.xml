@@ -23,6 +23,7 @@
             <meta-data android:name="settingsActivity"
                 android:value=".TwitchSettingsActivity" />
         </service>
+        <!--
         <activity android:name=".TwitchActivity"
                   android:label="@string/app_name">
             <intent-filter>
@@ -31,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        -->
         <activity android:name=".MainDialogActivity"
             android:theme="@android:style/Theme.Holo.Dialog"
             android:exported="true">
