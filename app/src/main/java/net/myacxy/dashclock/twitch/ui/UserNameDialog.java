@@ -1,5 +1,6 @@
 package net.myacxy.dashclock.twitch.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 import java.util.HashSet;
 
@@ -40,10 +43,17 @@ public class UserNameDialog extends EditTextPreference
                     new HashSet<String>()).apply();
             // remove whitespaces
             String userName = getEditText().getText().toString();
-            userName = userName.replaceAll("\\s+", "");
+            userName = userName.trim();
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
-            TwitchExtension.updateTwitchChannels(getContext(), null);
+            TwitchExtension.updateTwitchChannels(getContext(),
+                    new ProgressDialog(getContext()),
+                    new AsyncTaskListener() {
+                @Override
+                public void handleAsyncTaskFinished() {
+                    new TwitchDbHelper(getContext()).updateSharedPreferencesData();
+                }
+            });
         }
         super.onClick(dialog, which);
     }

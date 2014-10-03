@@ -13,19 +13,13 @@ public class TwitchChannelOnlineChecker extends JsonGetter
     protected TwitchChannel mTwitchChannel;
     protected boolean mDismissProgressDialog;
 
-    public TwitchChannelOnlineChecker(Context context) {
-        super(context);
-    }
-
-    public TwitchChannelOnlineChecker(Context context, ProgressDialog progressDialog)
-    {
-        super(context);
-        mProgressDialog = progressDialog;
+    public TwitchChannelOnlineChecker(Context context, ProgressDialog progressDialog) {
+        super(context, progressDialog);
     }
 
     @Override
     protected void onPreExecute() {
-
+        super.onPreExecute();
     }
 
     @Override

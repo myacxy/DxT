@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -37,16 +38,14 @@ public class MainDialog extends DialogFragment {
         try {
             mListener = (DialogListener) activity;
         }
-        catch (ClassCastException e)
-        {
+        catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement DialogListener");
         }
-
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_main, null, false);
         initView(view);
@@ -71,13 +70,20 @@ public class MainDialog extends DialogFragment {
                 });
                 // set update button
                 Button updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
                 updateButton.setOnClickListener(new View.OnClickListener() {
+
                     @Override
                     public void onClick(View v) {
-                        TwitchExtension.updateTwitchChannels(getActivity(), new AsyncTaskListener() {
+                        TwitchExtension.updateTwitchChannels(builder.getContext(),
+                                new ProgressDialog(builder.getContext()),
+                                new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {
-                                initView(view);
+                                if(isVisible()) {
+                                    initView(view);
+                                }
+                                new TwitchDbHelper(getActivity()).updateSharedPreferencesData();
                             }
                         });
                     }
@@ -119,7 +125,6 @@ public class MainDialog extends DialogFragment {
             // inflate row layout
             super(context, R.layout.list_item_following_short, null, false);
         }
-
 
         /** Set elements of each row */
         @Override

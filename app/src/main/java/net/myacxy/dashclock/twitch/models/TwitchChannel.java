@@ -43,7 +43,7 @@ public class TwitchChannel
      */
     public void init(JSONObject channelObject, final Context context)
     {
-        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context);
+        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, null);
 
         status = twitchUserFollowsGetter.getString(channelObject, "status");
         game = twitchUserFollowsGetter.getString(channelObject, "game");

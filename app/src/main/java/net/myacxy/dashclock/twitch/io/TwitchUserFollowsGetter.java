@@ -1,13 +1,14 @@
 package net.myacxy.dashclock.twitch.io;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.myacxy.dashclock.twitch.models.TwitchChannel;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,13 +24,13 @@ public class TwitchUserFollowsGetter extends JsonGetter {
      *
      * @param context activity from which the class has been called
      */
-    public TwitchUserFollowsGetter(Context context) {
-        super(context);
+    public TwitchUserFollowsGetter(Context context, ProgressDialog progressDialog) {
+        super(context, progressDialog);
     }
 
     @Override
     protected void onPreExecute() {
-//        super.onPreExecute();
+        super.onPreExecute();
     }
 
     @Override
@@ -97,6 +98,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         // get user name from preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userName = sharedPreferences.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
+        userName = userName.trim();
         // initialize url
         String url = "https://api.twitch.tv/kraken/users/" + userName + "/follows/channels";
         // start async task to retrieve json file

@@ -1,6 +1,7 @@
 package net.myacxy.dashclock.twitch.ui;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -11,6 +12,8 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 
 import net.myacxy.dashclock.twitch.R;
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 
@@ -54,9 +57,17 @@ public class NumberPickerDialog extends Preference {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, numberPicker.getValue())
-                        .apply();
+                         .apply();
+                // update channels if last update is older than new interval
                 if (!TwitchUserFollowsGetter.checkRecentlyUpdated(getContext())) {
-                    TwitchExtension.updateTwitchChannels(getContext(), null);
+                    TwitchExtension.updateTwitchChannels(getContext(),
+                            new ProgressDialog(getContext()),
+                            new AsyncTaskListener() {
+                        @Override
+                        public void handleAsyncTaskFinished() {
+                            new TwitchDbHelper(getContext()).updateSharedPreferencesData();
+                        }
+                    });
                 }
             }
         });
@@ -64,8 +75,7 @@ public class NumberPickerDialog extends Preference {
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, previousValue)
-                        .apply();
+                sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, previousValue).apply();
             }
         });
         builder.create();

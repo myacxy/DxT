@@ -1,8 +1,10 @@
 package net.myacxy.dashclock.twitch;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
@@ -11,9 +13,6 @@ import com.google.android.apps.dashclock.api.ExtensionData;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
-import net.myacxy.dashclock.twitch.models.TwitchChannel;
-
-import java.util.ArrayList;
 
 
 public class TwitchExtension extends DashClockExtension {
@@ -25,82 +24,51 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_SELECTED_FOLLOWED_CHANNELS = "pref_selected_followed_channels";
     public static String PREF_UPDATE_INTERVAL = "pref_update_interval";
     public static String PREF_LAST_UPDATE = "pref_last_update";
-
-    protected Cursor mCursor;
-    protected TwitchDbHelper mDbHelper;
+    public static String PREF_ONLINE_COUNT = "pref_online_count";
+    public static String PREF_STATUS = "pref_status";
+    public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
+    public static String PREF_EXPANDED_BODY = "pref_expanded_body";
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    protected ArrayList<TwitchChannel> getAllChannels(boolean selected)
-    {
-        ArrayList<TwitchChannel> twitchChannels = new ArrayList<TwitchChannel>();
-        mDbHelper = new TwitchDbHelper(this);
-
-        mCursor = mDbHelper.getChannelsCursor(selected, false);
-
-        while(mCursor.moveToNext())
-        {
-            TwitchChannel twitchChannel = new TwitchChannel();
-            twitchChannel.displayName = mCursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            twitchChannel.game = mCursor.getString((TwitchDbHelper.ChannelQuery.game));
-            twitchChannel.status = mCursor.getString(TwitchDbHelper.ChannelQuery.status);
-            twitchChannel.online = mCursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
-            twitchChannels.add(twitchChannel);
-        }
-        return twitchChannels;
-    }
-
-    protected ArrayList<TwitchChannel> filterOnlineChannels(ArrayList<TwitchChannel> allChannels)
-    {
-        ArrayList<TwitchChannel> onlineChannels = new ArrayList<TwitchChannel>();
-        for (TwitchChannel tc : allChannels)
-        {
-            if(tc.online) onlineChannels.add(tc);
-        }
-        return onlineChannels;
-    }
-
     @Override
     protected void onUpdateData(int reason) {
         Log.d("DEBUG", "onUpdateData");
-        if(!TwitchUserFollowsGetter.checkRecentlyUpdated(this)) updateTwitchChannels(this, new AsyncTaskListener() {
-            @Override
-            public void handleAsyncTaskFinished() {
-                Log.d("DEBUG", "handleAsyncTaskFinished");
-                ArrayList<TwitchChannel> onlineChannels = filterOnlineChannels(getAllChannels(true));
-                int onlineCount = onlineChannels.size();
-                String status = String.format("%d Live", onlineCount);
-                String expandedTitle = String.format("%s Channel%s", status, onlineCount > 1 ? "s" : "");
-                String expandedBody = "";
-
-                for (TwitchChannel tc : onlineChannels)
-                {
-                    expandedBody += String.format("%s playing %s: %s", tc.displayName, tc.game, tc.status);
-                    if(onlineChannels.indexOf(tc) < onlineChannels.size() - 1) expandedBody += "\n";
+        // update data if it is outdated
+        if(!TwitchUserFollowsGetter.checkRecentlyUpdated(this)) {
+            updateTwitchChannels(this, null, new AsyncTaskListener() {
+                @Override
+                public void handleAsyncTaskFinished() {
+                    Log.d("DEBUG", "handleAsyncTaskFinished");
+                    new TwitchDbHelper(getApplicationContext()).updateSharedPreferencesData();
                 }
+            });
+        }
+        // retrieve data from SharedPreferences
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        int onlineCount = sp.getInt(PREF_ONLINE_COUNT, 0);
+        String status = sp.getString(PREF_STATUS, "Empty");
+        String expandedTitle = sp.getString(PREF_EXPANDED_TITLE, "Empty");
+        String expandedBody = sp.getString(PREF_EXPANDED_BODY, "Empty");
 
-                Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);
-                publishUpdate(new ExtensionData()
-                        .visible(onlineCount > 0)
-                        .icon(R.drawable.ic_twitch_purple)
-                        .status(status)
-                        .expandedTitle(expandedTitle)
-                        .expandedBody(expandedBody)
-                        .clickIntent(intent));
+        Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);
+        // publish data
+        publishUpdate(new ExtensionData()
+                .visible(onlineCount > 0)
+                .icon(R.drawable.ic_twitch_purple)
+                .status(status)
+                .expandedTitle(expandedTitle)
+                .expandedBody(expandedBody)
+                .clickIntent(intent));
+    } // onUpdateData
 
-                mCursor.close();
-                mDbHelper.close();
-            }
-        });
-    }
-
-    public static void updateTwitchChannels(final Context context, final AsyncTaskListener listener) {
+    public static void updateTwitchChannels(final Context context, final ProgressDialog progressDialog, final AsyncTaskListener listener) {
         Log.d("Debug", "updateTwitchChannels");
         // initialize JsonGetter
-        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context);
+        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, progressDialog);
         twitchUserFollowsGetter.setAsyncTaskListener(listener);
         twitchUserFollowsGetter.updateAllFollowedChannels();
     } // updateTwitchChannels

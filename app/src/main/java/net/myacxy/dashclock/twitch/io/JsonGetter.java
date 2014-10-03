@@ -46,8 +46,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
 
     protected void asyncTaskFinished()
     {
-        if(mListener != null)
-        {
+        if(mListener != null) {
             mListener.handleAsyncTaskFinished();
         }
     }
@@ -56,9 +55,10 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      *
      * @param context activity from which the class has been called
      */
-    public JsonGetter(Context context)
+    public JsonGetter(Context context, ProgressDialog progressDialog)
     {
         mContext = context;
+        mProgressDialog = progressDialog;
         mProgressDialogMessage = mContext.getResources().getString(
                 R.string.pref_following_selection_progress_title);
     }
@@ -67,30 +67,33 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected void onPreExecute() {
         super.onPreExecute();
         // initialize dialog before trying to fetch the data
-        mProgressDialog = new ProgressDialog(mContext);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setMessage(mProgressDialogMessage);
-        mProgressDialog.show();
+        if(mProgressDialog != null) {
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setMessage(mProgressDialogMessage);
+            mProgressDialog.show();
+        }
     }
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         // close dialog after having fetched the data
-        if (mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             // display Toast on error
             if (jsonObject == null) {
                 Toast.makeText(mContext, mContext.getResources().getString(
                         R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
             }
         }
-        mProgressDialog.dismiss();
+        if(mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
         asyncTaskFinished();
     }
 
+
     @Override
-    protected JSONObject doInBackground(String... params)
-    {
+    protected JSONObject doInBackground(String... params) {
         return getJsonFromURL(params[0]);
     }
 
@@ -108,43 +111,33 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         InputStream is = null;
         String jsonString = "";
 
-        try
-        {
+        try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             httpget.setHeader("Accept", "application/json");
             HttpResponse response = httpclient.execute(httpget);
             HttpEntity entity = response.getEntity();
             is = entity.getContent();
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 
         //convert response to string
-        try
-        {
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf-8"),8);
             StringBuilder sb = new StringBuilder();
             String line = null;
-            while ((line = reader.readLine()) != null)
-            {
+            while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
             is.close();
             jsonString=sb.toString();
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             e.printStackTrace();
         }
-        try
-        {
+        try {
             jsonObject = new JSONObject(jsonString);
-        }
-        catch (JSONException e)
-        {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
