@@ -84,6 +84,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 // update database
                 TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
                 twitchDbHelper.updateSelectionStatus(mSelectedFollowedChannels);
+                twitchDbHelper.updatePublishedData();
             }
         });
         // Set Cancel Button

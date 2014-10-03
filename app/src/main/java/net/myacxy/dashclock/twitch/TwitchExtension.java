@@ -43,7 +43,7 @@ public class TwitchExtension extends DashClockExtension {
                 @Override
                 public void handleAsyncTaskFinished() {
                     Log.d("DEBUG", "handleAsyncTaskFinished");
-                    new TwitchDbHelper(getApplicationContext()).updateSharedPreferencesData();
+                    new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 }
             });
         }

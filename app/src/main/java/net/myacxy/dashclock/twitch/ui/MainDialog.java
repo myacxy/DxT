@@ -72,7 +72,6 @@ public class MainDialog extends DialogFragment {
                 Button updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
                 updateButton.setOnClickListener(new View.OnClickListener() {
-
                     @Override
                     public void onClick(View v) {
                         TwitchExtension.updateTwitchChannels(builder.getContext(),
@@ -83,7 +82,7 @@ public class MainDialog extends DialogFragment {
                                 if(isVisible()) {
                                     initView(view);
                                 }
-                                new TwitchDbHelper(getActivity()).updateSharedPreferencesData();
+                                new TwitchDbHelper(getActivity()).updatePublishedData();
                             }
                         });
                     }

@@ -152,7 +152,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
      * Retrieves current data from the database and saves the information
      * using SharedPreferences in a publishable format for DashClock.
      */
-    public void updateSharedPreferencesData()
+    public void updatePublishedData()
     {
         // initialize
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);

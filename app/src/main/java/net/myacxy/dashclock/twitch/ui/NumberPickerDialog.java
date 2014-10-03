@@ -65,7 +65,7 @@ public class NumberPickerDialog extends Preference {
                             new AsyncTaskListener() {
                         @Override
                         public void handleAsyncTaskFinished() {
-                            new TwitchDbHelper(getContext()).updateSharedPreferencesData();
+                            new TwitchDbHelper(getContext()).updatePublishedData();
                         }
                     });
                 }

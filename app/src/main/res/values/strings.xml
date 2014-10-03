@@ -10,11 +10,11 @@
     <string name="pref_following_selection_progress_title">Fetching data...</string>
     <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
     <string name="pref_ringtone_silent">Silent</string>
-    <string name="pref_update_interval_title">Update Interval</string>
+    <string name="pref_update_interval_title">Set Update Interval</string>
     <string name="pref_update_interval_summary">Choose an interval in minutes</string>
     <string name="dialog_update_interval_title">Pick an interval</string>
     <string name="pref_following_selection_progress_title2">Checking online status...</string>
-    <string name="extension_description">Displays information about Twitch.tv live streams that you follow</string>
+    <string name="extension_description">Displays information about Twitch.tv live streams that you follow.</string>
     <string name="dialog_main_dismiss">Dismiss</string>
     <string name="dialog_main_update">Update</string>
 </resources>

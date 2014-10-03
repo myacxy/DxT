@@ -4,6 +4,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -11,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 /**
  * Source=DashClock Example Extension Settings
@@ -22,12 +25,22 @@ public class TwitchSettingsActivity extends PreferenceActivity
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.ic_twitch_purple);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         setupSimplePreferencesScreen();
+
+        final CheckBoxPreference checkedTextView = (CheckBoxPreference) findPreference("pref_custom_visibility");
+        checkedTextView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                new TwitchDbHelper(getApplicationContext()).updatePublishedData();
+                return true;
+            }
+        });
     }
 
     @Override

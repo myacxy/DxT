@@ -51,7 +51,7 @@ public class UserNameDialog extends EditTextPreference
                     new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
-                    new TwitchDbHelper(getContext()).updateSharedPreferencesData();
+                    new TwitchDbHelper(getContext()).updatePublishedData();
                 }
             });
         }
