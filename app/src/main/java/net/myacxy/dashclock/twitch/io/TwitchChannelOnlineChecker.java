@@ -2,6 +2,7 @@ package net.myacxy.dashclock.twitch.io;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
@@ -48,6 +49,7 @@ public class TwitchChannelOnlineChecker extends JsonGetter
         super.onProgressUpdate(values);
         // display current progress
         if(mProgressDialog != null) mProgressDialog.setMessage("Checking " + values[0] + "...");
+        Log.d("TwitchChannelOnlineChecker", values[0]);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class TwitchChannelOnlineChecker extends JsonGetter
     {
         mDismissProgressDialog = dismiss;
         mTwitchChannel = twitchChannel;
-        String url = "https://api.twitch.tv/kraken/streams/" + twitchChannel.displayName;
+        String url = "https://api.twitch.tv/kraken/streams/" + twitchChannel.name;
         // execute tasks one after the other
         executeOnExecutor(SERIAL_EXECUTOR, url);
     }

@@ -8,7 +8,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,13 +21,16 @@ import android.widget.TextView;
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TwitchChannelOnlineChecker;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 public class MainDialog extends DialogFragment {
 
     protected DialogListener mListener;
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
+    private TwitchUserFollowsGetter asyncTask;
 
     public interface DialogListener
     {
@@ -47,7 +52,7 @@ public class MainDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_main, null, false);
+        final View view = inflater.inflate(R.layout.dialog_main, null);
         initView(view);
         builder.setView(view);
         // enable buttons
@@ -74,15 +79,18 @@ public class MainDialog extends DialogFragment {
                 updateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TwitchExtension.updateTwitchChannels(builder.getContext(),
+                        asyncTask = TwitchExtension.updateTwitchChannels(builder.getContext(),
                                 new ProgressDialog(builder.getContext()),
                                 new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {
-                                if(isVisible()) {
+                                Log.d("MainDialog", "Update finished.");
+                                if(isVisible() || isHidden()) {
                                     initView(view);
                                 }
-                                new TwitchDbHelper(getActivity()).updatePublishedData();
+                                if(getActivity() != null) {
+                                    new TwitchDbHelper(getActivity()).updatePublishedData();
+                                }
                             }
                         });
                     }
@@ -98,6 +106,22 @@ public class MainDialog extends DialogFragment {
         mDbHelper.close();
         mCursor.close();
         super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onDestroy() {
+        if(asyncTask == null) {
+
+        } else if(!(asyncTask.getStatus() == AsyncTask.Status.FINISHED)) {
+            asyncTask.cancel(true);
+        } else {
+            for(TwitchChannelOnlineChecker onlineChecker : asyncTask.onlineCheckers) {
+                if(!(onlineChecker.getStatus() == AsyncTask.Status.FINISHED)){
+                    onlineChecker.cancel(true);
+                }
+            }
+        }
+        super.onDestroy();
     }
 
     /**

@@ -15,6 +15,7 @@ public class TwitchChannel
 {
     public String status;
     public String game;
+    public String name;
     public String displayName;
     public int followers;
     public int entryId;
@@ -46,6 +47,7 @@ public class TwitchChannel
         final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, null);
 
         status = twitchUserFollowsGetter.getString(channelObject, "status");
+        name = twitchUserFollowsGetter.getString(channelObject, "name");
         game = twitchUserFollowsGetter.getString(channelObject, "game");
         displayName = twitchUserFollowsGetter.getString(channelObject, "display_name");
         followers = twitchUserFollowsGetter.getInt(channelObject, "followers");

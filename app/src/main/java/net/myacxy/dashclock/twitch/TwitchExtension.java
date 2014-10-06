@@ -36,13 +36,13 @@ public class TwitchExtension extends DashClockExtension {
 
     @Override
     protected void onUpdateData(int reason) {
-        Log.d("DEBUG", "onUpdateData");
+        Log.d("TwitchExtension", "onUpdateData");
         // update data if it is outdated
         if(!TwitchUserFollowsGetter.checkRecentlyUpdated(this)) {
             updateTwitchChannels(this, null, new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
-                    Log.d("DEBUG", "handleAsyncTaskFinished");
+                    Log.d("TwitchExtension", "handleAsyncTaskFinished");
                     new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 }
             });
@@ -65,11 +65,12 @@ public class TwitchExtension extends DashClockExtension {
                 .clickIntent(intent));
     } // onUpdateData
 
-    public static void updateTwitchChannels(final Context context, final ProgressDialog progressDialog, final AsyncTaskListener listener) {
-        Log.d("Debug", "updateTwitchChannels");
+    public static TwitchUserFollowsGetter updateTwitchChannels(final Context context, final ProgressDialog progressDialog, final AsyncTaskListener listener) {
+        Log.d("TwitchExtension", "updateTwitchChannels");
         // initialize JsonGetter
         final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, progressDialog);
         twitchUserFollowsGetter.setAsyncTaskListener(listener);
         twitchUserFollowsGetter.updateAllFollowedChannels();
+        return twitchUserFollowsGetter;
     } // updateTwitchChannels
 } // TwitchActivity

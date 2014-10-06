@@ -17,8 +17,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Vector;
 
 public class TwitchUserFollowsGetter extends JsonGetter {
+
+    public Vector<TwitchChannelOnlineChecker> onlineCheckers;
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
@@ -74,11 +77,13 @@ public class TwitchUserFollowsGetter extends JsonGetter {
             saveCurrentTime();
         }
 
+        onlineCheckers = new Vector<TwitchChannelOnlineChecker>();
         // check online status of each channel
         for(final TwitchChannel tc : allFollowedChannels)
         {
             TwitchChannelOnlineChecker onlineChecker =
                     new TwitchChannelOnlineChecker(mContext, mProgressDialog);
+            onlineCheckers.add(onlineChecker);
             if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc)) {
                 onlineChecker.setAsyncTaskListener(mListener);
                 onlineChecker.run(tc, true);
@@ -147,7 +152,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         // calculate difference in minutes
         double difference = (Calendar.getInstance().getTimeInMillis() - lastUpdate) / 60000f;
         int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
-        Log.d("Debug", "Difference=" + difference);
+        Log.d("TwitchUserFollowsGetter", "Difference=" + difference);
         return difference < updateInterval;
     }
 

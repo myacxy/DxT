@@ -26,6 +26,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             "CREATE TABLE " + TwitchContract.ChannelEntry.TABLE_NAME + " (" +
             TwitchContract.ChannelEntry._ID + " INTEGER PRIMARY KEY," +
             TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+            TwitchContract.ChannelEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
             TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME + TEXT_TYPE + COMMA_SEP +
             TwitchContract.ChannelEntry.COLUMN_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
             TwitchContract.ChannelEntry.COLUMN_NAME_GAME + TEXT_TYPE + COMMA_SEP +
@@ -267,6 +268,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             ContentValues values = new ContentValues();
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID, tc.entryId);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME, tc.displayName);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_NAME, tc.name);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME, tc.game);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, 0);
@@ -293,6 +295,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         public String[] projection = new String[] {
                 TwitchContract.ChannelEntry._ID,
                 TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID,
+                TwitchContract.ChannelEntry.COLUMN_NAME_NAME,
                 TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME,
                 TwitchContract.ChannelEntry.COLUMN_NAME_STATUS,
                 TwitchContract.ChannelEntry.COLUMN_NAME_GAME,
@@ -303,10 +306,11 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // id of each column
         public int id = 0;
         public int entryId = 1;
-        public int displayName = 2;
-        public int status = 3;
-        public int game = 4;
-        public int online = 5;
-        public int selected = 6;
+        public int name = 2;
+        public int displayName = 3;
+        public int status = 4;
+        public int game = 5;
+        public int online = 6;
+        public int selected = 7;
     } // ChannelQuery
 } // TwitchDbHelper

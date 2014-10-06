@@ -3,6 +3,7 @@ package net.myacxy.dashclock.twitch.io;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import net.myacxy.dashclock.twitch.R;
@@ -91,6 +92,11 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         asyncTaskFinished();
     }
 
+    @Override
+    protected void onCancelled() {
+        Log.d("JsonGetter", "Cancelled.");
+        super.onCancelled();
+    }
 
     @Override
     protected JSONObject doInBackground(String... params) {
