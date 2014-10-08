@@ -36,10 +36,10 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 
 import net.myacxy.dashclock.twitch.R;
-import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
-import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TcocManager;
+import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 public class NumberPickerDialog extends Preference {
 
@@ -83,7 +83,7 @@ public class NumberPickerDialog extends Preference {
                 sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, numberPicker.getValue())
                          .apply();
                 // update channels if last update is older than new interval
-                if (!TwitchUserFollowsGetter.checkRecentlyUpdated(getContext())) {
+                if (!TcocManager.checkRecentlyUpdated(getContext())) {
                     TwitchExtension.updateTwitchChannels(getContext(),
                             new ProgressDialog(getContext()),
                             new AsyncTaskListener() {

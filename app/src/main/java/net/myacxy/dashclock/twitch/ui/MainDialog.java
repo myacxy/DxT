@@ -45,7 +45,6 @@ import android.widget.TextView;
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.TwitchChannelOnlineChecker;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
@@ -54,7 +53,7 @@ public class MainDialog extends DialogFragment {
     protected DialogListener mListener;
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
-    private TwitchUserFollowsGetter asyncTask;
+    private TwitchUserFollowsGetter followsGetter;
 
     public interface DialogListener
     {
@@ -103,16 +102,14 @@ public class MainDialog extends DialogFragment {
                 updateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        asyncTask = TwitchExtension.updateTwitchChannels(builder.getContext(),
+                        followsGetter = TwitchExtension.updateTwitchChannels(builder.getContext(),
                                 new ProgressDialog(builder.getContext()),
                                 new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {
                                 Log.d("MainDialog", "Update finished.");
-                                if(isVisible() || isHidden()) {
-                                    initView(view);
-                                }
                                 if(getActivity() != null) {
+                                    initView(view);
                                     new TwitchDbHelper(getActivity()).updatePublishedData();
                                 }
                             }
@@ -134,17 +131,12 @@ public class MainDialog extends DialogFragment {
 
     @Override
     public void onDestroy() {
-        if(asyncTask == null) {
+        if(followsGetter == null);
+        else if(followsGetter.getStatus() != AsyncTask.Status.FINISHED)
+            followsGetter.cancel(true);
+        else if(followsGetter.tcocManager.getStatus() != AsyncTask.Status.FINISHED)
+            followsGetter.tcocManager.cancel(true);
 
-        } else if(!(asyncTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            asyncTask.cancel(true);
-        } else {
-            for(TwitchChannelOnlineChecker onlineChecker : asyncTask.onlineCheckers) {
-                if(!(onlineChecker.getStatus() == AsyncTask.Status.FINISHED)){
-                    onlineChecker.cancel(true);
-                }
-            }
-        }
         super.onDestroy();
     }
 

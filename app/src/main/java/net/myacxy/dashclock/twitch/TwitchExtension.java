@@ -28,6 +28,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -35,6 +36,7 @@ import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
 
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TcocManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
@@ -53,6 +55,8 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
     public static String PREF_EXPANDED_BODY = "pref_expanded_body";
 
+    private AsyncTask task;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,14 +66,16 @@ public class TwitchExtension extends DashClockExtension {
     protected void onUpdateData(int reason) {
         Log.d("TwitchExtension", "onUpdateData");
         // update data if it is outdated
-        if(!TwitchUserFollowsGetter.checkRecentlyUpdated(this)) {
-            updateTwitchChannels(this, null, new AsyncTaskListener() {
-                @Override
-                public void handleAsyncTaskFinished() {
-                    Log.d("TwitchExtension", "handleAsyncTaskFinished");
-                    new TwitchDbHelper(getApplicationContext()).updatePublishedData();
-                }
-            });
+        if(task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
+            if (!TcocManager.checkRecentlyUpdated(this)) {
+                task = updateTwitchChannels(this, null, new AsyncTaskListener() {
+                    @Override
+                    public void handleAsyncTaskFinished() {
+                        Log.d("TwitchExtension", "handleAsyncTaskFinished");
+                        new TwitchDbHelper(getApplicationContext()).updatePublishedData();
+                    }
+                });
+            }
         }
         // retrieve data from SharedPreferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);

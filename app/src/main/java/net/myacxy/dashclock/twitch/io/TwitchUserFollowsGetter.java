@@ -28,7 +28,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
@@ -39,13 +38,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Vector;
 
 public class TwitchUserFollowsGetter extends JsonGetter {
 
-    public Vector<TwitchChannelOnlineChecker> onlineCheckers;
+    public TcocManager tcocManager;
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
@@ -87,33 +83,12 @@ public class TwitchUserFollowsGetter extends JsonGetter {
             e.printStackTrace();
         }
 
-        if(mProgressDialog != null) mProgressDialog.setMessage("Parsing data...");
         // analyse json data and parse it
         ArrayList<TwitchChannel> allFollowedChannels = parseJsonObject(jsonAllFollowedChannels);
 
         if (allFollowedChannels != null) {
-            // save all followed channels to shared preferences
-            if(mProgressDialog != null) mProgressDialog.setMessage("Saving data...");
-            saveTwitchChannelsToPreferences(allFollowedChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
-            // save all followed channels to database
-            new TwitchDbHelper(mContext).saveChannels(allFollowedChannels);
-            // save the time of this update
-            saveCurrentTime();
-        }
-
-        onlineCheckers = new Vector<TwitchChannelOnlineChecker>();
-        // check online status of each channel
-        for(final TwitchChannel tc : allFollowedChannels)
-        {
-            TwitchChannelOnlineChecker onlineChecker =
-                    new TwitchChannelOnlineChecker(mContext, mProgressDialog);
-            onlineCheckers.add(onlineChecker);
-            if(allFollowedChannels.get(allFollowedChannels.size() - 1).equals(tc)) {
-                onlineChecker.setAsyncTaskListener(mListener);
-                onlineChecker.run(tc, true);
-            } else {
-                onlineChecker.run(tc, false);
-            }
+            tcocManager = new TcocManager(allFollowedChannels, mContext, mProgressDialog, mListener);
+            tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR, null);
         }
     }
 
@@ -162,58 +137,4 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
         return followedTwitchChannels;
     } // parseJsonObject
-
-    /**
-     * Checks the Shared Preferences for the time of the last update.
-     *
-     * @return  returns true if channels were updated within the update interval
-     *          return false if channels were updated later than the update interval
-     */
-    public static boolean checkRecentlyUpdated(Context context)
-    {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        long lastUpdate = sp.getLong(TwitchExtension.PREF_LAST_UPDATE, 0);
-        // calculate difference in minutes
-        double difference = (Calendar.getInstance().getTimeInMillis() - lastUpdate) / 60000f;
-        int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
-        Log.d("TwitchUserFollowsGetter", "Difference=" + difference);
-        return difference < updateInterval;
-    }
-
-    /**
-     * Saves the current system time in milliseconds to the shared preferences so that it can later
-     * be used to limit the updates in a adjustable time interval.
-     */
-    public void saveCurrentTime()
-    {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = sp.edit();
-        long currentMillis = Calendar.getInstance().getTimeInMillis();
-        editor.putLong(TwitchExtension.PREF_LAST_UPDATE, currentMillis);
-        editor.apply();
-    } // saveCurrentTime
-
-    /**
-     * Saves the display names of the provided TwitchChannels to the Shared Preferences as a Set
-     * of Strings.
-     *
-     * @param twitchChannels List of TwitchChannels being saved
-     * @param key The name of the preference to modify.
-     */
-    public void saveTwitchChannelsToPreferences(ArrayList<TwitchChannel> twitchChannels, String key)
-    {
-        // initialize
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = sp.edit();
-
-        // retrieve display names
-        HashSet<String> values = new HashSet<String>();
-        for(TwitchChannel tc : twitchChannels)
-        {
-            values.add(tc.displayName);
-        }
-        // save
-        editor.putStringSet(key, values);
-        editor.apply();
-    } // saveTwitchChannelsToPreferences
 }

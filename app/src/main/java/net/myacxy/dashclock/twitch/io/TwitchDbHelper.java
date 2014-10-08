@@ -295,7 +295,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_NAME, tc.name);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME, tc.game);
-            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, 0);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, tc.online);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED, 0);
 
             // Insert the new row, returning the primary key value of the new row

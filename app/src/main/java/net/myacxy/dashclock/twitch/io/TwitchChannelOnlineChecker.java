@@ -36,7 +36,6 @@ import org.json.JSONObject;
 public class TwitchChannelOnlineChecker extends JsonGetter
 {
     protected TwitchChannel mTwitchChannel;
-    protected boolean mDismissProgressDialog;
 
     public TwitchChannelOnlineChecker(Context context, ProgressDialog progressDialog) {
         super(context, progressDialog);
@@ -59,18 +58,10 @@ public class TwitchChannelOnlineChecker extends JsonGetter
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // update database
-        TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
-        twitchDbHelper.updateOnlineStatus(mTwitchChannel);
-        // dismiss progress dialog
-        if(mDismissProgressDialog && mProgressDialog != null) mProgressDialog.dismiss();
-
-        asyncTaskFinished();
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        super.onProgressUpdate(values);
         // display current progress
         if(mProgressDialog != null) mProgressDialog.setMessage("Checking " + values[0] + "...");
         Log.d("TwitchChannelOnlineChecker", values[0]);
@@ -87,12 +78,11 @@ public class TwitchChannelOnlineChecker extends JsonGetter
      *
      * @param twitchChannel Stream to be checked.
      */
-    public void run(TwitchChannel twitchChannel, boolean dismiss)
+    public void run(TwitchChannel twitchChannel)
     {
-        mDismissProgressDialog = dismiss;
         mTwitchChannel = twitchChannel;
         String url = "https://api.twitch.tv/kraken/streams/" + twitchChannel.name;
         // execute tasks one after the other
-        executeOnExecutor(SERIAL_EXECUTOR, url);
+        executeOnExecutor(THREAD_POOL_EXECUTOR, url);
     }
 }
