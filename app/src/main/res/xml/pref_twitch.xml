@@ -2,26 +2,33 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <net.myacxy.dashclock.twitch.ui.UserNameDialog
-        android:defaultValue="test_user1"
-        android:selectAllOnFocus="true"
-        android:key="pref_user_name"
-        android:title="@string/pref_user_name_title"
-        android:singleLine="true"
-        android:maxLines="1"/>
+    <PreferenceCategory android:title="@string/pref_category_customization">
+        <net.myacxy.dashclock.twitch.ui.UserNameDialog
+            android:defaultValue="test_user1"
+            android:selectAllOnFocus="true"
+            android:key="pref_user_name"
+            android:title="@string/pref_user_name_title"
+            android:singleLine="true"
+            android:maxLines="1"/>
 
-    <CheckBoxPreference
-        android:key="pref_custom_visibility"
-        android:title="@string/pref_custom_visibility_title"/>
+        <CheckBoxPreference
+            android:key="pref_custom_visibility"
+            android:title="@string/pref_custom_visibility_title"/>
 
-    <net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog
-        android:key="pref_following_selection"
-        android:dependency="pref_custom_visibility"
-        android:title="@string/pref_following_selection_title"
-        />
+        <net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog
+            android:key="pref_following_selection"
+            android:dependency="pref_custom_visibility"
+            android:title="@string/pref_following_selection_title"/>
 
-    <net.myacxy.dashclock.twitch.ui.NumberPickerDialog
-        android:key="pref_update_interval"
-        android:title="@string/pref_update_interval_title"/>
+        <net.myacxy.dashclock.twitch.ui.NumberPickerDialog
+            android:key="pref_update_interval"
+            android:title="@string/pref_update_interval_title"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_support">
+        <Preference
+            android:title="@string/pref_about_title"
+            android:summary="@string/pref_about_summary"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

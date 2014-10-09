@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.io.TwitchContract.ChannelEntry;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 import java.util.HashSet;
@@ -77,7 +78,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 new HashSet<String>());
         mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
 
-        mCursor = mDbHelper.getChannelsCursor(false, false);
+        mCursor = mDbHelper.getChannelsCursor(false, TwitchDbHelper.State.ALL, ChannelEntry.COLUMN_NAME_DISPLAY_NAME);
         // reassign the cursor
         mAdapter.swapCursor(mCursor);
         buildDialog(builder);

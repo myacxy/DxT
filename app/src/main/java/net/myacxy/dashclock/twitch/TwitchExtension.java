@@ -54,6 +54,7 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_STATUS = "pref_status";
     public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
     public static String PREF_EXPANDED_BODY = "pref_expanded_body";
+    public static String PREF_TOGGLE_OFFLINE = "pref_toggle_offline";
 
     private AsyncTask task;
 

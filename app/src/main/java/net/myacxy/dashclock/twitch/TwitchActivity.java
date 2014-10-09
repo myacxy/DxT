@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import net.myacxy.dashclock.twitch.io.TwitchContract;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.MainDialog;
 
@@ -77,7 +78,7 @@ public class TwitchActivity extends Activity {
 
         ListAdapter adapter = new ListAdapter(this);
         mDbHelper = new TwitchDbHelper(this);
-        mCursor = mDbHelper.getChannelsCursor(true, true);
+        mCursor = mDbHelper.getChannelsCursor(true, TwitchDbHelper.State.ONLINE, TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME);
 
         // reassign the cursor
         adapter.swapCursor(mCursor);
@@ -123,7 +124,7 @@ public class TwitchActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_twitch_main, menu);
+        getMenuInflater().inflate(R.menu.twitch_main, menu);
         return true;
     }
 

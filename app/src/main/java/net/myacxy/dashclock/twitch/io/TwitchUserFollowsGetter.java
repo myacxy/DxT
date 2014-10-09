@@ -58,6 +58,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
     @Override
     protected void onPostExecute(JSONObject jsonObject) {
+        if(jsonObject == null) return;
         JSONArray jsonAllFollowedChannels = null;
         // status error
         if(jsonObject.has("status"))

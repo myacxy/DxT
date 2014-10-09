@@ -22,6 +22,25 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * MergeAdapter
+ *
+ * Copyright    (c) 2008-2009 CommonsWare, LLC http://commonsware.com/
+ * Portions     (c) 2009 Google, Inc.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use
+ * this file except in compliance with the License. A copy of the License is
+ * located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.myacxy.dashclock.twitch.ui;
 
 import android.app.Activity;
@@ -31,9 +50,11 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,22 +63,33 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import com.commonsware.cwac.merge.MergeAdapter;
+
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TwitchContract;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 public class MainDialog extends DialogFragment {
 
+    protected SharedPreferences mSp;
     protected DialogListener mListener;
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
     private TwitchUserFollowsGetter followsGetter;
+    private View mDialogView;
 
-    public interface DialogListener
-    {
+    public interface DialogListener {
         public void onDialogDismiss(DialogInterface dialog);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        mSp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -65,8 +97,7 @@ public class MainDialog extends DialogFragment {
         super.onAttach(activity);
         try {
             mListener = (DialogListener) activity;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement DialogListener");
         }
     }
@@ -75,11 +106,12 @@ public class MainDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_main, null);
-        initView(view);
-        builder.setView(view);
+        mDialogView = inflater.inflate(R.layout.dialog_main, null);
+        initView();
+        builder.setView(mDialogView);
         // enable buttons
         builder.setNegativeButton(R.string.dialog_main_dismiss, null);
+        builder.setNeutralButton(R.string.dialog_main_toggle_offline, null);
         builder.setPositiveButton(R.string.dialog_main_update, null);
 
         final AlertDialog alertDialog = builder.create();
@@ -96,6 +128,16 @@ public class MainDialog extends DialogFragment {
                         dismiss();
                     }
                 });
+
+                final Button showOfflineButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                showOfflineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean toggle = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
+                        mSp.edit().putBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, !toggle).apply();
+                        initView();
+                    }
+                });
                 // set update button
                 Button updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
@@ -109,7 +151,7 @@ public class MainDialog extends DialogFragment {
                             public void handleAsyncTaskFinished() {
                                 Log.d("MainDialog", "Update finished.");
                                 if(getActivity() != null) {
-                                    initView(view);
+                                    initView();
                                     new TwitchDbHelper(getActivity()).updatePublishedData();
                                 }
                             }
@@ -123,14 +165,15 @@ public class MainDialog extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mListener.onDialogDismiss(dialog);
         mDbHelper.close();
         mCursor.close();
+        mListener.onDialogDismiss(dialog);
         super.onDismiss(dialog);
     }
 
     @Override
     public void onDestroy() {
+        // cancel async tasks
         if(followsGetter == null);
         else if(followsGetter.getStatus() != AsyncTask.Status.FINISHED)
             followsGetter.cancel(true);
@@ -143,22 +186,50 @@ public class MainDialog extends DialogFragment {
     /**
      * TODO: javadoc / comments
      */
-    public void initView(View view) {
-        // initialize
-        ListAdapter adapter = new ListAdapter(getActivity());
+    public void initView() {
+        boolean showOffline = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
+        // initialize database helper
+        boolean selected = mSp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
+        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " DESC";
         mDbHelper = new TwitchDbHelper(getActivity());
-        // get list from the dialog view
-        ListView listView = (ListView) view.findViewById(R.id.dialog_main_list);
-        // get cursor for all channels
-        mCursor = mDbHelper.getChannelsCursor(false, true);
+        // get cursor for channels that are online
+        mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.ONLINE, sortOrder);
+
+        ListAdapter listAdapter = new ListAdapter(getActivity());
         // reassign the cursor
-        adapter.swapCursor(mCursor);
-        listView.setAdapter(adapter);
+        listAdapter.swapCursor(mCursor);
+        MergeAdapter mergeAdapter = new MergeAdapter();
+        TextView header = new TextView(getActivity());
+        header.setText("Online");
+        header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
+        mergeAdapter.addView(header);
+        View divider = View.inflate(getActivity(), R.layout.divider, null);
+        mergeAdapter.addView(divider);
+
+        mergeAdapter.addAdapter(listAdapter);
+
+        if(showOffline) {
+            header = new TextView(getActivity());
+            header.setText("Offline");
+            header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
+            mergeAdapter.addView(header);
+            divider = View.inflate(getActivity(), R.layout.divider, null);
+            mergeAdapter.addView(divider);
+            listAdapter = new ListAdapter(getActivity());
+            // get cursor for all channels
+            mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.OFFLINE, sortOrder);
+            // reassign the cursor
+            listAdapter.swapCursor(mCursor);
+            mergeAdapter.addAdapter(listAdapter);
+        }
+
+        // get list from the dialog view
+        ListView listView = (ListView) mDialogView.findViewById(R.id.dialog_main_list);
+        listView.setAdapter(mergeAdapter);
     }
 
     public class ListAdapter extends ResourceCursorAdapter
     {
-
         public ListAdapter(Context context)
         {
             // inflate row layout
@@ -169,26 +240,20 @@ public class MainDialog extends DialogFragment {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
-            final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            TextView selectionDisplayName = (TextView) view.findViewById(
+            String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            TextView displayNameView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_display_name);
-            selectionDisplayName.setText(displayName);
+            displayNameView.setText(displayName);
             // initialize view for game
-            TextView selectionGame = (TextView) view.findViewById(
+            TextView gameView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
-            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
+            gameView.setText(context.getResources().getString(R.string.dialog_following_selection_game)
                     + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
             // initialize view for status
-            TextView selectionStatus = (TextView) view.findViewById(
+            TextView statusView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);
-            selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
+            statusView.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                } // onClick
-            });
         } // bindView
     } // ListAdapter
-}
+} // MainDialog

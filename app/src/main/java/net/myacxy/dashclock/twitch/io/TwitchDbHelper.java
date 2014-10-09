@@ -88,36 +88,51 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    public enum State {
+        ALL,
+        ONLINE,
+        OFFLINE
+    }
     /**
      * Retrieves data from the database and returns it as a Cursor.
      *
      * @param selected only retrieve channels that were selected
-     * @param online only retrieves TwitchChannels that are online
+     * @param state TODO
      * @return Cursor of the retrieved data
      */
-    public Cursor getChannelsCursor(boolean selected, boolean online)
+    public Cursor getChannelsCursor(boolean selected, State state, String sortOrder)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
+        selected = selected && sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
 
         String selection = null;
         String[] selectionArgs = null;
-        // select 'online' column
-        if(online) {
-            selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
-            selectionArgs = new String[]{ "1" };
-        }
-        // select 'selected' column
-        if (selected && sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false)) {
-            if(online) {
-                selection += " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
-                selectionArgs = new String[]{ "1", "1" };
-            } else {
-                selection = TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+
+        switch (state) {
+            case ALL:
+                if(selected) {
+                    selection = TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+                    selectionArgs = new String[]{ "1" };
+                }
+                break;
+            case ONLINE:
+                selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
                 selectionArgs = new String[]{ "1" };
-            }
+                if (selected) {
+                    selection += " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+                    selectionArgs = new String[]{ "1", "1" };
+                }
+                break;
+            case OFFLINE:
+                selection = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " LIKE ?";
+                selectionArgs = new String[]{ "0" };
+                if (selected) {
+                    selection += " AND " + TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + " LIKE ?";
+                    selectionArgs = new String[]{ "0", "1" };
+                }
+                break;
         }
+
         // get all entries of the table from the database
         Cursor cursor = getReadableDatabase().query(
                 TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
@@ -141,7 +156,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     {
         ArrayList<TwitchChannel> twitchChannels = new ArrayList<TwitchChannel>();
         // retrieve data cursor
-        Cursor cursor = getChannelsCursor(selected, false);
+        Cursor cursor = getChannelsCursor(selected, State.ALL, TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME);
         // parse each data element to a TwitchChannel
         while(cursor.moveToNext()) {
             TwitchChannel twitchChannel = new TwitchChannel();
