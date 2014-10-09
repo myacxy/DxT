@@ -129,8 +129,9 @@ public class MainDialog extends DialogFragment {
                     }
                 });
 
-                final Button showOfflineButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                showOfflineButton.setOnClickListener(new View.OnClickListener() {
+                // set toggle button
+                final Button toggleOfflineButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                toggleOfflineButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         boolean toggle = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
@@ -138,9 +139,9 @@ public class MainDialog extends DialogFragment {
                         initView();
                     }
                 });
+
                 // set update button
                 Button updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
                 updateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -151,6 +152,7 @@ public class MainDialog extends DialogFragment {
                             public void handleAsyncTaskFinished() {
                                 Log.d("MainDialog", "Update finished.");
                                 if(getActivity() != null) {
+                                    // reinit view and update data
                                     initView();
                                     new TwitchDbHelper(getActivity()).updatePublishedData();
                                 }
@@ -184,41 +186,47 @@ public class MainDialog extends DialogFragment {
     }
 
     /**
-     * TODO: javadoc / comments
+     * Initializes the ListView inside the main dialog. A MergeAdapter is being used
+     * to separate online and offline channels and display a corresponding header.
      */
     public void initView() {
-        boolean showOffline = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
-        // initialize database helper
+
+        // adapter merging multiple views and adapters
+        MergeAdapter mergeAdapter = new MergeAdapter();
+        // add online header
+        TextView header = new TextView(getActivity());
+        header.setText(R.string.dialog_header_online);
+        header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
+        mergeAdapter.addView(header);
+        // add divider
+        View divider = View.inflate(getActivity(), R.layout.divider, null);
+        mergeAdapter.addView(divider);
+        // initialize database
         boolean selected = mSp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " DESC";
         mDbHelper = new TwitchDbHelper(getActivity());
-        // get cursor for channels that are online
+        // get cursor for the channels that are online
         mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.ONLINE, sortOrder);
-
+        // add online list adapter
         ListAdapter listAdapter = new ListAdapter(getActivity());
-        // reassign the cursor
         listAdapter.swapCursor(mCursor);
-        MergeAdapter mergeAdapter = new MergeAdapter();
-        TextView header = new TextView(getActivity());
-        header.setText("Online");
-        header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
-        mergeAdapter.addView(header);
-        View divider = View.inflate(getActivity(), R.layout.divider, null);
-        mergeAdapter.addView(divider);
-
         mergeAdapter.addAdapter(listAdapter);
 
+        // display offline channels?
+        boolean showOffline = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
         if(showOffline) {
+            // add offline header
             header = new TextView(getActivity());
-            header.setText("Offline");
+            header.setText(R.string.dialog_header_offline);
             header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
             mergeAdapter.addView(header);
+            // add divider
             divider = View.inflate(getActivity(), R.layout.divider, null);
             mergeAdapter.addView(divider);
-            listAdapter = new ListAdapter(getActivity());
-            // get cursor for all channels
+            // get cursor for the channels that are offline
             mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.OFFLINE, sortOrder);
-            // reassign the cursor
+            // add offline list adapter
+            listAdapter = new ListAdapter(getActivity());
             listAdapter.swapCursor(mCursor);
             mergeAdapter.addAdapter(listAdapter);
         }

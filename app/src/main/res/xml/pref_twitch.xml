@@ -23,12 +23,22 @@
         <net.myacxy.dashclock.twitch.ui.NumberPickerDialog
             android:key="pref_update_interval"
             android:title="@string/pref_update_interval_title"/>
+        <Preference
+            android:key="pref_abbreviate"
+            android:title="@string/pref_abbreviate_title"
+            android:summary="@string/pref_abbreviate_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_support">
         <Preference
             android:title="@string/pref_about_title"
             android:summary="@string/pref_about_summary"/>
+        <Preference
+            android:title="@string/pref_donate_title"
+            android:summary="@string/pref_donate_summary"/>
+        <Preference
+            android:title="@string/pref_rate_title"
+            android:summary="@string/pref_rate_summary"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
