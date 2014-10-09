@@ -15,8 +15,8 @@ How to use
 Screenshots
 ===========
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/4520873/5b2b6906-4cff-11e4-8961-6916c4eadd38.png" width="256px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/4571477/e13a6630-4f77-11e4-8897-498c4072c46b.png" width="256px"/>
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/4520874/5ca9fc48-4cff-11e4-814c-c7a627ef8b5e.png" width="256px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/4571470/cdb6b6c2-4f77-11e4-90c8-15979e05baf1.png" width="256px"/>
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/4520872/57087a08-4cff-11e4-9425-841c6bbe8a4a.png" width="256px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/4571469/cdb5d874-4f77-11e4-954c-17528c4bddf0.png" width="256px"/>
