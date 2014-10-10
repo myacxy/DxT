@@ -42,4 +42,11 @@
     <string name="pref_donate_summary">Support further development.</string>
     <string name="pref_rate_title">Rate</string>
     <string name="pref_rate_summary">Leave your feedback</string>
+    <string name="about_body" translatable="false">
+        <![CDATA[
+        Copyright © 2014, Johannes Hoffmann<br>
+        All rights reserved.<br>
+        Licensed under the BSD 2-Clause License.<br><br>
+
+        Source Code available on GitHub.]]></string>
 </resources>

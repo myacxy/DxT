@@ -89,7 +89,7 @@ public class TwitchExtension extends DashClockExtension {
         // publish data
         publishUpdate(new ExtensionData()
                 .visible(onlineCount > 0)
-                .icon(R.drawable.ic_twitch_purple)
+                .icon(R.drawable.twitch_purple)
                 .status(status)
                 .expandedTitle(expandedTitle)
                 .expandedBody(expandedBody)

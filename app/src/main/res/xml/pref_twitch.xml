@@ -30,7 +30,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_support">
-        <Preference
+        <net.myacxy.dashclock.twitch.ui.AboutDialog
+            android:key="pref_about"
             android:title="@string/pref_about_title"
             android:summary="@string/pref_about_summary"/>
         <Preference
@@ -38,6 +39,7 @@
             android:title="@string/pref_donate_title"
             android:summary="@string/pref_donate_summary"/>
         <Preference
+            android:key="pref_rate"
             android:title="@string/pref_rate_title"
             android:summary="@string/pref_rate_summary"/>
     </PreferenceCategory>
