@@ -20,3 +20,8 @@ Screenshots
 <img src="https://cloud.githubusercontent.com/assets/4597425/4571470/cdb6b6c2-4f77-11e4-90c8-15979e05baf1.png" width="256px"/>
 
 <img src="https://cloud.githubusercontent.com/assets/4597425/4571469/cdb5d874-4f77-11e4-954c-17528c4bddf0.png" width="256px"/>
+
+Support
+=======
+
+[![PayPal Donation](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FBWHP6A4GDM9Q)
