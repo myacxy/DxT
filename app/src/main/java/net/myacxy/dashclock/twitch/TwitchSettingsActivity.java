@@ -24,6 +24,7 @@
 
 package net.myacxy.dashclock.twitch;
 
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -65,6 +66,19 @@ public class TwitchSettingsActivity extends PreferenceActivity
                 return true;
             }
         });
+
+        Preference donate = findPreference("pref_donate");
+        donate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FBWHP6A4GDM9Q";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+                return true;
+            }
+        });
+
     }
 
     @Override

@@ -39,7 +39,7 @@
     <string name="pref_abbreviate_title">Set Game Title Abbreviations</string>
     <string name="pref_abbreviate_summary">0 out of 0 custom abbreviations</string>
     <string name="pref_donate_title">Donate</string>
-    <string name="pref_donate_summary">Support further development</string>
+    <string name="pref_donate_summary">Support further development.</string>
     <string name="pref_rate_title">Rate</string>
     <string name="pref_rate_summary">Leave your feedback</string>
 </resources>

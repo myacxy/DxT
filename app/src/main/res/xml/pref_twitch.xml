@@ -34,6 +34,7 @@
             android:title="@string/pref_about_title"
             android:summary="@string/pref_about_summary"/>
         <Preference
+            android:key="pref_donate"
             android:title="@string/pref_donate_title"
             android:summary="@string/pref_donate_summary"/>
         <Preference
