@@ -20,3 +20,11 @@ Screenshots
 <img src="https://cloud.githubusercontent.com/assets/4597425/4571470/cdb6b6c2-4f77-11e4-90c8-15979e05baf1.png" width="256px"/>
 
 <img src="https://cloud.githubusercontent.com/assets/4597425/4571469/cdb5d874-4f77-11e4-954c-17528c4bddf0.png" width="256px"/>
+
+Support
+=======
+
+<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=S54RBL5JC8K6S" 
+    data-button="donate" 
+    data-name="DashClock Twitch"
+></script>
