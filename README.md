@@ -24,7 +24,4 @@ Screenshots
 Support
 =======
 
-<script async="async" src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=S54RBL5JC8K6S" 
-    data-button="donate" 
-    data-name="DashClock Twitch"
-></script>
+[![PayPal Donation](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FBWHP6A4GDM9Q)
