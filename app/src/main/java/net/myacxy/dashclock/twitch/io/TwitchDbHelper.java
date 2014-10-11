@@ -205,7 +205,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // initialize data
         int onlineCount = onlineChannels.size();
         String status = String.format("%d Live", onlineCount);
-        String expandedTitle = String.format("%s Channel%s", status, onlineCount > 1 ? "s" : "");
+        String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
         String expandedBody = "";
         // build body
         for (TwitchChannel tc : onlineChannels)

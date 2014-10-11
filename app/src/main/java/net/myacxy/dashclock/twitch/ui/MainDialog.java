@@ -80,6 +80,7 @@ public class MainDialog extends DialogFragment {
     protected Cursor mCursor;
     private TwitchUserFollowsGetter followsGetter;
     private View mDialogView;
+    boolean hideNeutral;
 
     public interface DialogListener {
         public void onDialogDismiss(DialogInterface dialog);
@@ -89,6 +90,7 @@ public class MainDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mSp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        hideNeutral = mSp.getBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, false);
         super.onCreate(savedInstanceState);
     }
 
@@ -111,7 +113,7 @@ public class MainDialog extends DialogFragment {
         builder.setView(mDialogView);
         // enable buttons
         builder.setNegativeButton(R.string.dialog_main_dismiss, null);
-        builder.setNeutralButton(R.string.dialog_main_toggle_offline, null);
+        if(!hideNeutral) builder.setNeutralButton(R.string.dialog_main_toggle_offline, null);
         builder.setPositiveButton(R.string.dialog_main_update, null);
 
         final AlertDialog alertDialog = builder.create();
@@ -129,16 +131,19 @@ public class MainDialog extends DialogFragment {
                     }
                 });
 
-                // set toggle button
-                final Button toggleOfflineButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                toggleOfflineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean toggle = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
-                        mSp.edit().putBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, !toggle).apply();
-                        initView();
-                    }
-                });
+                if(!hideNeutral) {
+                    // set toggle button
+                    final Button toggleOfflineButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+
+                    toggleOfflineButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            boolean toggle = mSp.getBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, false);
+                            mSp.edit().putBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, !toggle).apply();
+                            initView();
+                        }
+                    });
+                }
 
                 // set update button
                 Button updateButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -179,8 +184,9 @@ public class MainDialog extends DialogFragment {
         if(followsGetter == null);
         else if(followsGetter.getStatus() != AsyncTask.Status.FINISHED)
             followsGetter.cancel(true);
-        else if(followsGetter.tcocManager.getStatus() != AsyncTask.Status.FINISHED)
-            followsGetter.tcocManager.cancel(true);
+        else if(followsGetter.tcocManager != null)
+            if(followsGetter.tcocManager.getStatus() != AsyncTask.Status.FINISHED)
+                followsGetter.tcocManager.cancel(true);
 
         super.onDestroy();
     }
@@ -190,17 +196,21 @@ public class MainDialog extends DialogFragment {
      * to separate online and offline channels and display a corresponding header.
      */
     public void initView() {
+        boolean showOffline = showOffline = mSp.getBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, false);
 
         // adapter merging multiple views and adapters
         MergeAdapter mergeAdapter = new MergeAdapter();
-        // add online header
-        TextView header = new TextView(getActivity());
-        header.setText(R.string.dialog_header_online);
-        header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
-        mergeAdapter.addView(header);
-        // add divider
-        View divider = View.inflate(getActivity(), R.layout.divider, null);
-        mergeAdapter.addView(divider);
+        if(!hideNeutral && showOffline) {
+            // add online header
+            TextView header = new TextView(getActivity());
+            header.setText(R.string.dialog_header_online);
+            header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
+            mergeAdapter.addView(header);
+            // add divider
+            View divider = View.inflate(getActivity(), R.layout.divider, null);
+            mergeAdapter.addView(divider);
+        }
+
         // initialize database
         boolean selected = mSp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " DESC";
@@ -213,14 +223,15 @@ public class MainDialog extends DialogFragment {
         mergeAdapter.addAdapter(listAdapter);
 
         // display offline channels?
-        boolean showOffline = mSp.getBoolean(TwitchExtension.PREF_TOGGLE_OFFLINE, false);
-        if(showOffline) {
+        if(!hideNeutral && showOffline) {
             // add offline header
+            TextView header = new TextView(getActivity());
             header = new TextView(getActivity());
             header.setText(R.string.dialog_header_offline);
             header.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_DialogWindowTitle);
             mergeAdapter.addView(header);
             // add divider
+            View divider = View.inflate(getActivity(), R.layout.divider, null);
             divider = View.inflate(getActivity(), R.layout.divider, null);
             mergeAdapter.addView(divider);
             // get cursor for the channels that are offline

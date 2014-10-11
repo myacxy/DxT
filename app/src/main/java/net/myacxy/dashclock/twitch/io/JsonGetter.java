@@ -57,7 +57,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     // Dialog displaying the progress for the async task getting json from http
     protected ProgressDialog mProgressDialog;
     protected String mProgressDialogMessage;
-
+    protected String mToastMessage;
     protected AsyncTaskListener mListener;
 
     public JsonGetter(){
@@ -120,6 +120,10 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     @Override
     protected void onCancelled() {
         Log.d("JsonGetter", "Cancelled.");
+        if(mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+            Toast.makeText(mContext, mToastMessage, Toast.LENGTH_LONG).show();
+        }
         super.onCancelled();
     }
 
@@ -145,12 +149,14 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
-            httpget.setHeader("Accept", "application/json");
+            httpget.setHeader("Accept", "application/vnd.twitchtv.v2+json");
             HttpResponse response = httpclient.execute(httpget);
             HttpEntity entity = response.getEntity();
             is = entity.getContent();
         } catch(Exception e) {
-            e.printStackTrace();
+            mToastMessage = "Http Error";
+            cancel(true);
+            return null;
         }
 
         //convert response to string
@@ -164,12 +170,16 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
             is.close();
             jsonString=sb.toString();
         } catch(Exception e) {
-            e.printStackTrace();
+            mToastMessage = "Http Error";
+            cancel(true);
+            return null;
         }
         try {
             jsonObject = new JSONObject(jsonString);
         } catch (JSONException e) {
-            e.printStackTrace();
+            mToastMessage = "JSON Exception";
+            cancel(true);
+            return null;
         }
 
         return jsonObject;

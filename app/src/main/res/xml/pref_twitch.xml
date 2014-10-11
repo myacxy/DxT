@@ -2,7 +2,9 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/pref_category_customization">
+    <!--General-->
+    <PreferenceCategory android:title="@string/pref_category_general">
+        <!--User Name-->
         <net.myacxy.dashclock.twitch.ui.UserNameDialog
             android:defaultValue="test_user1"
             android:selectAllOnFocus="true"
@@ -10,38 +12,67 @@
             android:title="@string/pref_user_name_title"
             android:singleLine="true"
             android:maxLines="1"/>
-
+        <CheckBoxPreference
+            android:key="pref_hide_empty"
+            android:title="@string/pref_hide_empty_title"
+            android:summary="@string/pref_hide_empty_summary"
+            android:defaultValue="true"/>
+        <!--Custom Visibility-->
         <CheckBoxPreference
             android:key="pref_custom_visibility"
-            android:title="@string/pref_custom_visibility_title"/>
+            android:title="@string/pref_custom_visibility_title"
+            android:summary="@string/pref_custom_visibility_summary"/>
 
+        <!--Selection Dialog-->
         <net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog
             android:key="pref_following_selection"
             android:dependency="pref_custom_visibility"
             android:title="@string/pref_following_selection_title"/>
 
-        <net.myacxy.dashclock.twitch.ui.NumberPickerDialog
+        <!--Interval Dialog-->
+        <net.myacxy.dashclock.twitch.ui.IntervalPreference
             android:key="pref_update_interval"
             android:title="@string/pref_update_interval_title"/>
+
+        <!--Custom Game Titles-->
         <Preference
             android:key="pref_abbreviate"
             android:title="@string/pref_abbreviate_title"
-            android:summary="@string/pref_abbreviate_summary"/>
+            android:summary="@string/pref_abbreviate_summary"
+            android:enabled="false"/>
     </PreferenceCategory>
 
+    <!--Main Dialog-->
+    <PreferenceCategory android:title="@string/pref_category_dialog">
+        <CheckBoxPreference
+            android:title="@string/pref_dialog_hide_neutral_title"
+            android:summary="@string/pref_dialog_hide_neutral_summary"
+            android:key="pref_dialog_hide_neutral">
+
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+    <!--Support-->
     <PreferenceCategory android:title="@string/pref_category_support">
-        <net.myacxy.dashclock.twitch.ui.AboutDialog
-            android:key="pref_about"
-            android:title="@string/pref_about_title"
-            android:summary="@string/pref_about_summary"/>
+        <!--Rate-->
+        <Preference
+            android:key="pref_rate"
+            android:title="@string/pref_rate_title"
+            android:summary="@string/pref_rate_summary"
+            android:enabled="false"/>
+
+        <!--Donate-->
         <Preference
             android:key="pref_donate"
             android:title="@string/pref_donate_title"
             android:summary="@string/pref_donate_summary"/>
-        <Preference
-            android:key="pref_rate"
-            android:title="@string/pref_rate_title"
-            android:summary="@string/pref_rate_summary"/>
+
+        <!--About-->
+        <net.myacxy.dashclock.twitch.ui.AboutDialog
+            android:key="pref_about"
+            android:title="@string/pref_about_title"
+            android:summary="@string/pref_about_summary"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -39,7 +39,7 @@
     <string name="pref_abbreviate_title">Set Game Title Abbreviations</string>
     <string name="pref_abbreviate_summary">0 out of 0 custom abbreviations</string>
     <string name="pref_donate_title">Donate</string>
-    <string name="pref_donate_summary">Support further development.</string>
+    <string name="pref_donate_summary">Support further development</string>
     <string name="pref_rate_title">Rate</string>
     <string name="pref_rate_summary">Leave your feedback</string>
     <string name="about_body" translatable="false">
@@ -49,4 +49,12 @@
         Licensed under the BSD 2-Clause License.<br><br>
 
         Source Code available on GitHub.]]></string>
+    <string name="pref_category_mandatory">Mandatory</string>
+    <string name="pref_category_dialog">Main Dialog</string>
+    <string name="pref_dialog_hide_neutral_title">Hide Neutral Button</string>
+    <string name="pref_category_general">General</string>
+    <string name="pref_dialog_hide_neutral_summary">Hide the \'Toggle Offline\' Button</string>
+    <string name="pref_hide_empty_title">Hide Empty Extension</string>
+    <string name="pref_hide_empty_summary">Hide extension if no channels are online</string>
+    <string name="pref_custom_visibility_summary">Enable custom channel selection</string>
 </resources>

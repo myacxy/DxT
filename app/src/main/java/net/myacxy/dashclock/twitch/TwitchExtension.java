@@ -54,7 +54,9 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_STATUS = "pref_status";
     public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
     public static String PREF_EXPANDED_BODY = "pref_expanded_body";
-    public static String PREF_TOGGLE_OFFLINE = "pref_toggle_offline";
+    public static String PREF_DIALOG_TOGGLE_OFFLINE = "pref_dialog_toggle_offline";
+    public static String PREF_DIALOG_HIDE_NEUTRAL_BUTTON = "pref_dialog_hide_neutral_button";
+    public static String PREF_HIDE_EMPTY = "pref_hide_empty";
 
     private AsyncTask task;
 
@@ -84,11 +86,12 @@ public class TwitchExtension extends DashClockExtension {
         String status = sp.getString(PREF_STATUS, "Empty");
         String expandedTitle = sp.getString(PREF_EXPANDED_TITLE, "Empty");
         String expandedBody = sp.getString(PREF_EXPANDED_BODY, "Empty");
-
+        boolean hideEmpty = sp.getBoolean(PREF_HIDE_EMPTY, true);
+        boolean visible = onlineCount > 0 || !hideEmpty;
         Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);
         // publish data
         publishUpdate(new ExtensionData()
-                .visible(onlineCount > 0)
+                .visible(visible)
                 .icon(R.drawable.twitch_purple)
                 .status(status)
                 .expandedTitle(expandedTitle)

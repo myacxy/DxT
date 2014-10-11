@@ -41,17 +41,17 @@ import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
-public class NumberPickerDialog extends Preference {
+public class IntervalPreference extends Preference {
 
-    public NumberPickerDialog(Context context, AttributeSet attrs, int defStyle) {
+    public IntervalPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public NumberPickerDialog(Context context, AttributeSet attrs) {
+    public IntervalPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NumberPickerDialog(Context context) {
+    public IntervalPreference(Context context) {
         super(context);
     }
 
@@ -59,7 +59,7 @@ public class NumberPickerDialog extends Preference {
     protected void onClick() {
         // set up number picker
         final NumberPicker numberPicker = new NumberPicker(getContext());
-        numberPicker.setMinValue(1);
+        numberPicker.setMinValue(5);
         numberPicker.setMaxValue(60);
         // init builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -80,6 +80,7 @@ public class NumberPickerDialog extends Preference {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // save value to preferences
                 sp.edit().putInt(TwitchExtension.PREF_UPDATE_INTERVAL, numberPicker.getValue())
                          .apply();
                 // update channels if last update is older than new interval
@@ -93,6 +94,9 @@ public class NumberPickerDialog extends Preference {
                         }
                     });
                 }
+                // notify change listener
+                getOnPreferenceChangeListener().onPreferenceChange(IntervalPreference.this,
+                        numberPicker.getValue());
             }
         });
         // reset to previous value on ok
