@@ -33,7 +33,12 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
 import net.myacxy.dashclock.twitch.ui.IntervalPreference;
+import net.myacxy.dashclock.twitch.ui.UserNameDialog;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Source=DashClock Example Extension Settings
@@ -51,8 +56,9 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        bindPreferenceSummaryToValue(findPreference("pref_user_name"));
         bindIntervalPreference();
+        bindSelectionPreference();
+        bindUserNamePreference();
 
         CheckBoxPreference checkedTextView = (CheckBoxPreference) findPreference("pref_custom_visibility");
         checkedTextView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -112,6 +118,53 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         int currentValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
+    }
+
+    private void bindSelectionPreference() {
+        FollowingSelectionDialog preference =
+                (FollowingSelectionDialog) findPreference("pref_following_selection");
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Set<String> allChannels =  sp.getStringSet(
+                        TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS, new HashSet<String>());
+                int totalCount = allChannels.size();
+                Set<String> selectedChannels = (Set<String>) newValue;
+                int selectedCount = selectedChannels.size();
+                String summary = String.format("%d out of %d channels selected", selectedCount, totalCount);
+                        preference.setSummary(summary);
+                return true;
+            }
+        });
+
+        Set<String> currentValue = sp.getStringSet(
+                TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS, new HashSet<String>());
+        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
+    }
+
+    private void bindUserNamePreference() {
+        UserNameDialog preference = (UserNameDialog) findPreference("pref_user_name");
+
+        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(newValue.toString());
+
+                FollowingSelectionDialog selectionPreference =
+                        (FollowingSelectionDialog) findPreference("pref_following_selection");
+
+                selectionPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                        selectionPreference, new HashSet<String>());
+
+                return true;
+            }
+        });
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String currentValue = sp.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 }

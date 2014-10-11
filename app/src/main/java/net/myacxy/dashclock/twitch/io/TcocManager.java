@@ -75,7 +75,6 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 
     @Override
     protected void onPostExecute(ArrayList<TwitchChannel> channels) {
-        if(mListener != null) mListener.handleAsyncTaskFinished();
         if(mProgressDialog != null) mProgressDialog.dismiss();
         // save all followed channels to shared preferences
         saveTwitchChannelsToPreferences(mChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
@@ -83,6 +82,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         new TwitchDbHelper(mContext).saveChannels(mChannels);
         // save the time of this update
         saveCurrentTime();
+        if(mListener != null) mListener.handleAsyncTaskFinished();
     }
 
     @Override

@@ -66,8 +66,7 @@ public class UserNameDialog extends EditTextPreference
             editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                     new HashSet<String>()).apply();
             // remove whitespaces
-            String userName = getEditText().getText().toString();
-            userName = userName.trim();
+            final String userName = getEditText().getText().toString().trim();
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
             TwitchExtension.updateTwitchChannels(getContext(),
@@ -76,6 +75,7 @@ public class UserNameDialog extends EditTextPreference
                 @Override
                 public void handleAsyncTaskFinished() {
                     new TwitchDbHelper(getContext()).updatePublishedData();
+                    getOnPreferenceChangeListener().onPreferenceChange(UserNameDialog.this, userName);
                 }
             });
         }
