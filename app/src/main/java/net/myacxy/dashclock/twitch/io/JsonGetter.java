@@ -149,7 +149,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
-            httpget.setHeader("Accept", "application/vnd.twitchtv.v2+json");
+            httpget.setHeader("Accept", "application/vnd.twitchtv.v3+json");
             HttpResponse response = httpclient.execute(httpget);
             HttpEntity entity = response.getEntity();
             is = entity.getContent();

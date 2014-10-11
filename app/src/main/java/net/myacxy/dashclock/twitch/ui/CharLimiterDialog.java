@@ -1,3 +1,27 @@
+/**
+ * Copyright (c) 2014, Johannes Hoffmann
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted
+ * provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions
+ * and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+ * and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+ * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package net.myacxy.dashclock.twitch.ui;
 
 import android.app.AlertDialog;
@@ -56,7 +80,7 @@ public class CharLimiterDialog extends Preference {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         Set<String> allChannels = sp.getStringSet(TwitchExtension.PREF_EXPANDED_BODY, new HashSet<String>());
         final String longestBody = getLongestString(allChannels);
-        final SpannableString text = new SpannableString(longestBody);
+        SpannableString text = new SpannableString(longestBody);
         final int color = getContext().getResources().getColor(android.R.color.darker_gray);
         final int color2 = getContext().getResources().getColor(android.R.color.black);
         final int previousValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
@@ -74,11 +98,12 @@ public class CharLimiterDialog extends Preference {
         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                text.setSpan(new ForegroundColorSpan(color2), 0,
-                        newVal - 1 > maxLength ? maxLength : newVal - 1, 0);
-                text.setSpan(new ForegroundColorSpan(color),
+                SpannableString newText = new SpannableString(longestBody);
+                newText.setSpan(new ForegroundColorSpan(color2), 0,
+                        newVal  > maxLength ? maxLength : newVal, 0);
+                newText.setSpan(new ForegroundColorSpan(color),
                         newVal > maxLength ? maxLength : newVal, maxLength, 0);
-                textView.setText(text);
+                textView.setText(newText);
             }
         });
 
