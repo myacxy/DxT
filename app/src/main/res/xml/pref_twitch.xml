@@ -30,10 +30,14 @@
             android:title="@string/pref_following_selection_title"/>
 
         <!--Interval Dialog-->
-        <net.myacxy.dashclock.twitch.ui.IntervalPreference
+        <net.myacxy.dashclock.twitch.ui.IntervalDialog
             android:key="pref_update_interval"
             android:title="@string/pref_update_interval_title"/>
-
+        <!--Char Limiter-->
+        <net.myacxy.dashclock.twitch.ui.CharLimiterDialog
+            android:key="pref_char_limiter"
+            android:title="@string/pref_char_limit_title"
+            android:enabled="true"/>
         <!--Custom Game Titles-->
         <Preference
             android:key="pref_abbreviate"
@@ -70,8 +74,7 @@
         <!--About-->
         <net.myacxy.dashclock.twitch.ui.AboutDialog
             android:key="pref_about"
-            android:title="@string/pref_about_title"
-            android:summary="@string/pref_about_summary"/>
+            android:title="@string/pref_about_title"/>
 
     </PreferenceCategory>
 

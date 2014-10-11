@@ -36,6 +36,7 @@ import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -206,18 +207,17 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         int onlineCount = onlineChannels.size();
         String status = String.format("%d Live", onlineCount);
         String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
-        String expandedBody = "";
+        Set<String> expandedBody = new HashSet<String>();
         // build body
-        for (TwitchChannel tc : onlineChannels)
-        {
-            expandedBody += String.format("%s playing %s: %s", tc.displayName, tc.game, tc.status);
-            if(onlineChannels.indexOf(tc) < onlineChannels.size() - 1) expandedBody += "\n";
+        for (TwitchChannel tc : onlineChannels) {
+            expandedBody.add(String.format("%s playing %s: %s", tc.displayName, tc.game, tc.status));
         }
+
         // save data to preferences
         editor.putInt(TwitchExtension.PREF_ONLINE_COUNT, onlineCount);
         editor.putString(TwitchExtension.PREF_STATUS, status);
         editor.putString(TwitchExtension.PREF_EXPANDED_TITLE, expandedTitle);
-        editor.putString(TwitchExtension.PREF_EXPANDED_BODY, expandedBody);
+        editor.putStringSet(TwitchExtension.PREF_EXPANDED_BODY, expandedBody);
         editor.apply();
     } // updateSharedPreferencesData
 

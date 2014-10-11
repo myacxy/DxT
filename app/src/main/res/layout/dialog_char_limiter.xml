@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pref_char_limiter_value"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pref_char_limiter_value"
+        android:padding="16dp"
+        android:lineSpacingMultiplier="1.15"
+        android:textIsSelectable="false"
+        android:id="@+id/pref_char_limiter_text"/>
+
+</RelativeLayout>

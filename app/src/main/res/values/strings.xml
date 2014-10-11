@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Common-->
+    <!--General-->
     <string name="app_name">DashClock Twitch</string>
     <string name="extension_description">Displays information about Twitch.tv live streams that you follow.</string>
     <string name="settings_title">DashClock Twitch Settings</string>
-
     <string name="action_settings">Settings</string>
     <string name="pref_ringtone_silent">Silent</string>
 
@@ -12,15 +11,24 @@
     <string name="dialog_main_dismiss">Dismiss</string>
     <string name="dialog_main_toggle_offline">Toggle Offline</string>
     <string name="dialog_main_update">Update</string>
+    <string name="dialog_header_online">Online</string>
+    <string name="dialog_header_offline">Offline</string>
+    <string name="pref_dialog_hide_neutral_title">Hide Neutral Button</string>
+    <string name="pref_dialog_hide_neutral_summary">Hide the \'Toggle Offline\' button</string>
+
     <!--Preference Categories-->
     <string name="pref_category_customization">Customization</string>
     <string name="pref_category_support">Support</string>
+    <string name="pref_category_dialog">Main Dialog</string>
+    <string name="pref_category_general">General</string>
 
     <!--Preferences-->
     <string name="pref_user_name_title">Set User Name</string>
+    <string name="pref_char_limit_title">Adjust Character Limit</string>
 
-    <!--Selection-->
+    <!--Custom Selection-->
     <string name="pref_custom_visibility_title">Custom Visibility</string>
+    <string name="pref_custom_visibility_summary">Enable custom channel selection</string>
     <string name="pref_following_selection_title">Select Custom Channels</string>
     <string name="pref_following_selection_progress_title">Fetching data...</string>
     <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
@@ -32,29 +40,28 @@
     <string name="dialog_update_interval_title">Pick an interval</string>
 
     <!--About-->
-    <string name="pref_about_summary">About summary</string>
     <string name="pref_about_title">About</string>
-    <string name="dialog_header_online">Online</string>
-    <string name="dialog_header_offline">Offline</string>
-    <string name="pref_abbreviate_title">Set Game Title Abbreviations</string>
-    <string name="pref_abbreviate_summary">0 out of 0 custom abbreviations</string>
-    <string name="pref_donate_title">Donate</string>
-    <string name="pref_donate_summary">Support further development</string>
-    <string name="pref_rate_title">Rate</string>
-    <string name="pref_rate_summary">Leave your feedback</string>
     <string name="about_body" translatable="false">
         <![CDATA[
         Copyright © 2014, Johannes Hoffmann<br>
         All rights reserved.<br>
         Licensed under the BSD 2-Clause License.<br><br>
 
-        Source Code available on GitHub.]]></string>
-    <string name="pref_category_mandatory">Mandatory</string>
-    <string name="pref_category_dialog">Main Dialog</string>
-    <string name="pref_dialog_hide_neutral_title">Hide Neutral Button</string>
-    <string name="pref_category_general">General</string>
-    <string name="pref_dialog_hide_neutral_summary">Hide the \'Toggle Offline\' Button</string>
+        Source Code available on GitHub.]]>
+    </string>
+
+    <!--Abbreviation Dialog-->
+    <string name="pref_abbreviate_title">Set Game Title Abbreviations</string>
+    <string name="pref_abbreviate_summary">0 out of 0 custom abbreviations</string>
+
+    <!--Donate-->
+    <string name="pref_donate_title">Donate</string>
+    <string name="pref_donate_summary">Support further development</string>
+    <!--Rate-->
+    <string name="pref_rate_title">Rate</string>
+    <string name="pref_rate_summary">Leave your feedback</string>
+
+    <!--Hide Empty-->
     <string name="pref_hide_empty_title">Hide Empty Extension</string>
     <string name="pref_hide_empty_summary">Hide extension if no channels are online</string>
-    <string name="pref_custom_visibility_summary">Enable custom channel selection</string>
 </resources>

@@ -40,6 +40,9 @@ import net.myacxy.dashclock.twitch.io.TcocManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 
 public class TwitchExtension extends DashClockExtension {
 
@@ -57,6 +60,7 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_DIALOG_TOGGLE_OFFLINE = "pref_dialog_toggle_offline";
     public static String PREF_DIALOG_HIDE_NEUTRAL_BUTTON = "pref_dialog_hide_neutral_button";
     public static String PREF_HIDE_EMPTY = "pref_hide_empty";
+    public static String PREF_CHAR_LIMIT = "pref_char_limit";
 
     private AsyncTask task;
 
@@ -85,7 +89,19 @@ public class TwitchExtension extends DashClockExtension {
         int onlineCount = sp.getInt(PREF_ONLINE_COUNT, 0);
         String status = sp.getString(PREF_STATUS, "Empty");
         String expandedTitle = sp.getString(PREF_EXPANDED_TITLE, "Empty");
-        String expandedBody = sp.getString(PREF_EXPANDED_BODY, "Empty");
+        ArrayList<String> expandedBodyList = new ArrayList<String>(
+                sp.getStringSet(PREF_EXPANDED_BODY, new HashSet<String>()));
+        int charLimit = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        String expandedBody = "";
+        for (String string : expandedBodyList) {
+            int index = expandedBodyList.indexOf(string);
+            if(charLimit < string.length()) {
+                string = string.substring(0, charLimit).trim();
+                expandedBodyList.set(index, string);
+            }
+            expandedBody += string;
+            if(index < expandedBodyList.size() - 1) expandedBody += "\n";
+        }
         boolean hideEmpty = sp.getBoolean(PREF_HIDE_EMPTY, true);
         boolean visible = onlineCount > 0 || !hideEmpty;
         Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);

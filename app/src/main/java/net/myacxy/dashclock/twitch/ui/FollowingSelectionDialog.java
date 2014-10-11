@@ -110,7 +110,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
                 twitchDbHelper.updateSelectionStatus(mSelectedFollowedChannels);
                 twitchDbHelper.updatePublishedData();
-                // notifity change listener
+                // notify change listener
                 getOnPreferenceChangeListener().onPreferenceChange(FollowingSelectionDialog.this,
                         mSelectedFollowedChannels);
             }

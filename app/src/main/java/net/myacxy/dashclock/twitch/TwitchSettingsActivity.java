@@ -33,8 +33,9 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
 import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
-import net.myacxy.dashclock.twitch.ui.IntervalPreference;
+import net.myacxy.dashclock.twitch.ui.IntervalDialog;
 import net.myacxy.dashclock.twitch.ui.UserNameDialog;
 
 import java.util.HashSet;
@@ -57,6 +58,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         bindIntervalPreference();
+        bindCharLimiterPreference();
         bindSelectionPreference();
         bindUserNamePreference();
 
@@ -106,7 +108,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     }
 
     private void bindIntervalPreference() {
-        IntervalPreference preference = (IntervalPreference) findPreference("pref_update_interval");
+        IntervalDialog preference = (IntervalDialog) findPreference("pref_update_interval");
 
         preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -165,6 +167,22 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         String currentValue = sp.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
+        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
+    }
+
+    private void bindCharLimiterPreference() {
+        CharLimiterDialog preference = (CharLimiterDialog) findPreference("pref_char_limiter");
+
+        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(newValue.toString());
+                return true;
+            }
+        });
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        int currentValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 }

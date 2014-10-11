@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 
@@ -41,37 +42,35 @@ import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
-public class IntervalPreference extends Preference {
+public class IntervalDialog extends Preference {
 
-    public IntervalPreference(Context context, AttributeSet attrs, int defStyle) {
+    public IntervalDialog(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public IntervalPreference(Context context, AttributeSet attrs) {
+    public IntervalDialog(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public IntervalPreference(Context context) {
+    public IntervalDialog(Context context) {
         super(context);
     }
 
     @Override
     protected void onClick() {
-        // set up number picker
-        final NumberPicker numberPicker = new NumberPicker(getContext());
-        numberPicker.setMinValue(5);
-        numberPicker.setMaxValue(60);
         // init builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getContext().getResources().getString(R.string.dialog_update_interval_title));
-        // set layout
-        RelativeLayout layout = new RelativeLayout(getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layout.setLayoutParams(params);
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        layout.addView(numberPicker, params);
+        builder.setTitle(getContext().getResources().getString(
+                R.string.dialog_update_interval_title));
+        // init layout
+        RelativeLayout layout = (RelativeLayout) View.inflate(getContext(),
+                R.layout.dialog_interval, null);
         builder.setView(layout);
+        // set up number picker
+        final NumberPicker numberPicker = (NumberPicker) layout.findViewById(
+                R.id.dialog_interval_number_picker);
+        numberPicker.setMinValue(5);
+        numberPicker.setMaxValue(60);
         // retrieve previous setting
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         final int previousValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
@@ -95,7 +94,7 @@ public class IntervalPreference extends Preference {
                     });
                 }
                 // notify change listener
-                getOnPreferenceChangeListener().onPreferenceChange(IntervalPreference.this,
+                getOnPreferenceChangeListener().onPreferenceChange(IntervalDialog.this,
                         numberPicker.getValue());
             }
         });
