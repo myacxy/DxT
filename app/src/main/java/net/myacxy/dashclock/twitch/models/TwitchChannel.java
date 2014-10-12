@@ -24,9 +24,7 @@
 
 package net.myacxy.dashclock.twitch.models;
 
-import android.content.Context;
-
-import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
+import net.myacxy.dashclock.twitch.io.JsonGetter;
 
 import org.json.JSONObject;
 
@@ -53,11 +51,10 @@ public class TwitchChannel
      * Constructor that initializes the class members automatically from given JSON data.
      *
      * @param channelObject JSON Data of a Twitch Channel
-     * @param context
      */
-    public TwitchChannel(JSONObject channelObject, Context context)
+    public TwitchChannel(JSONObject channelObject)
     {
-        init(channelObject, context);
+        init(channelObject);
     }
 
     /**
@@ -66,15 +63,13 @@ public class TwitchChannel
      *
      * @param channelObject JSON Data of a Twitch Channel
      */
-    public void init(JSONObject channelObject, final Context context)
+    private void init(JSONObject channelObject)
     {
-        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, null);
-
-        status = twitchUserFollowsGetter.getString(channelObject, "status");
-        name = twitchUserFollowsGetter.getString(channelObject, "name");
-        game = twitchUserFollowsGetter.getString(channelObject, "game");
-        displayName = twitchUserFollowsGetter.getString(channelObject, "display_name");
-        followers = twitchUserFollowsGetter.getInt(channelObject, "followers");
-        entryId = twitchUserFollowsGetter.getInt(channelObject, "_id");
+        status = JsonGetter.getString(channelObject, "status");
+        name = JsonGetter.getString(channelObject, "name");
+        game = JsonGetter.getString(channelObject, "game");
+        displayName = JsonGetter.getString(channelObject, "display_name");
+        followers = JsonGetter.getInt(channelObject, "followers");
+        entryId = JsonGetter.getInt(channelObject, "_id");
     }
 }

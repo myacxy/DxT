@@ -192,7 +192,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      * @param name Name of the String that needs to be retrieved
      * @return Value of the sought Object
      */
-    public String getString(JSONObject channelObject, String name)
+    public static String getString(JSONObject channelObject, String name)
     {
         try {
             if(channelObject.get(name) != null)
@@ -212,7 +212,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      * @param name Name of the Integer that needs to be retrieved
      * @return Value of the sought Object
      */
-    public int getInt(JSONObject channelObject, String name)
+    public static int getInt(JSONObject channelObject, String name)
     {
         try {
             if(channelObject.get(name) != null)

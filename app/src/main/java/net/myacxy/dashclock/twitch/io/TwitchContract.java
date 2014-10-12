@@ -50,4 +50,11 @@ public final class TwitchContract {
         public static final String COLUMN_NAME_ONLINE = "online";
         public static final String COLUMN_NAME_SELECTED = "selected";
     }
+
+    public static abstract class GameEntry implements BaseColumns
+    {
+        public static final String TABLE_NAME = "gameEntry";
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_ABBREVIATION = "abbreviation";
+    }
 }

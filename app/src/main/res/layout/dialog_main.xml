@@ -4,9 +4,7 @@
     android:layout_height="match_parent">
 
     <ListView
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingTop="6dp"
+        android:padding="6dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_main_list"/>

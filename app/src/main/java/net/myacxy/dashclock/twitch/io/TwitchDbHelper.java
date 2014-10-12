@@ -47,7 +47,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     private Context mContext;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
-    private static final String SQL_CREATE_ENTRIES =
+
+    private static final String SQL_CREATE_CHANNEL_ENTRIES =
             "CREATE TABLE " + TwitchContract.ChannelEntry.TABLE_NAME + " (" +
             TwitchContract.ChannelEntry._ID + " INTEGER PRIMARY KEY," +
             TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
@@ -59,10 +60,17 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + TEXT_TYPE +
             " )";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_CREATE_GAME_ENTRIES =
+            "CREATE TABLE " + TwitchContract.GameEntry.TABLE_NAME + " (" +
+                    TwitchContract.GameEntry._ID + " INTEGER PRIMARY KEY," +
+                    TwitchContract.GameEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + TEXT_TYPE +
+                    " )";
+
+    private static final String SQL_DELETE_CHANNEL_ENTRIES =
             "DROP TABLE IF EXISTS " + TwitchContract.ChannelEntry.TABLE_NAME;
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Twitch.db";
 
     public TwitchDbHelper(Context context)
@@ -73,14 +81,15 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_CHANNEL_ENTRIES);
+        db.execSQL(SQL_CREATE_GAME_ENTRIES);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_CHANNEL_ENTRIES);
         onCreate(db);
     }
 
@@ -182,8 +191,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     public ArrayList<TwitchChannel> filterOnlineChannels(ArrayList<TwitchChannel> allChannels)
     {
         ArrayList<TwitchChannel> onlineChannels = new ArrayList<TwitchChannel>();
-        for (TwitchChannel tc : allChannels)
-        {
+        for (TwitchChannel tc : allChannels) {
             if(tc.online) onlineChannels.add(tc);
         }
         return onlineChannels;
@@ -222,27 +230,36 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     } // updateSharedPreferencesData
 
     /**
-     * Updates the online status of a TwitchChannel inside the database.
+     * TODO
      *
-     * @param twitchChannel TwitchChannel to be updated
+     * @param game
+     * @param abbreviation
      */
-    public void updateOnlineStatus(TwitchChannel twitchChannel)
+    public void updateOrReplaceGameEntry(String game, String abbreviation)
     {
-        // New value for one column
-        ContentValues values = new ContentValues();
-        values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, twitchChannel.online);
+        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME + " ("
+                + TwitchContract.GameEntry._ID + TEXT_TYPE + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + ")"
+                + "VALUES ("
+                + "(SELECT " + TwitchContract.GameEntry._ID
+                + " FROM " + TwitchContract.GameEntry.TABLE_NAME
+                + " WHERE " + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + game + COMMA_SEP
+                + game + COMMA_SEP
+                + abbreviation + ")";
 
-        // Which row to update, based on the ID
-        String selection = TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        String[] selectionArgs = { String.valueOf(twitchChannel.entryId) };
+        getWritableDatabase().execSQL(sql);
 
-        int count = getReadableDatabase().update(
-                TwitchContract.ChannelEntry.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
         close();
     } // updateOnlineStatus
+
+    public void updateOrReplaceGameEntries(ArrayList<String> games, ArrayList<String> abbreviations) {
+        setWriteAheadLoggingEnabled(true);
+
+        for(String game : games) {
+            updateOrReplaceGameEntry(game, abbreviations.get(games.indexOf(game)));
+        }
+    }
 
     /**
      * Updates the selection status of each TwitchChannel inside the database.
@@ -352,4 +369,16 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         public int online = 6;
         public int selected = 7;
     } // ChannelQuery
+
+    public interface GameQuery {
+        public String[] projection = new String[] {
+                TwitchContract.GameEntry._ID,
+                TwitchContract.GameEntry.COLUMN_NAME_NAME,
+                TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION,
+        };
+
+        public int id = 0;
+        public int getName = 1;
+        public int abbreviation = 2;
+    }
 } // TwitchDbHelper

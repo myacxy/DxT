@@ -131,7 +131,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
                 e.printStackTrace();
             }
             // parse json to TwitchChannel
-            TwitchChannel tc = new TwitchChannel(channelObject, mContext);
+            TwitchChannel tc = new TwitchChannel(channelObject);
             // add channel to list
             followedTwitchChannels.add(tc);
         }
