@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
+import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -146,7 +147,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // get all entries of the table from the database
         Cursor cursor = getReadableDatabase().query(
                 TwitchContract.ChannelEntry.TABLE_NAME, // the table to query
-                TwitchDbHelper.ChannelQuery.projection, // the columns to return
+                ChannelQuery.projection, // the columns to return
                 selection,                              // the columns for the WHERE clause
                 selectionArgs,                          // the values for the WHERE clause
                 null,                                   // don't group the rows
@@ -170,10 +171,10 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // parse each data element to a TwitchChannel
         while(cursor.moveToNext()) {
             TwitchChannel twitchChannel = new TwitchChannel();
-            twitchChannel.displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            twitchChannel.game = cursor.getString((TwitchDbHelper.ChannelQuery.game));
-            twitchChannel.status = cursor.getString(TwitchDbHelper.ChannelQuery.status);
-            twitchChannel.online = cursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
+            twitchChannel.displayName = cursor.getString(ChannelQuery.displayName);
+            twitchChannel.game = cursor.getString((ChannelQuery.game));
+            twitchChannel.status = cursor.getString(ChannelQuery.status);
+            twitchChannel.online = cursor.getInt(ChannelQuery.online) == 1;
             twitchChannels.add(twitchChannel);
         }
         cursor.close();
@@ -229,35 +230,77 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         editor.apply();
     } // updateSharedPreferencesData
 
+    private String checkExampleAbbr(TwitchGame game) {
+
+        switch (game.name) {
+            case "League of Legends":
+                return "LoL";
+            case "Hearthstone: Heroes of Warcraft":
+                return"HS";
+            case "Counter-Strike: Global Offensive":
+                return "CSGO";
+            case "World of Warcraft: Mists of Pandaria":
+                return "WoW";
+            case "StarCraft II: Heart of the Swarm":
+                return "SC2";
+            case "Diablo III: Reaper of Souls":
+                return "D3";
+            case "Final Fantasy XIV Online: A Realm Reborn":
+                return "FFXIV";
+            case "Path of Exile":
+                return "PoE";
+            case "Ultra Street Fighter IV":
+                return "SFIV";
+            default:
+                return null;
+        }
+    }
     /**
      * TODO
-     *
-     * @param game
-     * @param abbreviation
      */
-    public void updateOrReplaceGameEntry(String game, String abbreviation)
+    public void updateOrReplaceGameEntry(TwitchGame game)
     {
+        if(game.abbreviation == null) {
+            game.abbreviation = checkExampleAbbr(game);
+        }
         String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME + " ("
-                + TwitchContract.GameEntry._ID + TEXT_TYPE + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + ")"
+                + TwitchContract.GameEntry._ID + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION +")"
                 + "VALUES ("
                 + "(SELECT " + TwitchContract.GameEntry._ID
                 + " FROM " + TwitchContract.GameEntry.TABLE_NAME
-                + " WHERE " + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + game + COMMA_SEP
-                + game + COMMA_SEP
-                + abbreviation + ")";
+                + " WHERE " + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + "'" + game.name + "')" + COMMA_SEP
+                + "'" + game.name + "'" + COMMA_SEP
+                + "'" + game.abbreviation + "'"  + ")";
 
         getWritableDatabase().execSQL(sql);
 
         close();
     } // updateOnlineStatus
 
-    public void updateOrReplaceGameEntries(ArrayList<String> games, ArrayList<String> abbreviations) {
+
+    public Cursor getGamesCursor() {
+        String sortOrder = TwitchContract.GameEntry.COLUMN_NAME_NAME;
+
+        // get all entries of the table from the database
+        Cursor cursor = getReadableDatabase().query(
+                TwitchContract.GameEntry.TABLE_NAME,    // the table to query
+                GameQuery.projection,                   // the columns to return
+                null,                                   // the columns for the WHERE clause
+                null,                                   // the values for the WHERE clause
+                null,                                   // don't group the rows
+                null,                                   // don't filter by row groups
+                sortOrder                               // the sort order
+        );
+        return cursor;
+    }
+
+    public void updateOrReplaceGameEntries(ArrayList<TwitchGame> games) {
         setWriteAheadLoggingEnabled(true);
 
-        for(String game : games) {
-            updateOrReplaceGameEntry(game, abbreviations.get(games.indexOf(game)));
+        for(TwitchGame game : games) {
+            updateOrReplaceGameEntry(game);
         }
     }
 

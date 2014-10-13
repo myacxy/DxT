@@ -8,11 +8,21 @@
         android:layout_height="wrap_content"
         android:id="@+id/dialog_abbr_game"
         android:text="test"/>
-    <TextView
+    <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_abbr_abbreviation"
         android:layout_toRightOf="@id/dialog_abbr_game"
         android:text="testtest"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialog_abbr_delete"
+        android:layout_toRightOf="@id/dialog_abbr_abbreviation"
+        android:src="@drawable/appbar_delete"
+        android:background="@android:color/transparent"
+        android:maxHeight="?android:attr/listPreferredItemHeightSmall"
+        android:maxWidth="?android:attr/listPreferredItemHeightSmall"
+        android:contentDescription="delete"/>
 
 </RelativeLayout>

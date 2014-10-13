@@ -51,7 +51,6 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
     private Set<String> mSelectedFollowedChannels;
     // currently selected / unsaved channels
     private Set<String> mSelectedFollowedChannelsTemp;
-    private Context mContext;
     private ListAdapter mAdapter;
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
@@ -62,18 +61,16 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
 
     public FollowingSelectionDialog(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // initialize
-        mContext = context;
     }
 
     /** TODO: javadoc / comments */
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
 
-        mAdapter = new ListAdapter(mContext);
-        mDbHelper = new TwitchDbHelper(mContext);
+        mAdapter = new ListAdapter(getContext());
+        mDbHelper = new TwitchDbHelper(getContext());
         // get previously selected channels
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         mSelectedFollowedChannels = sp.getStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                 new HashSet<String>());
         mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
@@ -101,13 +98,13 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // save currently selected channels
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 SharedPreferences.Editor editor = sp.edit();
                 mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
                 editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels).apply();
                 // update database
-                TwitchDbHelper twitchDbHelper = new TwitchDbHelper(mContext);
+                TwitchDbHelper twitchDbHelper = new TwitchDbHelper(getContext());
                 twitchDbHelper.updateSelectionStatus(mSelectedFollowedChannels);
                 twitchDbHelper.updatePublishedData();
                 // notify change listener
@@ -120,7 +117,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // set to previously selected channels
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 sp.edit().putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels).apply();
                 mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);

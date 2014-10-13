@@ -33,6 +33,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.ui.AbbreviationDialog;
 import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
 import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
 import net.myacxy.dashclock.twitch.ui.IntervalDialog;
@@ -61,6 +62,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         bindCharLimiterPreference();
         bindSelectionPreference();
         bindUserNamePreference();
+        bindAbbreviationsPreference();
 
         CheckBoxPreference checkedTextView = (CheckBoxPreference) findPreference("pref_custom_visibility");
         checkedTextView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -183,6 +185,22 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         int currentValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
+    }
+
+    private void bindAbbreviationsPreference() {
+        AbbreviationDialog preference = (AbbreviationDialog) findPreference("pref_abbr");
+
+        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(newValue + " custom abbreviations");
+                return true;
+            }
+        });
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        int currentValue = sp.getInt(TwitchExtension.PREF_ABBR_COUNT, 0);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 }

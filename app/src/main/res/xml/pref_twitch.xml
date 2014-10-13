@@ -39,11 +39,9 @@
             android:title="@string/pref_char_limit_title"
             android:enabled="true"/>
         <!--Custom Game Titles-->
-        <Preference
-            android:key="pref_abbreviate"
-            android:title="@string/pref_abbreviate_title"
-            android:summary="@string/pref_abbreviate_summary"
-            android:enabled="false"/>
+        <net.myacxy.dashclock.twitch.ui.AbbreviationDialog
+            android:key="pref_abbr"
+            android:title="@string/pref_abbr_title"/>
     </PreferenceCategory>
 
     <!--Main Dialog-->

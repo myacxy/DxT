@@ -12,14 +12,14 @@ public class TwitchGame {
     public int viewers;
     public int channels;
 
-    public TwitchGame(JSONObject jsonObject) {
+    public TwitchGame(JSONObject jsonObject, int channels, int viewers) {
         init(jsonObject);
+        this.channels = channels;
+        this.viewers = viewers;
     }
 
     private void init(JSONObject jsonObject) {
         name = JsonGetter.getString(jsonObject, "name");
         entryId = JsonGetter.getInt(jsonObject, "_id");
-        viewers = JsonGetter.getInt(jsonObject, "viewers");
-        channels = JsonGetter.getInt(jsonObject, "channels");
     }
 }
