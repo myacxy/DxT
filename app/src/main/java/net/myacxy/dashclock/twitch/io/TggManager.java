@@ -41,7 +41,6 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<String>> {
     @Override
     protected void onPostExecute(ArrayList<String> games) {
         if (mProgressDialog != null) mProgressDialog.dismiss();
-        // save all followed channels to database
 //        new TwitchDbHelper(mContext).updateOrReplaceGameEntry();
         if (mListener != null) mListener.handleAsyncTaskFinished();
     }

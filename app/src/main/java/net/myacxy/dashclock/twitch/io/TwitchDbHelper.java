@@ -378,7 +378,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         };
 
         public int id = 0;
-        public int getName = 1;
+        public int name = 1;
         public int abbreviation = 2;
     }
 } // TwitchDbHelper
