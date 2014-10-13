@@ -95,8 +95,9 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 boolean isChecked = ((CheckBoxPreference) preference).isChecked();
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                sp.edit().putBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, isChecked).apply();
+                mSharedPreferences.edit()
+                        .putBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, isChecked)
+                        .apply();
                 return true;
             }
         });
@@ -106,27 +107,28 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 boolean isChecked = ((CheckBoxPreference) preference).isChecked();
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                sp.edit().putBoolean(TwitchExtension.PREF_HIDE_EMPTY, isChecked).apply();
+                mSharedPreferences.edit()
+                        .putBoolean(TwitchExtension.PREF_HIDE_EMPTY, isChecked)
+                        .apply();
                 new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 return true;
             }
         });
 
-        Preference updateGameDb = findPreference("pref_game_db_update");
+        final Preference updateGameDb = findPreference("pref_game_db_update");
         updateGameDb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceClick(final Preference preference) {
+            public boolean onPreferenceClick(Preference preference) {
                 final TggManager tggManager = new TggManager(TwitchSettingsActivity.this, true);
                 tggManager.setAsyncTaskListener(new AsyncTaskListener() {
                     @Override
                     public void handleAsyncTaskFinished() {
-                        preference.getOnPreferenceChangeListener().onPreferenceChange(
-                                preference, tggManager.games.size());
+                        updateGameDb.getOnPreferenceChangeListener().onPreferenceChange(
+                                updateGameDb, tggManager.games.size());
                     }
                 });
                 tggManager.run(500, 100);
-                return false;
+                return true;
             }
         });
     }
@@ -150,12 +152,11 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     private void bindSelectionPreference() {
         FollowingSelectionDialog preference =
                 (FollowingSelectionDialog) findPreference("pref_following_selection");
-        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Set<String> allChannels =  sp.getStringSet(
+                Set<String> allChannels =  mSharedPreferences.getStringSet(
                         TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS, new HashSet<String>());
                 int totalCount = allChannels.size();
                 Set<String> selectedChannels = (Set<String>) newValue;
@@ -166,7 +167,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        Set<String> currentValue = sp.getStringSet(
+        Set<String> currentValue = mSharedPreferences.getStringSet(
                 TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS, new HashSet<String>());
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
@@ -189,8 +190,8 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String currentValue = sp.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
+        String currentValue = mSharedPreferences.getString(
+                TwitchExtension.PREF_USER_NAME, "test_user1");
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 
