@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
@@ -41,9 +40,9 @@ public class AbbreviationDialog extends Preference {
     protected void onClick() {
         mAdapter = new ListAdapter(getContext());
         mDbHelper = new TwitchDbHelper(getContext());
-//        mCursor = mDbHelper.getGamesCursor();
-//        // reassign the cursor
-//        mAdapter.swapCursor(mCursor);
+        mCursor = mDbHelper.getGamesCursor(true);
+        // reassign the cursor
+        mAdapter.swapCursor(mCursor);
 
         buildDialog();
     }
@@ -70,7 +69,7 @@ public class AbbreviationDialog extends Preference {
         builder.setView(view);
 
         // set buttons
-        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setNegativeButton(R.string.dialog_abbr_add, null);
         builder.setNeutralButton("Update DB", null);
         builder.setPositiveButton(android.R.string.ok, null);
 
@@ -80,11 +79,11 @@ public class AbbreviationDialog extends Preference {
             @Override
             public void onShow(DialogInterface dialogInterface) {
 
-                Button cancel = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                cancel.setOnClickListener(new View.OnClickListener() {
+                Button add = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        // add dialog
                     }
                 });
 
@@ -135,7 +134,7 @@ public class AbbreviationDialog extends Preference {
             game.setText(cursor.getString(TwitchDbHelper.GameQuery.name));
 
             // initialize view for status
-            EditText abbreviation = (EditText) view.findViewById(R.id.dialog_abbr_abbreviation);
+            TextView abbreviation = (TextView) view.findViewById(R.id.dialog_abbr_abbreviation);
             abbreviation.setText(cursor.getString(TwitchDbHelper.GameQuery.abbreviation));
 
             ImageButton delete = (ImageButton) view.findViewById(R.id.dialog_abbr_delete);

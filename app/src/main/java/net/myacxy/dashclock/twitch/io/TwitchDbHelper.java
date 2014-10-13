@@ -280,15 +280,22 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     } // updateOnlineStatus
 
 
-    public Cursor getGamesCursor() {
+    public Cursor getGamesCursor(boolean abbreviated) {
         String sortOrder = TwitchContract.GameEntry.COLUMN_NAME_NAME;
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if(abbreviated) {
+            selection = TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + " NOT LIKE ?";
+            selectionArgs = new String[]{ "null" };
+        }
 
         // get all entries of the table from the database
         Cursor cursor = getReadableDatabase().query(
                 TwitchContract.GameEntry.TABLE_NAME,    // the table to query
                 GameQuery.projection,                   // the columns to return
-                null,                                   // the columns for the WHERE clause
-                null,                                   // the values for the WHERE clause
+                selection,                                   // the columns for the WHERE clause
+                selectionArgs,                                   // the values for the WHERE clause
                 null,                                   // don't group the rows
                 null,                                   // don't filter by row groups
                 sortOrder                               // the sort order
