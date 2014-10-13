@@ -230,56 +230,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         editor.apply();
     } // updateSharedPreferencesData
 
-    private String checkExampleAbbr(TwitchGame game) {
-
-        switch (game.name) {
-            case "League of Legends":
-                return "LoL";
-            case "Hearthstone: Heroes of Warcraft":
-                return"HS";
-            case "Counter-Strike: Global Offensive":
-                return "CSGO";
-            case "World of Warcraft: Mists of Pandaria":
-                return "WoW";
-            case "StarCraft II: Heart of the Swarm":
-                return "SC2";
-            case "Diablo III: Reaper of Souls":
-                return "D3";
-            case "Final Fantasy XIV Online: A Realm Reborn":
-                return "FFXIV";
-            case "Path of Exile":
-                return "PoE";
-            case "Ultra Street Fighter IV":
-                return "SFIV";
-            default:
-                return null;
-        }
-    }
-    /**
-     * TODO
-     */
-    public void updateOrReplaceGameEntry(TwitchGame game)
-    {
-        if(game.abbreviation == null) {
-            game.abbreviation = checkExampleAbbr(game);
-        }
-        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME + " ("
-                + TwitchContract.GameEntry._ID + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION +")"
-                + "VALUES ("
-                + "(SELECT " + TwitchContract.GameEntry._ID
-                + " FROM " + TwitchContract.GameEntry.TABLE_NAME
-                + " WHERE " + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + "'" + game.name + "')" + COMMA_SEP
-                + "'" + game.name + "'" + COMMA_SEP
-                + "'" + game.abbreviation + "'"  + ")";
-
-        getWritableDatabase().execSQL(sql);
-
-        close();
-    } // updateOnlineStatus
-
-
     public Cursor getGamesCursor(boolean abbreviated) {
         String sortOrder = TwitchContract.GameEntry.COLUMN_NAME_NAME;
         String selection = null;
@@ -304,10 +254,62 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     }
 
     public void updateOrReplaceGameEntries(ArrayList<TwitchGame> games) {
-        setWriteAheadLoggingEnabled(true);
 
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
         for(TwitchGame game : games) {
-            updateOrReplaceGameEntry(game);
+            updateOrReplaceGameEntry(game, db);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    /**
+     * TODO
+     */
+    public void updateOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
+    {
+        if(game.abbreviation == null) {
+            game.abbreviation = checkExampleAbbr(game);
+        }
+        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME + " ("
+                + TwitchContract.GameEntry._ID + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION +")"
+                + "VALUES ("
+                + "(SELECT " + TwitchContract.GameEntry._ID
+                + " FROM " + TwitchContract.GameEntry.TABLE_NAME
+                + " WHERE " + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + "\"" + game.name + "\")" + COMMA_SEP
+                + "\"" + game.name + "\"" + COMMA_SEP
+                + "\"" + game.abbreviation + "\""  + ")";
+
+        db.execSQL(sql);
+    } // updateOnlineStatus
+
+    private String checkExampleAbbr(TwitchGame game) {
+
+        switch (game.name) {
+            case "League of Legends":
+                return "LoL";
+            case "Hearthstone: Heroes of Warcraft":
+                return"HS";
+            case "Counter-Strike: Global Offensive":
+                return "CSGO";
+            case "World of Warcraft: Mists of Pandaria":
+                return "WoW";
+            case "StarCraft II: Heart of the Swarm":
+                return "SC2";
+            case "Diablo III: Reaper of Souls":
+                return "D3";
+            case "Final Fantasy XIV Online: A Realm Reborn":
+                return "FFXIV";
+            case "Path of Exile":
+                return "PoE";
+            case "Ultra Street Fighter IV":
+                return "SFIV";
+            default:
+                return null;
         }
     }
 

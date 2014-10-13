@@ -111,7 +111,6 @@ public class CharLimiterDialog extends Preference {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sp.edit().putInt(TwitchExtension.PREF_CHAR_LIMIT, numberPicker.getValue()).apply();
 
                 // notify change listener
                 getOnPreferenceChangeListener().onPreferenceChange(CharLimiterDialog.this,

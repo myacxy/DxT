@@ -36,8 +36,8 @@ public class TwitchGameGetter extends JsonGetter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        games = parseJsonObject(top);
+        if(top == null) cancel(true);
+        else games = parseJsonObject(top);
     }
 
     public void run(int limit, int offset) {

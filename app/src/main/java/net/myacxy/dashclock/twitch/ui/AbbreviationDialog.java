@@ -14,8 +14,6 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
-import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.TggManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
 public class AbbreviationDialog extends Preference {
@@ -91,14 +89,7 @@ public class AbbreviationDialog extends Preference {
                 update.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TggManager tggManager = new TggManager(getContext(), true);
-                        tggManager.setAsyncTaskListener(new AsyncTaskListener() {
-                            @Override
-                            public void handleAsyncTaskFinished() {
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
-                        tggManager.run(10, 10);
+
                     }
                 });
 

@@ -17,6 +17,17 @@
             android:title="@string/pref_hide_empty_title"
             android:summary="@string/pref_hide_empty_summary"
             android:defaultValue="true"/>
+
+        <!--Interval Dialog-->
+        <net.myacxy.dashclock.twitch.ui.IntervalDialog
+            android:key="pref_update_interval"
+            android:title="@string/pref_update_interval_title"/>
+
+    </PreferenceCategory>
+    <!--Customization-->
+    <PreferenceCategory
+        android:title="@string/pref_category_customization">
+
         <!--Custom Visibility-->
         <CheckBoxPreference
             android:key="pref_custom_visibility"
@@ -29,21 +40,22 @@
             android:dependency="pref_custom_visibility"
             android:title="@string/pref_following_selection_title"/>
 
-        <!--Interval Dialog-->
-        <net.myacxy.dashclock.twitch.ui.IntervalDialog
-            android:key="pref_update_interval"
-            android:title="@string/pref_update_interval_title"/>
+        <!--Custom Game Titles-->
+        <net.myacxy.dashclock.twitch.ui.AbbreviationDialog
+            android:key="pref_abbr"
+            android:title="@string/pref_abbr_title"/>
+
+        <!--Game Database Update-->
+        <Preference
+            android:title="@string/pref_game_db_update"
+            android:key="pref_game_db_update"/>
+
         <!--Char Limiter-->
         <net.myacxy.dashclock.twitch.ui.CharLimiterDialog
             android:key="pref_char_limiter"
             android:title="@string/pref_char_limit_title"
             android:enabled="true"/>
-        <!--Custom Game Titles-->
-        <net.myacxy.dashclock.twitch.ui.AbbreviationDialog
-            android:key="pref_abbr"
-            android:title="@string/pref_abbr_title"/>
     </PreferenceCategory>
-
     <!--Main Dialog-->
     <PreferenceCategory android:title="@string/pref_category_dialog">
         <CheckBoxPreference

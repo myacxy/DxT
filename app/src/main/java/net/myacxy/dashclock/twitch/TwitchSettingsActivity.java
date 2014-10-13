@@ -32,6 +32,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.TggManager;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.AbbreviationDialog;
 import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
@@ -47,12 +49,14 @@ import java.util.Set;
  */
 public class TwitchSettingsActivity extends BaseSettingsActivity
 {
+    protected SharedPreferences mSharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.twitch_purple);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -63,6 +67,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         bindSelectionPreference();
         bindUserNamePreference();
         bindAbbreviationsPreference();
+        bindGameDbPreference();
 
         CheckBoxPreference checkedTextView = (CheckBoxPreference) findPreference("pref_custom_visibility");
         checkedTextView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -105,6 +110,23 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 sp.edit().putBoolean(TwitchExtension.PREF_HIDE_EMPTY, isChecked).apply();
                 new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 return true;
+            }
+        });
+
+        Preference updateGameDb = findPreference("pref_game_db_update");
+        updateGameDb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(final Preference preference) {
+                final TggManager tggManager = new TggManager(TwitchSettingsActivity.this, true);
+                tggManager.setAsyncTaskListener(new AsyncTaskListener() {
+                    @Override
+                    public void handleAsyncTaskFinished() {
+                        preference.getOnPreferenceChangeListener().onPreferenceChange(
+                                preference, tggManager.games.size());
+                    }
+                });
+                tggManager.run(500, 100);
+                return false;
             }
         });
     }
@@ -178,29 +200,49 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                mSharedPreferences.edit()
+                        .putInt(TwitchExtension.PREF_CHAR_LIMIT, (int) newValue)
+                        .apply();
                 preference.setSummary(newValue.toString());
                 return true;
             }
         });
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        int currentValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 
     private void bindAbbreviationsPreference() {
         AbbreviationDialog preference = (AbbreviationDialog) findPreference("pref_abbr");
-
         preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 preference.setSummary(newValue + " custom abbreviations");
+                mSharedPreferences.edit()
+                        .putInt(TwitchExtension.PREF_ABBR_COUNT, (int) newValue)
+                        .apply();
                 return true;
             }
         });
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        int currentValue = sp.getInt(TwitchExtension.PREF_ABBR_COUNT, 0);
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_ABBR_COUNT, 0);
+        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
+    }
+
+    private void bindGameDbPreference() {
+        Preference preference = findPreference("pref_game_db_update");
+
+        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                mSharedPreferences.edit()
+                        .putInt(TwitchExtension.PREF_GAMES_COUNT, (int) newValue)
+                        .apply();
+                preference.setSummary(newValue + " games in database");
+                return true;
+            }
+        });
+
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_GAMES_COUNT, 0);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 }

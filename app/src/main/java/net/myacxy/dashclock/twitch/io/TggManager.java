@@ -15,14 +15,14 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
-    protected ArrayList<TwitchGame> mResults;
+    public ArrayList<TwitchGame> games;
     private int mTotal;
     private int mLimit;
 
     public TggManager(Context context, boolean showProgress) {
         mContext = context;
         if(showProgress) mProgressDialog = new ProgressDialog(context);
-        mResults = new ArrayList<TwitchGame>();
+        games = new ArrayList<TwitchGame>();
         mTggs = new ArrayList<TwitchGameGetter>();
     }
 
@@ -36,7 +36,7 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
         if(mProgressDialog != null) {
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMax(mLimit);
+            mProgressDialog.setMax(mTotal / mLimit);
             mProgressDialog.show();
         }
     }
@@ -44,7 +44,7 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     @Override
     protected void onProgressUpdate(Integer... values) {
         if (mProgressDialog != null) {
-            mProgressDialog.setProgress(values[0]);
+            mProgressDialog.incrementProgressBy(values[0]);
         }
     }
 
@@ -61,17 +61,15 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
         while (true) {
             for (TwitchGameGetter tgg : mTggs) {
-                if (tgg.getStatus() == Status.FINISHED && !mResults.contains(tgg.games.get(0))) {
-                    for(TwitchGame game : tgg.games) {
-                        mResults.add((game));
-                        publishProgress(mResults.size());
-                    }
+                if (tgg.getStatus() == Status.FINISHED && !games.contains(tgg.games.get(0))) {
+                    games.addAll((tgg.games));
+                    publishProgress(1);
                 }
             }
-            if (mResults.size() == mLimit) break;
+            if (games.size() == mTotal) break;
         }
         Log.d("TggManager", "doInBackground finished");
-        return mResults;
+        return games;
     }
 
     public void run(int total, int limit) {

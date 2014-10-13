@@ -62,6 +62,7 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_HIDE_EMPTY = "pref_hide_empty";
     public static String PREF_CHAR_LIMIT = "pref_char_limit";
     public static String PREF_ABBR_COUNT = "pref_abbr_count";
+    public static String PREF_GAMES_COUNT = "pref_abbr_count";
 
     private AsyncTask task;
 
