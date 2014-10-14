@@ -30,7 +30,6 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected void onPreExecute() {
         if(mProgressDialog != null) {
             mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setMessage("Finished Threads");
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mTotal / mLimit);
             mProgressDialog.show();

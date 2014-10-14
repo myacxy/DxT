@@ -126,11 +126,15 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                         updateGameDb.getOnPreferenceChangeListener().onPreferenceChange(
                                 updateGameDb, tggManager.games.size());
                         TwitchDbHelper dbHelper = new TwitchDbHelper(getApplicationContext());
+
                         int abbreviatedGamesCount = dbHelper.getGamesCursor(true).getCount();
                         mSharedPreferences.edit()
                                 .putInt(TwitchExtension.PREF_ABBR_COUNT, abbreviatedGamesCount)
                                 .apply();
+
                         bindAbbreviationsPreference();
+
+                        new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                     }
                 });
                 tggManager.run(500, 100);
@@ -226,6 +230,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 mSharedPreferences.edit()
                         .putInt(TwitchExtension.PREF_ABBR_COUNT, (int) newValue)
                         .apply();
+                new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 return true;
             }
         });

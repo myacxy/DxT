@@ -292,21 +292,30 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
         SQLiteDatabase db = getWritableDatabase();
 
-        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
-                + " ( "
-                + TwitchContract.GameEntry._ID + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
-                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
-                + " ) "
-                + "VALUES ( "
-                + "(SELECT "    + TwitchContract.GameEntry._ID
-                + " FROM "      + TwitchContract.GameEntry.TABLE_NAME
-                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = ?)" + COMMA_SEP
-                + " ?"          + COMMA_SEP
-                + " ?"
-                + " )";
+        String sql = String.format("INSERT OR REPLACE INTO %1$s ( %2$s, %3$s, %4$s )"
+                        + "VALUES ((SELECT %2$s FROM %1$s WHERE %3$s = ?),"
+                        + " ?,"
+                        + " ?)",
+                TwitchContract.GameEntry.TABLE_NAME,
+                TwitchContract.GameEntry._ID,
+                TwitchContract.GameEntry.COLUMN_NAME_NAME,
+                TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION);
 
-        db.execSQL(sql, new Object[]{game, game,});
+//        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
+//                + " ( "
+//                + TwitchContract.GameEntry._ID + COMMA_SEP
+//                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
+//                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
+//                + " ) "
+//                + "VALUES ( "
+//                + "(SELECT "    + TwitchContract.GameEntry._ID
+//                + " FROM "      + TwitchContract.GameEntry.TABLE_NAME
+//                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = ?)" + COMMA_SEP
+//                + " ?"          + COMMA_SEP
+//                + " ?"
+//                + " )";
+
+        db.execSQL(sql, new Object[]{ game, game, null });
         db.close();
     }
     /**
