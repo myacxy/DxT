@@ -125,6 +125,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                     public void handleAsyncTaskFinished() {
                         updateGameDb.getOnPreferenceChangeListener().onPreferenceChange(
                                 updateGameDb, tggManager.games.size());
+                        TwitchDbHelper dbHelper = new TwitchDbHelper(getApplicationContext());
+                        int abbreviatedGamesCount = dbHelper.getGamesCursor(true).getCount();
+                        mSharedPreferences.edit()
+                                .putInt(TwitchExtension.PREF_ABBR_COUNT, abbreviatedGamesCount)
+                                .apply();
+                        bindAbbreviationsPreference();
                     }
                 });
                 tggManager.run(500, 100);
