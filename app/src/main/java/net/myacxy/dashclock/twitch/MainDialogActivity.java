@@ -29,9 +29,10 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import net.myacxy.dashclock.twitch.io.DialogListener;
 import net.myacxy.dashclock.twitch.ui.MainDialog;
 
-public class MainDialogActivity extends Activity implements MainDialog.DialogListener {
+public class MainDialogActivity extends Activity implements DialogListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

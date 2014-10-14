@@ -66,4 +66,7 @@
     <string name="dialog_abbr_title">Abbreviations</string>
     <string name="dialog_abbr_add">Add</string>
     <string name="pref_game_db_update">Update Game Database</string>
+    <string name="dialog_abbr_add_abbr">Abbreviation</string>
+    <string name="dialog_abbr_add_game">Game</string>
+    <string name="dialog_abbr_delete">Delete</string>
 </resources>

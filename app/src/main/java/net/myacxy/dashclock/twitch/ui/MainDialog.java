@@ -68,6 +68,7 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.DialogListener;
 import net.myacxy.dashclock.twitch.io.TwitchContract;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
@@ -82,13 +83,8 @@ public class MainDialog extends DialogFragment {
     private View mDialogView;
     boolean hideNeutral;
 
-    public interface DialogListener {
-        public void onDialogDismiss(DialogInterface dialog);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         mSp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         hideNeutral = mSp.getBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, false);
         super.onCreate(savedInstanceState);

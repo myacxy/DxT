@@ -28,13 +28,9 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     @Override
     protected void onPreExecute() {
-        for (int offset = 0; offset < mTotal; offset += mLimit) {
-            final TwitchGameGetter tgg = new TwitchGameGetter(mContext);
-            mTggs.add(tgg);
-            tgg.run(mLimit, offset);
-        }
         if(mProgressDialog != null) {
             mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMessage("Finished Threads");
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mTotal / mLimit);
             mProgressDialog.show();
@@ -50,15 +46,24 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     @Override
     protected void onPostExecute(ArrayList<TwitchGame> games) {
-        TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
-        dbHelper.updateOrReplaceGameEntries(games);
+        if(games != null){
+            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+            dbHelper.updateOrReplaceGameEntries(games);
 
-        if (mProgressDialog != null) mProgressDialog.dismiss();
-        if (mListener != null) mListener.handleAsyncTaskFinished();
+            if (mProgressDialog != null) mProgressDialog.dismiss();
+            if (mListener != null) mListener.handleAsyncTaskFinished();
+        }
     }
 
     @Override
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
+
+        for (int offset = 0; offset < mTotal; offset += mLimit) {
+            final TwitchGameGetter tgg = new TwitchGameGetter(mContext);
+            mTggs.add(tgg);
+            tgg.run(mLimit, offset);
+        }
+
         while (true) {
             for (TwitchGameGetter tgg : mTggs) {
                 if (tgg.getStatus() == Status.FINISHED && !games.contains(tgg.games.get(0))) {
@@ -67,9 +72,20 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                 }
             }
             if (games.size() == mTotal) break;
+            if(!mProgressDialog.isShowing()) {
+                cancel(true);
+                return null;
+            }
         }
         Log.d("TggManager", "doInBackground finished");
         return games;
+    }
+
+    @Override
+    protected void onCancelled() {
+        for(TwitchGameGetter tgg : mTggs) tgg.cancel(true);
+
+        super.onCancelled();
     }
 
     public void run(int total, int limit) {

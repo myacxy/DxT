@@ -270,6 +270,28 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         insertOrReplaceGameEntry(game, db);
         db.close();
     }
+
+    public void deleteAbbreviation(String game) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
+                + " ( "
+                + TwitchContract.GameEntry._ID + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
+                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
+                + " ) "
+                + "VALUES ( "
+                + "(SELECT "    + TwitchContract.GameEntry._ID
+                + " FROM "      + TwitchContract.GameEntry.TABLE_NAME
+                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = ?)" + COMMA_SEP
+                + " ?"          + COMMA_SEP
+                + " ?"
+                + " )";
+
+        db.execSQL(sql, new Object[] { game, game,  });
+        db.close();
+    }
     /**
      * TODO
      */
@@ -313,7 +335,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             case "League of Legends":
                 return "LoL";
             case "Hearthstone: Heroes of Warcraft":
-                return"HS";
+                return "HS";
             case "Counter-Strike: Global Offensive":
                 return "CSGO";
             case "World of Warcraft: Mists of Pandaria":
