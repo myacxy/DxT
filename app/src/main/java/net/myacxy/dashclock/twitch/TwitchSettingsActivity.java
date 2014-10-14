@@ -150,7 +150,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 15);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 
@@ -213,7 +213,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 return true;
             }
         });
-        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_CHAR_LIMIT, 200);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 

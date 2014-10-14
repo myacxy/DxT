@@ -152,7 +152,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         long lastUpdate = sp.getLong(TwitchExtension.PREF_LAST_UPDATE, 0);
         // calculate difference in minutes
         double difference = (Calendar.getInstance().getTimeInMillis() - lastUpdate) / 60000f;
-        int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 15);
         Log.d("TwitchUserFollowsGetter", "Difference=" + difference);
         return difference < updateInterval;
     }

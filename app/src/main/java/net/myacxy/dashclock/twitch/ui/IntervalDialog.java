@@ -70,10 +70,10 @@ public class IntervalDialog extends Preference {
         final NumberPicker numberPicker = (NumberPicker) layout.findViewById(
                 R.id.dialog_interval_number_picker);
         numberPicker.setMinValue(5);
-        numberPicker.setMaxValue(60);
+        numberPicker.setMaxValue(120);
         // retrieve previous setting
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final int previousValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        final int previousValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 15);
         numberPicker.setValue(previousValue);
         // save current value on ok
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

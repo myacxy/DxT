@@ -83,7 +83,7 @@ public class CharLimiterDialog extends Preference {
         SpannableString text = new SpannableString(longestBody);
         final int color = getContext().getResources().getColor(android.R.color.darker_gray);
         final int color2 = getContext().getResources().getColor(android.R.color.black);
-        final int previousValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        final int previousValue = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 200);
         final NumberPicker numberPicker = (NumberPicker) layout.findViewById(R.id.pref_char_limiter_value);
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(200);

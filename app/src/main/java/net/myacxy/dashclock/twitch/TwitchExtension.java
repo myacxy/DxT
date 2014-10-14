@@ -93,7 +93,7 @@ public class TwitchExtension extends DashClockExtension {
         String expandedTitle = sp.getString(PREF_EXPANDED_TITLE, "Empty");
         ArrayList<String> expandedBodyList = new ArrayList<String>(
                 sp.getStringSet(PREF_EXPANDED_BODY, new HashSet<String>()));
-        int charLimit = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 100);
+        int charLimit = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 200);
         String expandedBody = "";
         for (String string : expandedBodyList) {
             int index = expandedBodyList.indexOf(string);

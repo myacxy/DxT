@@ -211,7 +211,13 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // retrieve data
         ArrayList<TwitchChannel> allChannels = dbHelper.getAllChannels(true);
         ArrayList<TwitchChannel> onlineChannels = dbHelper.filterOnlineChannels(allChannels);
-        dbHelper.close();
+        ArrayList<TwitchGame> abbreviatedGames = dbHelper.getGames(true);
+
+        for(TwitchChannel channel : onlineChannels) {
+            for(TwitchGame game : abbreviatedGames) {
+                if(game.name.equals(channel.game)) channel.game = game.abbreviation;
+            }
+        }
         // initialize data
         int onlineCount = onlineChannels.size();
         String status = String.format("%d Live", onlineCount);
@@ -253,6 +259,17 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return cursor;
     }
 
+    public ArrayList<TwitchGame> getGames(boolean abbreviated) {
+        ArrayList<TwitchGame> games = new ArrayList<>();
+        Cursor cursor = getGamesCursor(abbreviated);
+        while (cursor.moveToNext()) {
+            games.add(new TwitchGame(cursor));
+        }
+        cursor.close();
+        close();
+        return games;
+    }
+
     public void updateOrReplaceGameEntries(ArrayList<TwitchGame> games) {
 
         SQLiteDatabase db = getWritableDatabase();
@@ -289,7 +306,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 + " ?"
                 + " )";
 
-        db.execSQL(sql, new Object[] { game, game,  });
+        db.execSQL(sql, new Object[]{game, game,});
         db.close();
     }
     /**
@@ -298,16 +315,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     private void insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
     {
         if(game.abbreviation == null) game.abbreviation = checkExampleAbbr(game);
-//        String command = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
-//                + " ("
-//                + TwitchContract.GameEntry._ID + COMMA_SEP
-//                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
-//                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
-//                + ")";
-//        String id;
-//        String name;
-//        String abbreviation;
-//        String values = "Values (" + id + COMMA_SEP + name + COMMA_SEP + abbreviation + ")";
+
         String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
                 + " ( "
                 + TwitchContract.GameEntry._ID + COMMA_SEP
@@ -468,7 +476,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         public String[] projection = new String[] {
                 TwitchContract.GameEntry._ID,
                 TwitchContract.GameEntry.COLUMN_NAME_NAME,
-                TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION,
+                TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
         };
 
         public int id = 0;
