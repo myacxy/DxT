@@ -265,33 +265,46 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         db.close();
     }
 
+    public void insertOrReplaceGameEntry(TwitchGame game) {
+        SQLiteDatabase db = getWritableDatabase();
+        insertOrReplaceGameEntry(game, db);
+        db.close();
+    }
     /**
      * TODO
      */
-    public void insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
+    private void insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
     {
-        if(game.abbreviation == null) {
-            game.abbreviation = checkExampleAbbr(game);
-        }
+        if(game.abbreviation == null) game.abbreviation = checkExampleAbbr(game);
+//        String command = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
+//                + " ("
+//                + TwitchContract.GameEntry._ID + COMMA_SEP
+//                + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
+//                + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
+//                + ")";
+//        String id;
+//        String name;
+//        String abbreviation;
+//        String values = "Values (" + id + COMMA_SEP + name + COMMA_SEP + abbreviation + ")";
         String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
-                + " ("
+                + " ( "
                 + TwitchContract.GameEntry._ID + COMMA_SEP
                 + TwitchContract.GameEntry.COLUMN_NAME_NAME + COMMA_SEP
                 + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
-                + ")"
-                + "VALUES ("
+                + " ) "
+                + "VALUES ( "
                 + "(SELECT "    + TwitchContract.GameEntry._ID
                 + " FROM "      + TwitchContract.GameEntry.TABLE_NAME
-                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + "\"" + game.name + "\")" + COMMA_SEP
-                + "\""          + game.name + "\"" + COMMA_SEP
-                + "CASE WHEN "  + "\"" + game.abbreviation + "\" IS NULL THEN "
+                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = ?)" + COMMA_SEP
+                + " ?"           + COMMA_SEP
+                + " CASE WHEN ? IS NULL THEN "
                 + "(SELECT "    + TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
                 + " FROM "      + TwitchContract.GameEntry.TABLE_NAME
-                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = " + "\"" + game.name + "\")"
-                + " ELSE "      + "\"" + game.abbreviation + "\"" + " END "
-                + ")";
+                + " WHERE "     + TwitchContract.GameEntry.COLUMN_NAME_NAME + " = ?)"
+                + " ELSE ? END"
+                + " )";
 
-        db.execSQL(sql);
+        db.execSQL(sql, new Object[] {game.name, game.name, game.abbreviation, game.name, game.abbreviation});
     } // updateOnlineStatus
 
     private String checkExampleAbbr(TwitchGame game) {

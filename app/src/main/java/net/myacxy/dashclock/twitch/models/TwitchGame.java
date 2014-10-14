@@ -12,6 +12,11 @@ public class TwitchGame {
     public int viewers;
     public int channels;
 
+    public TwitchGame(String name, String abbreviation) {
+        this.name = name;
+        this.abbreviation = abbreviation;
+    }
+
     public TwitchGame(JSONObject jsonObject, int channels, int viewers) {
         init(jsonObject);
         this.channels = channels;

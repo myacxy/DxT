@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 public class AbbreviationDialog extends Preference {
 
@@ -54,21 +55,11 @@ public class AbbreviationDialog extends Preference {
         ListView listView = (ListView) view.findViewById(R.id.dialog_abbr_list);
         listView.setAdapter(mAdapter);
 
-        ImageButton button = (ImageButton) view.findViewById(R.id.dialog_abbr_add);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-
         builder.setView(view);
 
         // set buttons
-        builder.setNegativeButton(R.string.dialog_abbr_add, null);
-        builder.setNeutralButton("Update DB", null);
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setNeutralButton(R.string.dialog_abbr_add, null);
         builder.setPositiveButton(android.R.string.ok, null);
 
         final AlertDialog dialog = builder.create();
@@ -77,16 +68,16 @@ public class AbbreviationDialog extends Preference {
             @Override
             public void onShow(DialogInterface dialogInterface) {
 
-                Button add = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                add.setOnClickListener(new View.OnClickListener() {
+                Button cancel = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // add dialog
                     }
                 });
 
-                Button update = dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
-                update.setOnClickListener(new View.OnClickListener() {
+                Button add = dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+                add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -111,8 +102,7 @@ public class AbbreviationDialog extends Preference {
     /** TODO: javadoc / comments */
     public class ListAdapter extends ResourceCursorAdapter
     {
-        public ListAdapter(Context context)
-        {
+        public ListAdapter(Context context) {
             // inflate row layout
             super(context, R.layout.list_item_abbr, null, false);
         }
@@ -132,7 +122,10 @@ public class AbbreviationDialog extends Preference {
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    TwitchGame twitchGame = new TwitchGame(cursor.getString(TwitchDbHelper.GameQuery.name), null);
+                    new TwitchDbHelper(getContext()).insertOrReplaceGameEntry(twitchGame);
+                    changeCursor(mDbHelper.getGamesCursor(true));
+                    mAdapter.notifyDataSetChanged();
                 }
             });
         } // bindView

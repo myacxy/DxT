@@ -144,8 +144,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        int currentValue = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
+        int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 5);
         preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
     }
 
