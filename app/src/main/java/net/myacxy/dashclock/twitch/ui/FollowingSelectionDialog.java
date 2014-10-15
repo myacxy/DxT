@@ -42,6 +42,7 @@ import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract.ChannelEntry;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -148,8 +149,9 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             // initialize view for game
             TextView selectionGame = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
-            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
-                    + ": " + cursor.getString(ChannelQuery.gameId));
+            TwitchDbHelper dbHelper = new TwitchDbHelper(getContext());
+            TwitchGame game = dbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
+            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game) + ": " + game.name);
             // initialize view for status
             TextView selectionStatus = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);

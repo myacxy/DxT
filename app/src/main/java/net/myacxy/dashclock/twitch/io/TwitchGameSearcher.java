@@ -41,11 +41,19 @@ public class TwitchGameSearcher extends JsonGetter {
         if(gamesJson == null) cancel(true);
         else this.games = parseJson(gamesJson);
 
-        // retrieve game in question from results
-        for(TwitchGame tg : games) {
-            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+        TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+
+        if(games.size() == 0) {
+            TwitchGame tg = new TwitchGame(searchQuery, null);
             tg.id = dbHelper.insertOrReplaceGameEntry(tg);
+            games.add(tg);
+        } else {
+            // retrieve game in question from results
+            for(TwitchGame tg : games) {
+                tg.id = dbHelper.insertOrReplaceGameEntry(tg);
+            }
         }
+
 
         if(mListener != null) mListener.handleAsyncTaskFinished();
     }
