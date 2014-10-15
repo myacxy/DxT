@@ -24,14 +24,17 @@
 
 package net.myacxy.dashclock.twitch.models;
 
+import android.database.Cursor;
+
+import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.io.JsonGetter;
+import net.myacxy.dashclock.twitch.io.TwitchChannelOnlineChecker;
+import net.myacxy.dashclock.twitch.io.TwitchGameSearcher;
 
 import org.json.JSONObject;
 
 /**
- * Class representing a channel from Twitch.tv. Just basic data for now.
- *
- * TODO: include more data?
+ * Class representing a channel from Twitch.tv
  */
 public class TwitchChannel
 {
@@ -75,6 +78,7 @@ public class TwitchChannel
      * example: "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-{width}x{height}.jpg"
      */
     public String logo;
+
     /**
      * url to the online source of a preview picture. template includes adjustable {width} and {height} parameters.
      *
@@ -95,29 +99,46 @@ public class TwitchChannel
     {
         // default constructor
     }
+
+    public TwitchChannel(Cursor cursor, TwitchGame game) {
+        id = cursor.getInt(ChannelQuery.id);
+        entryId = cursor.getInt(ChannelQuery.entryId);
+        viewers = cursor.getInt(ChannelQuery.viewers);
+        followers = cursor.getInt(ChannelQuery.followers);
+        online = cursor.getInt(ChannelQuery.online) == 1;
+        status = cursor.getString(ChannelQuery.status);
+        name = cursor.getString(ChannelQuery.name);
+        displayName = cursor.getString(ChannelQuery.displayName);
+        logo = cursor.getString(ChannelQuery.logo);
+        preview = cursor.getString(ChannelQuery.preview);
+        updatedAt = cursor.getString(ChannelQuery.updatedAt);
+        this.game = game;
+    }
+
     /**
-     * Constructor that initializes the class members automatically from given JSON data.
+     * Initializes the members of this instance with the data that is being provided by the
+     * JSONObject of a channel. The JSONObject retrieved from user/follows does not provide
+     * all data, though, and thus it needs to be run through {@link TwitchChannelOnlineChecker}
+     * and {@link TwitchGameSearcher} as well.
      *
      * @param channelObject JSON Data of a Twitch Channel
      */
     public TwitchChannel(JSONObject channelObject)
     {
-        init(channelObject);
-    }
-
-    /**
-     * Initializes the members of this instance with the data provided from
-     * the JSONObject of a channel.
-     *
-     * @param channelObject JSON Data of a Twitch Channel
-     */
-    private void init(JSONObject channelObject)
-    {
+        // no database relation yet
+        id = -1;
+        entryId = JsonGetter.getInt(channelObject, "_id");
+        // no individual check by tcoc yet
+        viewers = 0;
+        followers = JsonGetter.getInt(channelObject, "followers");
+        // no individual check by tcoc yet
+        online = false;
         status = JsonGetter.getString(channelObject, "status");
         name = JsonGetter.getString(channelObject, "name");
-//        game = JsonGetter.getString(channelObject, "game");
         displayName = JsonGetter.getString(channelObject, "display_name");
-        followers = JsonGetter.getInt(channelObject, "followers");
-        entryId = JsonGetter.getInt(channelObject, "_id");
+        // 300x300 logo for now, no individual check by tcoc yet
+        logo = JsonGetter.getString(channelObject, "logo");
+        // simple initialization in order to pass it to tgs later
+        game = new TwitchGame(JsonGetter.getString(channelObject, "game"), null);
     }
-}
+} // TwitchChannel

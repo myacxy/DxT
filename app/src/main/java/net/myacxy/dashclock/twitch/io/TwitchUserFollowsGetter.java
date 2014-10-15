@@ -74,7 +74,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         // no channels being followed
         try {
             jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
-            if (jsonAllFollowedChannels == null)
+            if (jsonAllFollowedChannels.length() == 0)
             {
                 Toast.makeText(mContext, "No channels being followed.", Toast.LENGTH_LONG).show();
                 if(mProgressDialog != null) mProgressDialog.dismiss();
@@ -89,9 +89,9 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
         if (allFollowedChannels != null) {
             tcocManager = new TcocManager(allFollowedChannels, mContext, mProgressDialog, mListener);
-            tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR, null);
+            tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR);
         }
-    }
+    } // onPostExecute
 
     /**
      * TODO: javadoc
@@ -138,4 +138,4 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
         return followedTwitchChannels;
     } // parseJsonObject
-}
+} // TwitchUserFollowsGetter

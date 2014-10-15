@@ -30,7 +30,7 @@ public interface ChannelQuery
     public int name = 2;
     public int displayName = 3;
     public int status = 4;
-    public int game = 5;
+    public int gameId = 5;
     public int online = 6;
     public int selected = 7;
     public int viewers = 8;

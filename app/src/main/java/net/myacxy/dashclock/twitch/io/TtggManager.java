@@ -23,8 +23,8 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     public TtggManager(Context context, boolean showProgress) {
         mContext = context;
         if(showProgress) mProgressDialog = new ProgressDialog(context);
-        games = new ArrayList<TwitchGame>();
-        mTggs = new ArrayList<TwitchTopGamesGetter>();
+        games = new ArrayList<>();
+        mTggs = new ArrayList<>();
     }
 
     @Override
@@ -97,4 +97,4 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     public void setAsyncTaskListener(AsyncTaskListener asyncTaskListener) {
         mListener = asyncTaskListener;
     }
-}
+} // TtggManager

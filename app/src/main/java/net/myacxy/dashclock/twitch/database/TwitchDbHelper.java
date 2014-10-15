@@ -190,17 +190,36 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         Cursor cursor = getChannelsCursor(selected, State.ALL, TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME);
         // parse each data element to a TwitchChannel
         while(cursor.moveToNext()) {
-            TwitchChannel twitchChannel = new TwitchChannel();
-            twitchChannel.displayName = cursor.getString(ChannelQuery.displayName);
-//            twitchChannel.game = cursor.getString((ChannelQuery.game));
-            twitchChannel.status = cursor.getString(ChannelQuery.status);
-            twitchChannel.online = cursor.getInt(ChannelQuery.online) == 1;
-            twitchChannels.add(twitchChannel);
+            int gameId = cursor.getInt((ChannelQuery.gameId));
+            twitchChannels.add(new TwitchChannel(cursor, getGame(gameId)));
         }
         cursor.close();
         close();
         return twitchChannels;
     } // getAllChannels
+
+    public TwitchChannel getChannel(int id) {
+        String selection = TwitchContract.ChannelEntry._ID + " LIKE ?";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
+
+        // get all entries of the table from the database
+        Cursor cursor = getReadableDatabase().query(
+                TwitchContract.GameEntry.TABLE_NAME,    // the table to query
+                GameQuery.projection,                   // the columns to return
+                selection,                              // the columns for the WHERE clause
+                selectionArgs,                          // the values for the WHERE clause
+                null,                                   // don't group the rows
+                null,                                   // don't filter by row groups
+                null                                    // the sort order
+        );
+
+        int gameId = cursor.getInt((ChannelQuery.gameId));
+        TwitchChannel channel = new TwitchChannel(cursor, getGame(gameId));
+
+        cursor.close();
+        close();
+        return channel;
+    }
 
     /**
      * Checks a list of TwitchChannels and returns
@@ -231,21 +250,25 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // retrieve data
         ArrayList<TwitchChannel> allChannels = dbHelper.getAllChannels(true);
         ArrayList<TwitchChannel> onlineChannels = dbHelper.filterOnlineChannels(allChannels);
-        ArrayList<TwitchGame> abbreviatedGames = dbHelper.getGames(true);
 
-        for(TwitchChannel channel : onlineChannels) {
-            for(TwitchGame game : abbreviatedGames) {
-//                if(game.name.equals(channel.game)) channel.game = game.abbreviation;
-            }
-        }
         // initialize data
         int onlineCount = onlineChannels.size();
         String status = String.format("%d Live", onlineCount);
         String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
-        Set<String> expandedBody = new HashSet<String>();
+        Set<String> expandedBody = new HashSet<>();
         // build body
         for (TwitchChannel tc : onlineChannels) {
-            expandedBody.add(String.format("%s playing %s: %s", tc.displayName, tc.game, tc.status));
+            if(tc.game.abbreviation != null) {
+                expandedBody.add(String.format("%s playing %s: %s",
+                        tc.displayName,
+                        tc.game.abbreviation,
+                        tc.status));
+            } else {
+                expandedBody.add(String.format("%s playing %s: %s",
+                        tc.displayName,
+                        tc.game.name,
+                        tc.status));
+            }
         }
 
         // save data to preferences
@@ -277,6 +300,28 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 sortOrder                               // the sort order
         );
         return cursor;
+    }
+
+    public TwitchGame getGame(int id) {
+
+        String selection = TwitchContract.GameEntry._ID + " LIKE ?";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
+
+        // get all entries of the table from the database
+        Cursor cursor = getReadableDatabase().query(
+                TwitchContract.GameEntry.TABLE_NAME,    // the table to query
+                GameQuery.projection,                   // the columns to return
+                selection,                              // the columns for the WHERE clause
+                selectionArgs,                          // the values for the WHERE clause
+                null,                                   // don't group the rows
+                null,                                   // don't filter by row groups
+                null                                    // the sort order
+        );
+
+        TwitchGame game = new TwitchGame(cursor);
+        cursor.close();
+        close();
+        return game;
     }
 
     public ArrayList<TwitchGame> getGames(boolean abbreviated) {

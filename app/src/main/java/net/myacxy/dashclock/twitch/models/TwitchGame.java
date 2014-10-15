@@ -43,8 +43,15 @@ public class TwitchGame {
     public String logo;
 
     public TwitchGame(Cursor cursor) {
+        id = cursor.getInt(GameQuery.id);
+        entryId = cursor.getInt(GameQuery.entryId);
+        channels = cursor.getInt(GameQuery.channels);
+        viewers = cursor.getInt(GameQuery.viewers);
         name = cursor.getString(GameQuery.name);
         abbreviation = cursor.getString(GameQuery.abbreviation);
+        logo = cursor.getString(GameQuery.logo);
+
+        cursor.close();
     }
 
     public TwitchGame(String name, String abbreviation) {

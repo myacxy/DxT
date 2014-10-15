@@ -43,6 +43,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 {
     protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
+    protected ArrayList<TwitchGameSearcher> mTgss;
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
@@ -62,9 +63,11 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     protected void onPreExecute() {
         for(TwitchChannel tc : mAllChannels)
         {
-            final TwitchChannelOnlineChecker onlineChecker =
+            TwitchChannelOnlineChecker onlineChecker =
                     new TwitchChannelOnlineChecker(mContext, mProgressDialog);
             mTcocs.add(onlineChecker);
+            TwitchGameSearcher tgs = new TwitchGameSearcher(mContext);
+            tgs.run(tc.game.name);
             onlineChecker.run(tc);
         }
     }
@@ -157,4 +160,4 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         Log.d("TwitchUserFollowsGetter", "Difference=" + difference);
         return difference < updateInterval;
     }
-}
+} // TcocManager
