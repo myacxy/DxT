@@ -51,7 +51,9 @@ public class TwitchChannelOnlineChecker extends JsonGetter
         // check if stream is online
         JSONObject stream = null;
         try {
-            stream = jsonObject.getJSONObject("stream");
+            if(jsonObject.getJSONObject("stream") != null) {
+                stream = jsonObject.getJSONObject("stream");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

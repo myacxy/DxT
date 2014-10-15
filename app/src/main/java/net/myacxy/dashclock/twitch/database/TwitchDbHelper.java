@@ -300,10 +300,10 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return cursor;
     }
 
-    public TwitchGame getGame(int entryId) {
+    public TwitchGame getGame(int id) {
 
-        String selection = TwitchContract.GameEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        String[] selectionArgs = new String[]{ String.valueOf(entryId) };
+        String selection = TwitchContract.GameEntry._ID + " LIKE ?";
+        String[] selectionArgs = new String[]{ String.valueOf(id) };
 
         // get all entries of the table from the database
         Cursor cursor = getReadableDatabase().query(
@@ -316,7 +316,11 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 null                                    // the sort order
         );
 
-        TwitchGame game = new TwitchGame(cursor);
+        TwitchGame game = null;
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            game = new TwitchGame(cursor);
+        }
         cursor.close();
         close();
         return game;
@@ -333,7 +337,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return games;
     }
 
-    public void updateOrReplaceGameEntries(ArrayList<TwitchGame> games) {
+    public void insertOrReplaceGameEntries(ArrayList<TwitchGame> games) {
 
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
@@ -345,10 +349,11 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    public void insertOrReplaceGameEntry(TwitchGame game) {
+    public int insertOrReplaceGameEntry(TwitchGame game) {
         SQLiteDatabase db = getWritableDatabase();
-        insertOrReplaceGameEntry(game, db);
+        int id = insertOrReplaceGameEntry(game, db);
         db.close();
+        return id;
     }
 
     public void deleteAbbreviation(String game) {
@@ -382,7 +387,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    private void insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
+    private int insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
     {
         if(game.abbreviation == null) game.abbreviation = checkExampleAbbr(game);
 
@@ -404,7 +409,13 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 + " ELSE ? END"
                 + " )";
 
-        db.execSQL(sql, new Object[] {game.name, game.name, game.abbreviation, game.name, game.abbreviation});
+        db.execSQL(sql, new Object[]{game.name, game.name, game.abbreviation, game.name, game.abbreviation});
+
+        Cursor cursor = db.rawQuery("SELECT last_insert_rowid()", null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+
+        return id;
     } // updateOnlineStatus
 
     private String checkExampleAbbr(TwitchGame game) {

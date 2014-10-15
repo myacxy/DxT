@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
@@ -32,6 +31,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mChannels.size());
+            mProgressDialog.show();
         }
     }
 
@@ -74,10 +74,6 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                 if (tgs.getStatus() == Status.FINISHED && !finishedTgss.contains(tgs)) {
                     if(tgs.games != null) {
                         Log.d(tgs.toString(), String.valueOf(tgs.games.size()));
-
-                        TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
-                        dbHelper.updateOrReplaceGameEntries(tgs.games);
-
                         publishProgress(1);
                         finishedTgss.add(tgs);
                     }

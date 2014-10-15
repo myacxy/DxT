@@ -2,6 +2,7 @@ package net.myacxy.dashclock.twitch.io;
 
 import android.content.Context;
 
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import org.json.JSONArray;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public class TwitchGameSearcher extends JsonGetter {
 
     public ArrayList<TwitchGame> games;
+    public TwitchGame game;
     private String searchQuery;
     public TwitchGameSearcher(Context context) {
         super(context, null);
@@ -38,6 +40,12 @@ public class TwitchGameSearcher extends JsonGetter {
         }
         if(gamesJson == null) cancel(true);
         else this.games = parseJson(gamesJson);
+
+        // retrieve game in question from results
+        for(TwitchGame tg : games) {
+            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+            tg.id = dbHelper.insertOrReplaceGameEntry(tg);
+        }
 
         if(mListener != null) mListener.handleAsyncTaskFinished();
     }

@@ -48,7 +48,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     protected void onPostExecute(ArrayList<TwitchGame> games) {
         if(games != null){
             TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
-            dbHelper.updateOrReplaceGameEntries(games);
+            dbHelper.insertOrReplaceGameEntries(games);
 
             if (mProgressDialog != null) mProgressDialog.dismiss();
             if (mListener != null) mListener.handleAsyncTaskFinished();
