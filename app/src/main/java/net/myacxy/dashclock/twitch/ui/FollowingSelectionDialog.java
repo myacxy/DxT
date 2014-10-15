@@ -39,8 +39,8 @@ import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
-import net.myacxy.dashclock.twitch.io.TwitchContract.ChannelEntry;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchContract.ChannelEntry;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 
 import java.util.HashSet;
 import java.util.Set;

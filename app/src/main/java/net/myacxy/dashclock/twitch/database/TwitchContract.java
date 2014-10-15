@@ -22,7 +22,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.myacxy.dashclock.twitch.io;
+package net.myacxy.dashclock.twitch.database;
 
 import android.provider.BaseColumns;
 
@@ -41,20 +41,29 @@ public final class TwitchContract {
      */
     public static abstract class ChannelEntry implements BaseColumns
     {
-        public static final String TABLE_NAME = "channelEntry";
+        public static final String TABLE_NAME = "channels";
         public static final String COLUMN_NAME_ENTRY_ID = "entryId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_DISPLAY_NAME = "displayName";
         public static final String COLUMN_NAME_STATUS = "status";
-        public static final String COLUMN_NAME_GAME = "game";
+        public static final String COLUMN_NAME_GAME_ID = "gameId";
         public static final String COLUMN_NAME_ONLINE = "online";
         public static final String COLUMN_NAME_SELECTED = "selected";
+        public static final String COLUMN_NAME_VIEWERS = "viewers";
+        public static final String COLUMN_NAME_FOLLOWERS = "followers";
+        public static final String COLUMN_NAME_UPDATED_AT = "updatedAt";
+        public static final String COLUMN_NAME_LOGO = "logo";
+        public static final String COLUMN_NAME_PREVIEW = "preview";
     }
 
     public static abstract class GameEntry implements BaseColumns
     {
-        public static final String TABLE_NAME = "gameEntry";
+        public static final String TABLE_NAME = "games";
+        public static final String COLUMN_NAME_ENTRY_ID = "entryId";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_ABBREVIATION = "abbreviation";
+        public static final String COLUMN_NAME_CHANNELS = "channels";
+        public static final String COLUMN_NAME_VIEWERS = "viewers";
+        public static final String COLUMN_NAME_LOGO = "logo";
     }
 }

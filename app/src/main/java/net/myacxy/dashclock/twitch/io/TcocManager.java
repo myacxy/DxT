@@ -32,6 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
 import java.util.ArrayList;
@@ -40,26 +41,26 @@ import java.util.HashSet;
 
 public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChannel>>
 {
-    protected ArrayList<TwitchChannel> mChannels;
+    protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
-    protected ArrayList<TwitchChannel> mResults;
+    protected ArrayList<TwitchChannel> mOnlineChannels;
 
-    public TcocManager(ArrayList<TwitchChannel> channels, Context context, ProgressDialog progressDialog, AsyncTaskListener listener)
+    public TcocManager(ArrayList<TwitchChannel> allChannels, Context context, ProgressDialog progressDialog, AsyncTaskListener listener)
     {
-        mChannels = channels;
+        mAllChannels = allChannels;
         mContext = context;
         mProgressDialog = progressDialog;
         mListener = listener;
-        mResults = new ArrayList<TwitchChannel>();
-        mTcocs = new ArrayList<TwitchChannelOnlineChecker>();
+        mOnlineChannels = new ArrayList<>();
+        mTcocs = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
-        for(TwitchChannel tc : mChannels)
+        for(TwitchChannel tc : mAllChannels)
         {
             final TwitchChannelOnlineChecker onlineChecker =
                     new TwitchChannelOnlineChecker(mContext, mProgressDialog);
@@ -77,9 +78,9 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     protected void onPostExecute(ArrayList<TwitchChannel> channels) {
         if(mProgressDialog != null) mProgressDialog.dismiss();
         // save all followed channels to shared preferences
-        saveTwitchChannelsToPreferences(mChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
+        saveTwitchChannelsToPreferences(mAllChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
         // save all followed channels to database
-        new TwitchDbHelper(mContext).saveChannels(mChannels);
+        new TwitchDbHelper(mContext).saveChannels(mAllChannels);
         // save the time of this update
         saveCurrentTime();
         if(mListener != null) mListener.handleAsyncTaskFinished();
@@ -90,13 +91,13 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 
         while(true) {
             for(TwitchChannelOnlineChecker tcoc : mTcocs) {
-                if(tcoc.getStatus() == Status.FINISHED && !mResults.contains(tcoc.mTwitchChannel))
-                    mResults.add(tcoc.mTwitchChannel);
+                if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel))
+                    mOnlineChannels.add(tcoc.mTwitchChannel);
             }
-            if(mResults.size() == mChannels.size()) break;
+            if(mOnlineChannels.size() == mAllChannels.size()) break;
         }
         Log.d("OnlineCheckerManager", "doInBackground finished");
-        return mResults;
+        return mOnlineChannels;
     }
 
     @Override

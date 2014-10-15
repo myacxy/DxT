@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.io.DialogListener;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.ArrayList;

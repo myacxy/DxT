@@ -34,7 +34,7 @@ import android.util.AttributeSet;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 
 import java.util.HashSet;
 

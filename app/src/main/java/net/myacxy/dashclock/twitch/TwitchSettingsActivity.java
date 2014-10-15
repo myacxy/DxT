@@ -33,8 +33,8 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.TggManager;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.TtggManager;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.AbbreviationDialog;
 import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
 import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
@@ -119,7 +119,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         updateGameDb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final TggManager tggManager = new TggManager(TwitchSettingsActivity.this, true);
+                final TtggManager tggManager = new TtggManager(TwitchSettingsActivity.this, true);
                 tggManager.setAsyncTaskListener(new AsyncTaskListener() {
                     @Override
                     public void handleAsyncTaskFinished() {

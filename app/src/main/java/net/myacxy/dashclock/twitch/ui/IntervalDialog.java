@@ -40,7 +40,7 @@ import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 
 public class IntervalDialog extends Preference {
 

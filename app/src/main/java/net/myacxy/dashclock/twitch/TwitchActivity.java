@@ -37,8 +37,8 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import net.myacxy.dashclock.twitch.io.TwitchContract;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchContract;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.MainDialog;
 
 public class TwitchActivity extends Activity {

@@ -2,22 +2,49 @@ package net.myacxy.dashclock.twitch.models;
 
 import android.database.Cursor;
 
+import net.myacxy.dashclock.twitch.database.GameQuery;
 import net.myacxy.dashclock.twitch.io.JsonGetter;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TwitchGame {
 
-    public String name;
-    public String abbreviation;
+    /**
+     * identifier inside own database
+     */
+    public int id;
+    /**
+     * twitch's id
+     */
     public int entryId;
-    public int viewers;
+    /**
+     * number of channels that are online streaming this game. only available via top games
+     */
     public int channels;
+    /**
+     * total number of viewers watching the game. only available via top games
+     */
+    public int viewers;
+    /**
+     * name of the game
+     */
+    public String name;
+    /**
+     * custom abbreviation for the name created by the user
+     */
+    public String abbreviation;
+    /**
+     * url to the online source of a picture.
+     * template includes adjustable {width} and {height} parameters.
+     *
+     * example: "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-{width}x{height}.jpg"
+     */
+    public String logo;
 
     public TwitchGame(Cursor cursor) {
-        name = cursor.getString(TwitchDbHelper.GameQuery.name);
-        abbreviation = cursor.getString(TwitchDbHelper.GameQuery.abbreviation);
+        name = cursor.getString(GameQuery.name);
+        abbreviation = cursor.getString(GameQuery.abbreviation);
     }
 
     public TwitchGame(String name, String abbreviation) {
@@ -34,5 +61,12 @@ public class TwitchGame {
     private void init(JSONObject jsonObject) {
         name = JsonGetter.getString(jsonObject, "name");
         entryId = JsonGetter.getInt(jsonObject, "_id");
+        JSONObject logoJson = null;
+        try {
+            logoJson = jsonObject.getJSONObject("logo");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        logo = JsonGetter.getString(logoJson, "template");
     }
 }

@@ -37,7 +37,7 @@ import com.google.android.apps.dashclock.api.ExtensionData;
 
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
-import net.myacxy.dashclock.twitch.io.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 import java.util.ArrayList;

@@ -10,11 +10,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TwitchGameGetter extends JsonGetter {
+public class TwitchTopGamesGetter extends JsonGetter {
 
     public ArrayList<TwitchGame> games;
 
-    public TwitchGameGetter(Context context) {
+    public TwitchTopGamesGetter(Context context) {
         super(context, null);
     }
 

@@ -22,7 +22,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.myacxy.dashclock.twitch.io;
+package net.myacxy.dashclock.twitch.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,31 +47,49 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 {
     private Context mContext;
     private static final String TEXT_TYPE = " TEXT";
+    private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
+
+    private static final String foreignKeyGame = String.format("FOREIGN KEY(%s) REFERENCES %s(%s))",
+            TwitchContract.ChannelEntry.COLUMN_NAME_GAME_ID,
+            TwitchContract.GameEntry.TABLE_NAME,
+            TwitchContract.GameEntry._ID);
 
     private static final String SQL_CREATE_CHANNEL_ENTRIES =
             "CREATE TABLE " + TwitchContract.ChannelEntry.TABLE_NAME + " (" +
-            TwitchContract.ChannelEntry._ID + " INTEGER PRIMARY KEY," +
-            TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_GAME + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + TEXT_TYPE + COMMA_SEP +
-            TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + TEXT_TYPE +
-            " )";
+                    TwitchContract.ChannelEntry._ID + " INTEGER PRIMARY KEY," +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID + INTEGER_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_STATUS + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_GAME_ID + INTEGER_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_VIEWERS + TEXT_TYPE +COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_FOLLOWERS + TEXT_TYPE +COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_UPDATED_AT + TEXT_TYPE +COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_LOGO + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.ChannelEntry.COLUMN_NAME_PREVIEW + TEXT_TYPE + COMMA_SEP +
+                    foreignKeyGame +
+                    " )";
 
     private static final String SQL_CREATE_GAME_ENTRIES =
             "CREATE TABLE " + TwitchContract.GameEntry.TABLE_NAME + " (" +
                     TwitchContract.GameEntry._ID + " INTEGER PRIMARY KEY," +
+                    TwitchContract.GameEntry.COLUMN_NAME_ENTRY_ID + INTEGER_TYPE + COMMA_SEP +
                     TwitchContract.GameEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-                    TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + TEXT_TYPE +
+                    TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.GameEntry.COLUMN_NAME_CHANNELS + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.GameEntry.COLUMN_NAME_VIEWERS + TEXT_TYPE + COMMA_SEP +
+                    TwitchContract.GameEntry.COLUMN_NAME_LOGO + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_CHANNEL_ENTRIES =
             "DROP TABLE IF EXISTS " + TwitchContract.ChannelEntry.TABLE_NAME;
+    private static final String SQL_DELETE_GAME_ENTRIES =
+            "DROP TABLE IF EXISTS " + TwitchContract.GameEntry.TABLE_NAME;
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Twitch.db";
 
     public TwitchDbHelper(Context context)
@@ -91,6 +109,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_CHANNEL_ENTRIES);
+        db.execSQL(SQL_DELETE_GAME_ENTRIES);
         onCreate(db);
     }
 
@@ -104,6 +123,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         ONLINE,
         OFFLINE
     }
+
     /**
      * Retrieves data from the database and returns it as a Cursor.
      *
@@ -172,7 +192,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         while(cursor.moveToNext()) {
             TwitchChannel twitchChannel = new TwitchChannel();
             twitchChannel.displayName = cursor.getString(ChannelQuery.displayName);
-            twitchChannel.game = cursor.getString((ChannelQuery.game));
+//            twitchChannel.game = cursor.getString((ChannelQuery.game));
             twitchChannel.status = cursor.getString(ChannelQuery.status);
             twitchChannel.online = cursor.getInt(ChannelQuery.online) == 1;
             twitchChannels.add(twitchChannel);
@@ -215,7 +235,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
         for(TwitchChannel channel : onlineChannels) {
             for(TwitchGame game : abbreviatedGames) {
-                if(game.name.equals(channel.game)) channel.game = game.abbreviation;
+//                if(game.name.equals(channel.game)) channel.game = game.abbreviation;
             }
         }
         // initialize data
@@ -437,7 +457,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME, tc.displayName);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_NAME, tc.name);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
-            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME, tc.game);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME_ID, tc.game.id);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, tc.online);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED, 0);
 
@@ -450,46 +470,4 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         }
         close();
     } // saveChannels
-
-    /**
-     * Helps a cursor querying the database by providing
-     * a projection of the entries and their ids
-     */
-    public interface ChannelQuery
-    {
-        // Defines a projection that specifies which columns from the database
-        // you will actually use for querying
-        public String[] projection = new String[] {
-                TwitchContract.ChannelEntry._ID,
-                TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID,
-                TwitchContract.ChannelEntry.COLUMN_NAME_NAME,
-                TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME,
-                TwitchContract.ChannelEntry.COLUMN_NAME_STATUS,
-                TwitchContract.ChannelEntry.COLUMN_NAME_GAME,
-                TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE,
-                TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED,
-        };
-
-        // id of each column
-        public int id = 0;
-        public int entryId = 1;
-        public int name = 2;
-        public int displayName = 3;
-        public int status = 4;
-        public int game = 5;
-        public int online = 6;
-        public int selected = 7;
-    } // ChannelQuery
-
-    public interface GameQuery {
-        public String[] projection = new String[] {
-                TwitchContract.GameEntry._ID,
-                TwitchContract.GameEntry.COLUMN_NAME_NAME,
-                TwitchContract.GameEntry.COLUMN_NAME_ABBREVIATION
-        };
-
-        public int id = 0;
-        public int name = 1;
-        public int abbreviation = 2;
-    }
 } // TwitchDbHelper

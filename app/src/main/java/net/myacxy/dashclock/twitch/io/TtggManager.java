@@ -5,13 +5,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.ArrayList;
 
-public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> {
+public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> {
 
-    protected ArrayList<TwitchGameGetter> mTggs;
+    protected ArrayList<TwitchTopGamesGetter> mTggs;
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
@@ -19,11 +20,11 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     private int mTotal;
     private int mLimit;
 
-    public TggManager(Context context, boolean showProgress) {
+    public TtggManager(Context context, boolean showProgress) {
         mContext = context;
         if(showProgress) mProgressDialog = new ProgressDialog(context);
         games = new ArrayList<TwitchGame>();
-        mTggs = new ArrayList<TwitchGameGetter>();
+        mTggs = new ArrayList<TwitchTopGamesGetter>();
     }
 
     @Override
@@ -58,13 +59,13 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
 
         for (int offset = 0; offset < mTotal; offset += mLimit) {
-            final TwitchGameGetter tgg = new TwitchGameGetter(mContext);
+            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext);
             mTggs.add(tgg);
             tgg.run(mLimit, offset);
         }
 
         while (true) {
-            for (TwitchGameGetter tgg : mTggs) {
+            for (TwitchTopGamesGetter tgg : mTggs) {
                 if (tgg.getStatus() == Status.FINISHED && !games.contains(tgg.games.get(0))) {
                     games.addAll((tgg.games));
                     publishProgress(1);
@@ -82,7 +83,7 @@ public class TggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     @Override
     protected void onCancelled() {
-        for(TwitchGameGetter tgg : mTggs) tgg.cancel(true);
+        for(TwitchTopGamesGetter tgg : mTggs) tgg.cancel(true);
 
         super.onCancelled();
     }

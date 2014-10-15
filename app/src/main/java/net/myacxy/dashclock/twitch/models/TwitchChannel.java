@@ -35,13 +35,61 @@ import org.json.JSONObject;
  */
 public class TwitchChannel
 {
-    public String status;
-    public String game;
-    public String name;
-    public String displayName;
-    public int followers;
+    /**
+     * identifier inside own database
+     */
+    public int id;
+    /**
+     * twitch's id
+     */
     public int entryId;
+    /**
+     * number of viewers of this specific channel.
+     * NOTE: only available while checking the individual stream
+     */
+    public int viewers;
+    /**
+     * number of followers of this specific channel.
+     */
+    public int followers;
+    /**
+     * stream currently online?
+     * NOTE: only available while checking the individual stream
+     */
     public boolean online;
+    /**
+     * status message
+     */
+    public String status;
+    /**
+     * unique name (inside url)
+     */
+    public String name;
+    /**
+     * name displayed to the user. may contain whitespaces
+     */
+    public String displayName;
+    /**
+     * url to the online source of a picture. template includes adjustable {width} and {height} parameters.
+     *
+     * example: "http://static-cdn.jtvnw.net/ttv-logoart/League%20of%20Legends-{width}x{height}.jpg"
+     */
+    public String logo;
+    /**
+     * url to the online source of a preview picture. template includes adjustable {width} and {height} parameters.
+     *
+     * example: "http://static-cdn.jtvnw.net/previews-ttv/live_user_nl_kripp-{width}x{height}.jpg"
+     *
+     * NOTE: only available while checking the individual stream
+     */
+    public String preview;
+    /**
+     * ISO8601 date of the last update of the channel by the streamer
+     *
+     * example: "2014-10-15T04:36:32Z"
+     */
+    public String updatedAt;
+    public TwitchGame game;
 
     public TwitchChannel()
     {
@@ -67,7 +115,7 @@ public class TwitchChannel
     {
         status = JsonGetter.getString(channelObject, "status");
         name = JsonGetter.getString(channelObject, "name");
-        game = JsonGetter.getString(channelObject, "game");
+//        game = JsonGetter.getString(channelObject, "game");
         displayName = JsonGetter.getString(channelObject, "display_name");
         followers = JsonGetter.getInt(channelObject, "followers");
         entryId = JsonGetter.getInt(channelObject, "_id");
