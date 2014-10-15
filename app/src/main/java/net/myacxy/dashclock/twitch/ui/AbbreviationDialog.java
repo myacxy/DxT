@@ -17,8 +17,9 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
-import net.myacxy.dashclock.twitch.io.DialogListener;
+import net.myacxy.dashclock.twitch.database.GameQuery;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.DialogListener;
 
 import java.util.ArrayList;
 
@@ -141,12 +142,12 @@ public class AbbreviationDialog extends MultiSelectListPreference {
             final int position = cursor.getPosition();
             TextView game = (TextView) view.findViewById(
                     R.id.dialog_abbr_game);
-            String gameName = cursor.getString(TwitchDbHelper.GameQuery.name);
+            String gameName = cursor.getString(GameQuery.name);
             game.setText(gameName);
 
             // initialize view for status
             TextView abbreviation = (TextView) view.findViewById(R.id.dialog_abbr_abbreviation);
-            abbreviation.setText(cursor.getString(TwitchDbHelper.GameQuery.abbreviation));
+            abbreviation.setText(cursor.getString(GameQuery.abbreviation));
 
             final CheckBox checkBox = (CheckBox) view.findViewById(R.id.dialog_abbr_check);
             if(mSelectedGames.contains(gameName)) checkBox.setChecked(true);
@@ -158,9 +159,9 @@ public class AbbreviationDialog extends MultiSelectListPreference {
                     checkBox.setChecked(!checkBox.isChecked());
                     cursor.moveToPosition(position);
                     if(checkBox.isChecked()) {
-                        mSelectedGames.add(cursor.getString(TwitchDbHelper.GameQuery.name));
+                        mSelectedGames.add(cursor.getString(GameQuery.name));
                     } else {
-                        mSelectedGames.remove(cursor.getString(TwitchDbHelper.GameQuery.name));
+                        mSelectedGames.remove(cursor.getString(GameQuery.name));
                     }
                 }
             });

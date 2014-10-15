@@ -43,7 +43,6 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 {
     protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
-    protected ArrayList<TwitchGameSearcher> mTgss;
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
@@ -66,15 +65,13 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
             TwitchChannelOnlineChecker onlineChecker =
                     new TwitchChannelOnlineChecker(mContext, mProgressDialog);
             mTcocs.add(onlineChecker);
-            TwitchGameSearcher tgs = new TwitchGameSearcher(mContext);
-            tgs.run(tc.game.name);
             onlineChecker.run(tc);
         }
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if(mProgressDialog != null) mProgressDialog.setMessage(values[0].toString());
+        if(mProgressDialog != null) mProgressDialog.incrementProgressBy(values[0]);
     }
 
     @Override
@@ -96,6 +93,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
             for(TwitchChannelOnlineChecker tcoc : mTcocs) {
                 if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel))
                     mOnlineChannels.add(tcoc.mTwitchChannel);
+                    publishProgress(1);
             }
             if(mOnlineChannels.size() == mAllChannels.size()) break;
         }
@@ -159,5 +157,5 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         int updateInterval = sp.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 15);
         Log.d("TwitchUserFollowsGetter", "Difference=" + difference);
         return difference < updateInterval;
-    }
+    } // checkRecentlyUpdated
 } // TcocManager

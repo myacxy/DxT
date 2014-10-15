@@ -16,8 +16,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
-import net.myacxy.dashclock.twitch.io.DialogListener;
+import net.myacxy.dashclock.twitch.database.GameQuery;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.DialogListener;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class AddAbbreviationDialog extends DialogFragment {
         ArrayList<String> games = new ArrayList<>();
         TwitchDbHelper dbHelper = new TwitchDbHelper(getActivity());
         Cursor cursor = dbHelper.getGamesCursor(false);
-        while (cursor.moveToNext()) games.add(cursor.getString(TwitchDbHelper.GameQuery.name));
+        while (cursor.moveToNext()) games.add(cursor.getString(GameQuery.name));
         cursor.close();
         dbHelper.close();
         return games;

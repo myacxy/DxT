@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.MainDialog;
@@ -98,7 +99,7 @@ public class TwitchActivity extends Activity {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
-            final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            final String displayName = cursor.getString(ChannelQuery.displayName);
             TextView selectionDisplayName = (TextView) view.findViewById(
                     R.id.dialog_following_selection_display_name);
             selectionDisplayName.setText(displayName);
@@ -106,11 +107,11 @@ public class TwitchActivity extends Activity {
             TextView selectionGame = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
             selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
-                    + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
+                    + ": " + cursor.getString(ChannelQuery.gameId));
             // initialize view for status
             TextView selectionStatus = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);
-            selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
+            selectionStatus.setText(cursor.getString(ChannelQuery.status));
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

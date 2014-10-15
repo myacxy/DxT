@@ -67,10 +67,11 @@ import com.commonsware.cwac.merge.MergeAdapter;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
-import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
-import net.myacxy.dashclock.twitch.io.DialogListener;
+import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
+import net.myacxy.dashclock.twitch.io.DialogListener;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 public class MainDialog extends DialogFragment {
@@ -255,7 +256,7 @@ public class MainDialog extends DialogFragment {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
-            String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
+            String displayName = cursor.getString(ChannelQuery.displayName);
             TextView displayNameView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_display_name);
             displayNameView.setText(displayName);
@@ -263,11 +264,11 @@ public class MainDialog extends DialogFragment {
             TextView gameView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
             gameView.setText(context.getResources().getString(R.string.dialog_following_selection_game)
-                    + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
+                    + ": " + cursor.getString(ChannelQuery.gameId));
             // initialize view for status
             TextView statusView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);
-            statusView.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
+            statusView.setText(cursor.getString(ChannelQuery.status));
 
         } // bindView
     } // ListAdapter

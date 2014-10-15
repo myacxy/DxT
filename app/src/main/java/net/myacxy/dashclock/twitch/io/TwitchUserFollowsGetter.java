@@ -42,6 +42,7 @@ import java.util.ArrayList;
 public class TwitchUserFollowsGetter extends JsonGetter {
 
     public TcocManager tcocManager;
+    public TgsManager tgsManager;
     /**
      * The activity's context is necessary in order to display the progress dialog.
      *
@@ -53,7 +54,11 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
+        if(mProgressDialog != null) {
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setTitle(mProgressDialogMessage);
+            mProgressDialog.show();
+        }
     }
 
     @Override
@@ -88,8 +93,16 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         ArrayList<TwitchChannel> allFollowedChannels = parseJsonObject(jsonAllFollowedChannels);
 
         if (allFollowedChannels != null) {
-            tcocManager = new TcocManager(allFollowedChannels, mContext, mProgressDialog, mListener);
-            tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR);
+            tgsManager = new TgsManager(mContext);
+            tgsManager.mProgressDialog = mProgressDialog;
+            tgsManager.setAsyncTaskListener(new AsyncTaskListener() {
+                @Override
+                public void handleAsyncTaskFinished() {
+                    tcocManager = new TcocManager(tgsManager.mChannels, mContext, mProgressDialog, mListener);
+                    tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR);
+                }
+            });
+            tgsManager.run(allFollowedChannels);
         }
     } // onPostExecute
 

@@ -50,7 +50,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
 
-    private static final String foreignKeyGame = String.format("FOREIGN KEY(%s) REFERENCES %s(%s))",
+    private static final String foreignKeyGame = String.format("FOREIGN KEY(%s) REFERENCES %s(%s)",
             TwitchContract.ChannelEntry.COLUMN_NAME_GAME_ID,
             TwitchContract.GameEntry.TABLE_NAME,
             TwitchContract.GameEntry._ID);
@@ -86,8 +86,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     private static final String SQL_DELETE_CHANNEL_ENTRIES =
             "DROP TABLE IF EXISTS " + TwitchContract.ChannelEntry.TABLE_NAME;
-    private static final String SQL_DELETE_GAME_ENTRIES =
-            "DROP TABLE IF EXISTS " + TwitchContract.GameEntry.TABLE_NAME;
+
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Twitch.db";
@@ -107,9 +106,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
+        // to simply discard the data and start over
         db.execSQL(SQL_DELETE_CHANNEL_ENTRIES);
-        db.execSQL(SQL_DELETE_GAME_ENTRIES);
         onCreate(db);
     }
 
@@ -190,8 +188,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         Cursor cursor = getChannelsCursor(selected, State.ALL, TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME);
         // parse each data element to a TwitchChannel
         while(cursor.moveToNext()) {
-            int gameId = cursor.getInt((ChannelQuery.gameId));
-            twitchChannels.add(new TwitchChannel(cursor, getGame(gameId)));
+            int gameEntryId = cursor.getInt((ChannelQuery.gameId));
+            twitchChannels.add(new TwitchChannel(cursor, getGame(gameEntryId)));
         }
         cursor.close();
         close();
@@ -213,8 +211,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
                 null                                    // the sort order
         );
 
-        int gameId = cursor.getInt((ChannelQuery.gameId));
-        TwitchChannel channel = new TwitchChannel(cursor, getGame(gameId));
+        int gameName = cursor.getInt((ChannelQuery.gameId));
+        TwitchChannel channel = new TwitchChannel(cursor, getGame(gameName));
 
         cursor.close();
         close();
@@ -302,10 +300,10 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return cursor;
     }
 
-    public TwitchGame getGame(int id) {
+    public TwitchGame getGame(int entryId) {
 
-        String selection = TwitchContract.GameEntry._ID + " LIKE ?";
-        String[] selectionArgs = new String[]{ String.valueOf(id) };
+        String selection = TwitchContract.GameEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+        String[] selectionArgs = new String[]{ String.valueOf(entryId) };
 
         // get all entries of the table from the database
         Cursor cursor = getReadableDatabase().query(
@@ -383,9 +381,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         db.execSQL(sql, new Object[]{ game, game, null });
         db.close();
     }
-    /**
-     * TODO
-     */
+
     private void insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
     {
         if(game.abbreviation == null) game.abbreviation = checkExampleAbbr(game);
@@ -499,11 +495,16 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ENTRY_ID, tc.entryId);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_VIEWERS, tc.viewers);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_FOLLOWERS, tc.followers);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, tc.online);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME, tc.displayName);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_NAME, tc.name);
-            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_STATUS, tc.status);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_LOGO, tc.logo);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_PREVIEW, tc.preview);
+            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_UPDATED_AT, tc.updatedAt);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_GAME_ID, tc.game.id);
-            values.put(TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE, tc.online);
             values.put(TwitchContract.ChannelEntry.COLUMN_NAME_SELECTED, 0);
 
             // Insert the new row, returning the primary key value of the new row

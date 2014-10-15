@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class TwitchGameSearcher extends JsonGetter {
 
     public ArrayList<TwitchGame> games;
-
+    private String searchQuery;
     public TwitchGameSearcher(Context context) {
         super(context, null);
     }
@@ -38,12 +38,20 @@ public class TwitchGameSearcher extends JsonGetter {
         }
         if(gamesJson == null) cancel(true);
         else this.games = parseJson(gamesJson);
+
+        if(mListener != null) mListener.handleAsyncTaskFinished();
     }
 
     public void run(String searchQuery) {
+        this.searchQuery = searchQuery;
         String url = String.format("https://api.twitch.tv/kraken/search/games?q=%s&type=suggest",
                 searchQuery);
         executeOnExecutor(THREAD_POOL_EXECUTOR, url);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " " + searchQuery;
     }
 
     protected ArrayList<TwitchGame> parseJson(JSONArray jsonGames)

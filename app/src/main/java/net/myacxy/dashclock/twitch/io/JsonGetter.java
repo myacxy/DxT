@@ -92,7 +92,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        // initialize dialog before trying to fetch the data
+        // initialize dialog
         if(mProgressDialog != null) {
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setMessage(mProgressDialogMessage);
@@ -141,6 +141,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      */
     protected JSONObject getJsonFromURL(String url)
     {
+        url = url.replaceAll(" ", "+");
         //initialize
         JSONObject jsonObject = null;
         InputStream is = null;

@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract.ChannelEntry;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 
@@ -139,8 +140,8 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
-            final String displayName = cursor.getString(TwitchDbHelper.ChannelQuery.displayName);
-            boolean online = cursor.getInt(TwitchDbHelper.ChannelQuery.online) == 1;
+            final String displayName = cursor.getString(ChannelQuery.displayName);
+            boolean online = cursor.getInt(ChannelQuery.online) == 1;
             TextView selectionDisplayName = (TextView) view.findViewById(
                     R.id.dialog_following_selection_display_name);
             selectionDisplayName.setText(displayName + " (" + (online ? "online" : "offline") + ")");
@@ -148,11 +149,11 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             TextView selectionGame = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
             selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game)
-                    + ": " + cursor.getString(TwitchDbHelper.ChannelQuery.game));
+                    + ": " + cursor.getString(ChannelQuery.gameId));
             // initialize view for status
             TextView selectionStatus = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);
-            selectionStatus.setText(cursor.getString(TwitchDbHelper.ChannelQuery.status));
+            selectionStatus.setText(cursor.getString(ChannelQuery.status));
             // check the checkbox if was selected beforehand
             final CheckBox checkBox = (CheckBox) view.findViewById(
                     R.id.dialog_following_selection_checkbox);

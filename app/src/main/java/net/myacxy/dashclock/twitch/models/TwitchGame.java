@@ -50,8 +50,6 @@ public class TwitchGame {
         name = cursor.getString(GameQuery.name);
         abbreviation = cursor.getString(GameQuery.abbreviation);
         logo = cursor.getString(GameQuery.logo);
-
-        cursor.close();
     }
 
     public TwitchGame(String name, String abbreviation) {
@@ -60,12 +58,7 @@ public class TwitchGame {
     }
 
     public TwitchGame(JSONObject jsonObject, int channels, int viewers) {
-        init(jsonObject);
-        this.channels = channels;
-        this.viewers = viewers;
-    }
 
-    private void init(JSONObject jsonObject) {
         name = JsonGetter.getString(jsonObject, "name");
         entryId = JsonGetter.getInt(jsonObject, "_id");
         JSONObject logoJson = null;
@@ -75,5 +68,8 @@ public class TwitchGame {
             e.printStackTrace();
         }
         logo = JsonGetter.getString(logoJson, "template");
+
+        this.channels = channels;
+        this.viewers = viewers;
     }
 }
