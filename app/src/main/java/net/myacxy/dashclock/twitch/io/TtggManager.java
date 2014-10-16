@@ -66,12 +66,14 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
 
         while (true) {
             for (TwitchTopGamesGetter tgg : mTggs) {
-                if (tgg.getStatus() == Status.FINISHED && !games.contains(tgg.games.get(0))) {
-                    games.addAll((tgg.games));
-                    publishProgress(1);
+                if (tgg.getStatus() == Status.FINISHED) {
+                    if(tgg.games != null && !games.contains(tgg.games.get(0))) {
+                        games.addAll((tgg.games));
+                        publishProgress(1);
+                    }
                 }
             }
-            if (games.size() == mTotal) break;
+            if (mProgressDialog.getProgress() == mTggs.size()) break;
             if(!mProgressDialog.isShowing()) {
                 cancel(true);
                 return null;

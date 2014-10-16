@@ -50,6 +50,16 @@ import java.util.Set;
 public class TwitchSettingsActivity extends BaseSettingsActivity
 {
     protected SharedPreferences mSharedPreferences;
+    protected UserNameDialog userNamePreference;
+    protected AbbreviationDialog abbreviationPreference;
+    protected FollowingSelectionDialog followingSelectionPreference;
+    protected Preference updateGameDbPreference;
+    protected CheckBoxPreference hideNeutralPreference;
+    protected Preference donatePreference;
+    protected CheckBoxPreference hideEmptyPreference;
+    protected IntervalDialog intervalPreference;
+    protected CharLimiterDialog charLimiterPreference;
+    protected CheckBoxPreference customVisibilityPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +72,27 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        intervalPreference = (IntervalDialog) findPreference("pref_update_interval");
+        followingSelectionPreference =
+                (FollowingSelectionDialog) findPreference("pref_following_selection");
+        userNamePreference = (UserNameDialog) findPreference("pref_user_name");
+        abbreviationPreference = (AbbreviationDialog) findPreference("pref_abbr");
+        charLimiterPreference = (CharLimiterDialog) findPreference("pref_char_limiter");
+        customVisibilityPreference = (CheckBoxPreference) findPreference("pref_custom_visibility");
+        donatePreference = findPreference("pref_donate");
+        hideNeutralPreference = (CheckBoxPreference) findPreference("pref_dialog_hide_neutral");
+        hideEmptyPreference = (CheckBoxPreference) findPreference("pref_hide_empty");
+        updateGameDbPreference = findPreference("pref_game_db_update");
+
         bindIntervalPreference();
         bindCharLimiterPreference();
         bindSelectionPreference();
-        bindUserNamePreference();
         bindAbbreviationsPreference();
         bindGameDbPreference();
+        bindUserNamePreference();
 
-        CheckBoxPreference checkedTextView = (CheckBoxPreference) findPreference("pref_custom_visibility");
-        checkedTextView.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        customVisibilityPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 new TwitchDbHelper(getApplicationContext()).updatePublishedData();
@@ -78,8 +100,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        Preference donate = findPreference("pref_donate");
-        donate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        donatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FBWHP6A4GDM9Q";
@@ -90,8 +111,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        CheckBoxPreference hideNeutral = (CheckBoxPreference) findPreference("pref_dialog_hide_neutral");
-        hideNeutral.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        hideNeutralPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 boolean isChecked = ((CheckBoxPreference) preference).isChecked();
@@ -102,8 +122,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        CheckBoxPreference hideEmpty = (CheckBoxPreference) findPreference("pref_hide_empty");
-        hideEmpty.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        hideEmptyPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 boolean isChecked = ((CheckBoxPreference) preference).isChecked();
@@ -115,24 +134,24 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        final Preference updateGameDb = findPreference("pref_game_db_update");
-        updateGameDb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        updateGameDbPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final TtggManager tggManager = new TtggManager(TwitchSettingsActivity.this, true);
                 tggManager.setAsyncTaskListener(new AsyncTaskListener() {
                     @Override
                     public void handleAsyncTaskFinished() {
-                        updateGameDb.getOnPreferenceChangeListener().onPreferenceChange(
-                                updateGameDb, tggManager.games.size());
                         TwitchDbHelper dbHelper = new TwitchDbHelper(getApplicationContext());
 
-                        int abbreviatedGamesCount = dbHelper.getGamesCursor(true).getCount();
-                        mSharedPreferences.edit()
-                                .putInt(TwitchExtension.PREF_ABBR_COUNT, abbreviatedGamesCount)
-                                .apply();
+                        int gamesCount = dbHelper.getGames(false).size();
+                        updateGameDbPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                                updateGameDbPreference, gamesCount);
 
-                        bindAbbreviationsPreference();
+                        int abbreviatedGamesCount = dbHelper.getGames(true).size();
+                        AbbreviationDialog abbrPreference =
+                                (AbbreviationDialog) findPreference("pref_abbr");
+                        abbrPreference.getOnPreferenceChangeListener()
+                                .onPreferenceChange(abbrPreference, abbreviatedGamesCount);
 
                         new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                     }
@@ -141,12 +160,11 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 return true;
             }
         });
-    }
+    } // onPostCreate
 
     private void bindIntervalPreference() {
-        IntervalDialog preference = (IntervalDialog) findPreference("pref_update_interval");
 
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        intervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 preference.setSummary(newValue + " minutes");
@@ -155,14 +173,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         });
 
         int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_UPDATE_INTERVAL, 15);
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
+        intervalPreference.getOnPreferenceChangeListener().onPreferenceChange(intervalPreference, currentValue);
+    } // bindIntervalPreference
 
     private void bindSelectionPreference() {
-        FollowingSelectionDialog preference =
-                (FollowingSelectionDialog) findPreference("pref_following_selection");
 
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        followingSelectionPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Set<String> allChannels =  mSharedPreferences.getStringSet(
@@ -178,22 +194,33 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
 
         Set<String> currentValue = mSharedPreferences.getStringSet(
                 TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS, new HashSet<String>());
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
+        followingSelectionPreference.getOnPreferenceChangeListener().onPreferenceChange(followingSelectionPreference, currentValue);
+    } // bindSelectionPreference
 
     private void bindUserNamePreference() {
-        UserNameDialog preference = (UserNameDialog) findPreference("pref_user_name");
 
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        userNamePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                TwitchDbHelper dbHelper = new TwitchDbHelper(getApplicationContext());
+
+                //
                 preference.setSummary(newValue.toString());
 
-                FollowingSelectionDialog selectionPreference =
-                        (FollowingSelectionDialog) findPreference("pref_following_selection");
+                // reset custom selections
 
-                selectionPreference.getOnPreferenceChangeListener().onPreferenceChange(
-                        selectionPreference, new HashSet<String>());
+                followingSelectionPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                        followingSelectionPreference, new HashSet<String>());
+
+                // update games database count
+                int gamesCount = dbHelper.getGames(false).size();
+                updateGameDbPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                        updateGameDbPreference, gamesCount);
+
+                // update abbreviation count
+                int abbreviatedGamesCount = dbHelper.getGames(true).size();
+                abbreviationPreference.getOnPreferenceChangeListener()
+                        .onPreferenceChange(abbreviationPreference, abbreviatedGamesCount);
 
                 return true;
             }
@@ -201,13 +228,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
 
         String currentValue = mSharedPreferences.getString(
                 TwitchExtension.PREF_USER_NAME, "test_user1");
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
+        userNamePreference.getOnPreferenceChangeListener().onPreferenceChange(userNamePreference, currentValue);
+    } // bindUserNamePreference
 
     private void bindCharLimiterPreference() {
-        CharLimiterDialog preference = (CharLimiterDialog) findPreference("pref_char_limiter");
 
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        charLimiterPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 mSharedPreferences.edit()
@@ -218,12 +244,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
         int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_CHAR_LIMIT, 200);
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
+        charLimiterPreference.getOnPreferenceChangeListener()
+                .onPreferenceChange(charLimiterPreference, currentValue);
+    } // bindCharLimiterPreference
 
     private void bindAbbreviationsPreference() {
-        AbbreviationDialog preference = (AbbreviationDialog) findPreference("pref_abbr");
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        abbreviationPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 preference.setSummary(newValue + " custom abbreviations");
@@ -236,13 +262,13 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         });
 
         int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_ABBR_COUNT, 0);
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
+        abbreviationPreference.getOnPreferenceChangeListener()
+                .onPreferenceChange(abbreviationPreference, currentValue);
+    } // bindAbbreviationsPreference
 
     private void bindGameDbPreference() {
-        Preference preference = findPreference("pref_game_db_update");
 
-        preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        updateGameDbPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 mSharedPreferences.edit()
@@ -254,6 +280,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         });
 
         int currentValue = mSharedPreferences.getInt(TwitchExtension.PREF_GAMES_COUNT, 0);
-        preference.getOnPreferenceChangeListener().onPreferenceChange(preference, currentValue);
-    }
-}
+        updateGameDbPreference.getOnPreferenceChangeListener()
+                .onPreferenceChange(updateGameDbPreference, currentValue);
+    } // bindGameDbPreference
+} // TwitchSettingsActivity
