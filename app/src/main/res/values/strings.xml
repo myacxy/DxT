@@ -69,4 +69,5 @@
     <string name="dialog_abbr_add_abbr">Abbreviation</string>
     <string name="dialog_abbr_add_game">Game</string>
     <string name="dialog_abbr_delete">Delete</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet tortor et urna dictum pharetra a sit amet purus. In tempus dictum eros. Proin congue cursus ipsum eu faucibus. Curabitur nullam.</string>
 </resources>

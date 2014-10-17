@@ -131,9 +131,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
      */
     public Cursor getChannelsCursor(boolean selected, State state, String sortOrder)
     {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        selected = selected && sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
-
         String selection = null;
         String[] selectionArgs = null;
 
@@ -196,6 +193,12 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return twitchChannels;
     } // getAllChannels
 
+    /**
+     * Retrieves a TwitchChannel from the database based on its row id
+     *
+     * @param id unique row identifier of the channel
+     * @return a single TwitchChannel
+     */
     public TwitchChannel getChannel(int id) {
         String selection = TwitchContract.ChannelEntry._ID + " LIKE ?";
         String[] selectionArgs = new String[]{ String.valueOf(id) };
@@ -241,39 +244,48 @@ public class TwitchDbHelper extends SQLiteOpenHelper
      */
     public void updatePublishedData()
     {
-        // initialize
+        // initialize helpers
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor editor = sp.edit();
         TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
         // retrieve data
-        ArrayList<TwitchChannel> allChannels = dbHelper.getAllChannels(true);
-        ArrayList<TwitchChannel> onlineChannels = dbHelper.filterOnlineChannels(allChannels);
-
+        boolean selected = sp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
+        ArrayList<TwitchChannel> allChannels = dbHelper.getAllChannels(selected);
         // initialize data
-        int onlineCount = onlineChannels.size();
-        String status = String.format("%d Live", onlineCount);
-        String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
+        String longestBody = null;
         Set<String> expandedBody = new HashSet<>();
         // build body
-        for (TwitchChannel tc : onlineChannels) {
+        for (TwitchChannel tc : allChannels) {
+            String body = "";
+            // game name has abbreviation
             if(tc.game.abbreviation != null) {
-                expandedBody.add(String.format("%s playing %s: %s",
+                body = String.format("%s playing %s: %s",
                         tc.displayName,
                         tc.game.abbreviation,
-                        tc.status));
+                        tc.status);
             } else {
-                expandedBody.add(String.format("%s playing %s: %s",
+                body = String.format("%s playing %s: %s",
                         tc.displayName,
                         tc.game.name,
-                        tc.status));
+                        tc.status);
             }
+            // channel is online
+            if(tc.online) expandedBody.add(body);
+            // determine longest body
+            if(body.length() > (longestBody == null ? 0 : longestBody.length())) longestBody = body;
         }
+
+        // initialize published data
+        int onlineCount = expandedBody.size();
+        String status = String.format("%d Live", onlineCount);
+        String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
 
         // save data to preferences
         editor.putInt(TwitchExtension.PREF_ONLINE_COUNT, onlineCount);
         editor.putString(TwitchExtension.PREF_STATUS, status);
         editor.putString(TwitchExtension.PREF_EXPANDED_TITLE, expandedTitle);
         editor.putStringSet(TwitchExtension.PREF_EXPANDED_BODY, expandedBody);
+        editor.putString(TwitchExtension.PREF_LONGEST_BODY, longestBody);
         editor.apply();
     } // updateSharedPreferencesData
 
@@ -428,6 +440,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             case "Counter-Strike: Global Offensive":
                 return "CSGO";
             case "World of Warcraft: Mists of Pandaria":
+                return "WoW";
+            case "World of Warcraft: Warlords of Draenor":
                 return "WoW";
             case "StarCraft II: Heart of the Swarm":
                 return "SC2";

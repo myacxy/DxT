@@ -73,6 +73,7 @@ import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.DialogListener;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
+import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 public class MainDialog extends DialogFragment {
 
@@ -263,8 +264,8 @@ public class MainDialog extends DialogFragment {
             // initialize view for game
             TextView gameView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_game);
-            gameView.setText(context.getResources().getString(R.string.dialog_following_selection_game)
-                    + ": " + cursor.getString(ChannelQuery.gameId));
+            TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
+            gameView.setText(context.getResources().getString(R.string.dialog_following_selection_game) + ": " + game.name);
             // initialize view for status
             TextView statusView = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);

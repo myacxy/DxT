@@ -41,9 +41,6 @@ import android.widget.TextView;
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class CharLimiterDialog extends Preference {
 
     public CharLimiterDialog(Context context, AttributeSet attrs, int defStyle) {
@@ -58,13 +55,6 @@ public class CharLimiterDialog extends Preference {
         super(context);
     }
 
-    private String getLongestString(Set<String> strings) {
-        String result = "";
-        for(String string : strings)
-            if(string.length() > result.length())
-                result = string;
-        return result;
-    }
     @Override
     protected void onClick() {
         /// init builder
@@ -78,8 +68,8 @@ public class CharLimiterDialog extends Preference {
 
         // retrieve previous setting
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        Set<String> allChannels = sp.getStringSet(TwitchExtension.PREF_EXPANDED_BODY, new HashSet<String>());
-        final String longestBody = getLongestString(allChannels);
+        final String longestBody = sp.getString(TwitchExtension.PREF_LONGEST_BODY,
+                getContext().getResources().getString(R.string.lorem_ipsum));
         SpannableString text = new SpannableString(longestBody);
         final int color = getContext().getResources().getColor(android.R.color.darker_gray);
         final int color2 = getContext().getResources().getColor(android.R.color.black);
