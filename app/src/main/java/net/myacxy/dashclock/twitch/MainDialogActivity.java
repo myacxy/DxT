@@ -27,6 +27,7 @@ package net.myacxy.dashclock.twitch;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -38,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
@@ -88,6 +90,14 @@ public class MainDialogActivity extends Activity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        Button button = (Button) findViewById(R.id.main_dismiss);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -126,6 +136,9 @@ public class MainDialogActivity extends Activity {
                             }
                         });
                 break;
+            }
+            case R.id.action_settings: {
+                startActivity(new Intent(this, TwitchSettingsActivity.class));
             }
         }
         return super.onOptionsItemSelected(item);
@@ -199,18 +212,24 @@ public class MainDialogActivity extends Activity {
             // initialize view for display name
             String displayName = cursor.getString(ChannelQuery.displayName);
             TextView displayNameView = (TextView) view.findViewById(
-                    R.id.main_list_display_name);
+                    R.id.main_list_item_display_name_text);
             displayNameView.setText(displayName);
             // initialize view for game
-            TextView gameView = (TextView) view.findViewById(
-                    R.id.main_list_game);
+            TextView gameView = (TextView) view.findViewById(R.id.main_list_item_game_text);
             TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
+            gameView.setText(game.name);
 
-            gameView.setText(getString(R.string.game) + ": " + game.name);
             // initialize view for status
-            TextView statusView = (TextView) view.findViewById(
-                    R.id.main_list_status);
+            TextView statusView = (TextView) view.findViewById(R.id.main_list_status_text);
             statusView.setText(cursor.getString(ChannelQuery.status));
+
+            // initialize view for viewers
+            TextView viewersView = (TextView) view.findViewById(R.id.main_list_viewers_text);
+            viewersView.setText(cursor.getString(ChannelQuery.viewers));
+
+            // initialize view for viewers
+            TextView updatedAtView = (TextView) view.findViewById(R.id.main_list_updated_at_text);
+            updatedAtView.setText(cursor.getString(ChannelQuery.updatedAt));
 
         } // bindView
     } // ListAdapter

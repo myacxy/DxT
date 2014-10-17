@@ -57,14 +57,9 @@
             android:enabled="true"/>
     </PreferenceCategory>
     <!--Main Dialog-->
-    <PreferenceCategory android:title="@string/pref_category_dialog">
-        <CheckBoxPreference
-            android:title="@string/pref_dialog_hide_neutral_title"
-            android:summary="@string/pref_dialog_hide_neutral_summary"
-            android:key="pref_dialog_hide_neutral">
+    <!--<PreferenceCategory android:title="@string/pref_category_dialog">-->
 
-        </CheckBoxPreference>
-    </PreferenceCategory>
+    <!--</PreferenceCategory>-->
 
     <!--Support-->
     <PreferenceCategory android:title="@string/pref_category_support">

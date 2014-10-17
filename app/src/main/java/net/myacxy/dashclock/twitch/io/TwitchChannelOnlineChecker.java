@@ -61,7 +61,6 @@ public class TwitchChannelOnlineChecker extends JsonGetter
             mTwitchChannel.online = true;
             mTwitchChannel.viewers = JsonGetter.getInt(stream, "viewers");
         }
-
     }
 
     @Override

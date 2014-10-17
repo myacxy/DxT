@@ -110,7 +110,7 @@ public class MainDialog extends DialogFragment {
         initView();
         builder.setView(mDialogView);
         // enable buttons
-        builder.setNegativeButton(R.string.dialog_main_dismiss, null);
+        builder.setNegativeButton(R.string.dismiss, null);
         if(!hideNeutral) builder.setNeutralButton(R.string.dialog_main_toggle_offline, null);
         builder.setPositiveButton(R.string.dialog_main_update, null);
 
@@ -258,16 +258,16 @@ public class MainDialog extends DialogFragment {
             // initialize view for display name
             String displayName = cursor.getString(ChannelQuery.displayName);
             TextView displayNameView = (TextView) view.findViewById(
-                    R.id.main_list_display_name);
+                    R.id.main_list_item_display_name_text);
             displayNameView.setText(displayName);
             // initialize view for game
             TextView gameView = (TextView) view.findViewById(
-                    R.id.main_list_game);
+                    R.id.main_list_item_game);
             TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
-            gameView.setText(context.getResources().getString(R.string.game) + ": " + game.name);
+            gameView.setText(context.getResources().getString(R.string.main_list_item_game) + ": " + game.name);
             // initialize view for status
             TextView statusView = (TextView) view.findViewById(
-                    R.id.main_list_status);
+                    R.id.main_list_item_status);
             statusView.setText(cursor.getString(ChannelQuery.status));
 
         } // bindView

@@ -8,7 +8,7 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <!--Main Dialog-->
-    <string name="dialog_main_dismiss">Dismiss</string>
+    <string name="dismiss">Dismiss</string>
     <string name="dialog_main_toggle_offline">Toggle Offline</string>
     <string name="dialog_main_update">Update</string>
     <string name="dialog_header_online">Online</string>
@@ -32,7 +32,7 @@
     <string name="pref_following_selection_title">Select Custom Channels</string>
     <string name="pref_following_selection_progress_title">Fetching data...</string>
     <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
-    <string name="game">Game</string>
+    <string name="main_list_item_game">Game</string>
 
     <!--Interval-->
     <string name="pref_update_interval_title">Set Update Interval</string>
@@ -75,4 +75,7 @@
     <string name="dialog_abbr_add_hint_game_missing">Insert Game</string>
     <string name="action_update">Update</string>
     <string name="action_show_offline">Show Offline</string>
+    <string name="main_list_item_status">Status</string>
+    <string name="main_list_item_viewers">Viewers</string>
+    <string name="main_list_item_updated_at">Updated</string>
 </resources>

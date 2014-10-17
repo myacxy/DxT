@@ -138,6 +138,8 @@ public class TwitchChannel
         displayName = JsonGetter.getString(channelObject, "display_name");
         // 300x300 logo for now, no individual check by tcoc yet
         logo = JsonGetter.getString(channelObject, "logo");
+        updatedAt = JsonGetter.getString(channelObject, "updated_at");
+        updatedAt = updatedAt.replace('T', ' ').replace('Z', ' ').trim();
         // simple initialization in order to pass it to tgs later
         game = new TwitchGame(JsonGetter.getString(channelObject, "game"), null);
     }
