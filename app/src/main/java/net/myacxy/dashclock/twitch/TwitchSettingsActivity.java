@@ -54,7 +54,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected AbbreviationDialog abbreviationPreference;
     protected FollowingSelectionDialog followingSelectionPreference;
     protected Preference updateGameDbPreference;
-    protected CheckBoxPreference hideNeutralPreference;
     protected Preference donatePreference;
     protected CheckBoxPreference hideEmptyPreference;
     protected IntervalDialog intervalPreference;
@@ -65,7 +64,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.twitch_purple);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
@@ -81,7 +79,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         charLimiterPreference = (CharLimiterDialog) findPreference("pref_char_limiter");
         customVisibilityPreference = (CheckBoxPreference) findPreference("pref_custom_visibility");
         donatePreference = findPreference("pref_donate");
-        hideNeutralPreference = (CheckBoxPreference) findPreference("pref_dialog_hide_neutral");
         hideEmptyPreference = (CheckBoxPreference) findPreference("pref_hide_empty");
         updateGameDbPreference = findPreference("pref_game_db_update");
 
@@ -107,17 +104,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
-                return true;
-            }
-        });
-
-        hideNeutralPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                boolean isChecked = ((CheckBoxPreference) preference).isChecked();
-                mSharedPreferences.edit()
-                        .putBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, isChecked)
-                        .apply();
                 return true;
             }
         });
@@ -181,13 +167,13 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         followingSelectionPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Set<String> allChannels =  mSharedPreferences.getStringSet(
+                Set<String> allChannels = mSharedPreferences.getStringSet(
                         TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS, new HashSet<String>());
                 int totalCount = allChannels.size();
                 Set<String> selectedChannels = (Set<String>) newValue;
                 int selectedCount = selectedChannels.size();
                 String summary = String.format("%d out of %d channels selected", selectedCount, totalCount);
-                        preference.setSummary(summary);
+                preference.setSummary(summary);
                 return true;
             }
         });

@@ -6,24 +6,24 @@
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
-    <TextView android:id="@+id/dialog_following_selection_display_name"
+    <TextView android:id="@+id/main_list_display_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
 
-    <TextView android:id="@+id/dialog_following_selection_game"
+    <TextView android:id="@+id/main_list_game"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_following_selection_display_name"
-        android:layout_alignStart="@id/dialog_following_selection_display_name"
+        android:layout_below="@id/main_list_display_name"
+        android:layout_alignStart="@id/main_list_display_name"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView android:id="@+id/dialog_following_selection_status"
+    <TextView android:id="@+id/main_list_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_following_selection_game"
-        android:layout_alignStart="@id/dialog_following_selection_display_name"
+        android:layout_below="@id/main_list_game"
+        android:layout_alignStart="@id/main_list_display_name"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

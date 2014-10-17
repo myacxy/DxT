@@ -32,7 +32,7 @@
     <string name="pref_following_selection_title">Select Custom Channels</string>
     <string name="pref_following_selection_progress_title">Fetching data...</string>
     <string name="pref_following_selection_progress_fail">Could not fetch data.</string>
-    <string name="dialog_following_selection_game">Game</string>
+    <string name="game">Game</string>
 
     <!--Interval-->
     <string name="pref_update_interval_title">Set Update Interval</string>
@@ -73,4 +73,6 @@
     <string name="dialog_abbr_add_title">Add Abbreviation</string>
     <string name="dialog_abbr_add_hint_abbr_missing">Insert Abbreviation</string>
     <string name="dialog_abbr_add_hint_game_missing">Insert Game</string>
+    <string name="action_update">Update</string>
+    <string name="action_show_offline">Show Offline</string>
 </resources>

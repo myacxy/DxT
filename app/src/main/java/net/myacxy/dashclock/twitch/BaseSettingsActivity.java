@@ -16,7 +16,6 @@ public class BaseSettingsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setIcon(R.drawable.twitch_purple);
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

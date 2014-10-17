@@ -88,7 +88,7 @@ public class MainDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         mSp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        hideNeutral = mSp.getBoolean(TwitchExtension.PREF_DIALOG_HIDE_NEUTRAL_BUTTON, false);
+        hideNeutral = true;
         super.onCreate(savedInstanceState);
     }
 
@@ -136,8 +136,8 @@ public class MainDialog extends DialogFragment {
                     toggleOfflineButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            boolean toggle = mSp.getBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, false);
-                            mSp.edit().putBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, !toggle).apply();
+                            boolean toggle = mSp.getBoolean(TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
+                            mSp.edit().putBoolean(TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, !toggle).apply();
                             initView();
                         }
                     });
@@ -194,7 +194,7 @@ public class MainDialog extends DialogFragment {
      * to separate online and offline channels and display a corresponding header.
      */
     public void initView() {
-        boolean showOffline = showOffline = mSp.getBoolean(TwitchExtension.PREF_DIALOG_TOGGLE_OFFLINE, false);
+        boolean showOffline = showOffline = mSp.getBoolean(TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
 
         // adapter merging multiple views and adapters
         MergeAdapter mergeAdapter = new MergeAdapter();
@@ -211,7 +211,7 @@ public class MainDialog extends DialogFragment {
 
         // initialize database
         boolean selected = mSp.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
-        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_ONLINE + " DESC";
+        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_NAME;
         mDbHelper = new TwitchDbHelper(getActivity());
         // get cursor for the channels that are online
         mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.ONLINE, sortOrder);
@@ -230,7 +230,6 @@ public class MainDialog extends DialogFragment {
             mergeAdapter.addView(header);
             // add divider
             View divider = View.inflate(getActivity(), R.layout.divider, null);
-            divider = View.inflate(getActivity(), R.layout.divider, null);
             mergeAdapter.addView(divider);
             // get cursor for the channels that are offline
             mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.OFFLINE, sortOrder);
@@ -250,7 +249,7 @@ public class MainDialog extends DialogFragment {
         public ListAdapter(Context context)
         {
             // inflate row layout
-            super(context, R.layout.list_item_following_short, null, false);
+            super(context, R.layout.list_item_main, null, false);
         }
 
         /** Set elements of each row */
@@ -259,16 +258,16 @@ public class MainDialog extends DialogFragment {
             // initialize view for display name
             String displayName = cursor.getString(ChannelQuery.displayName);
             TextView displayNameView = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_display_name);
+                    R.id.main_list_display_name);
             displayNameView.setText(displayName);
             // initialize view for game
             TextView gameView = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_game);
+                    R.id.main_list_game);
             TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
-            gameView.setText(context.getResources().getString(R.string.dialog_following_selection_game) + ": " + game.name);
+            gameView.setText(context.getResources().getString(R.string.game) + ": " + game.name);
             // initialize view for status
             TextView statusView = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_status);
+                    R.id.main_list_status);
             statusView.setText(cursor.getString(ChannelQuery.status));
 
         } // bindView

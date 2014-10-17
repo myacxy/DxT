@@ -151,7 +151,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                     R.id.dialog_following_selection_game);
             TwitchDbHelper dbHelper = new TwitchDbHelper(getContext());
             TwitchGame game = dbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
-            selectionGame.setText(context.getResources().getString(R.string.dialog_following_selection_game) + ": " + game.name);
+            selectionGame.setText(context.getResources().getString(R.string.game) + ": " + game.name);
             // initialize view for status
             TextView selectionStatus = (TextView) view.findViewById(
                     R.id.dialog_following_selection_status);

@@ -58,8 +58,7 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
     public static String PREF_EXPANDED_BODY = "pref_expanded_body";
     public static String PREF_LONGEST_BODY = "pref_longest_body";
-    public static String PREF_DIALOG_TOGGLE_OFFLINE = "pref_dialog_toggle_offline";
-    public static String PREF_DIALOG_HIDE_NEUTRAL_BUTTON = "pref_dialog_hide_neutral_button";
+    public static String PREF_DIALOG_SHOW_OFFLINE = "pref_dialog_show_offline";
     public static String PREF_HIDE_EMPTY = "pref_hide_empty";
     public static String PREF_CHAR_LIMIT = "pref_char_limit";
     public static String PREF_ABBR_COUNT = "pref_abbr_count";
