@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.database.GameQuery;
@@ -38,7 +40,8 @@ public class AddAbbreviationDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("add abbreviation");
+        String title = getString(R.string.dialog_abbr_add_title);
+        builder.setTitle(title);
 
         View view = View.inflate(getActivity(), R.layout.dialog_abbr_add, null);
         builder.setView(view);
@@ -49,24 +52,49 @@ public class AddAbbreviationDialog extends DialogFragment {
         mGameTextView.setAdapter(adapter);
         mAbbrTextView = (TextView) view.findViewById(R.id.dialog_abbr_add_abbr);
 
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setPositiveButton(android.R.string.ok, null);
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                TwitchDbHelper dbHelper = new TwitchDbHelper(getActivity());
-                String gameName = mGameTextView.getText().toString();
-                String abbr = mAbbrTextView.getText().toString();
-                TwitchGame game = new TwitchGame(gameName, abbr);
-                dbHelper.insertOrReplaceGameEntry(game);
+            public void onShow(DialogInterface dialogInterface) {
+                Button cancel = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                Button ok = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String gameName = mGameTextView.getText().toString().trim();
+                        String abbr = mAbbrTextView.getText().toString().trim();
+
+                        if(gameName.length() == 0) {
+                            Toast.makeText(getActivity(),
+                                    getString(R.string.dialog_abbr_add_hint_game_missing),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else if(abbr.length() == 0) {
+                            Toast.makeText(getActivity(),
+                                    getString(R.string.dialog_abbr_add_hint_abbr_missing),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else if(gameName.length() > 0 && abbr.length() > 0) {
+                            TwitchDbHelper dbHelper = new TwitchDbHelper(getActivity());
+                            TwitchGame game = new TwitchGame(gameName, abbr);
+                            dbHelper.insertOrReplaceGameEntry(game);
+                            dialog.dismiss();
+                        }
+                    }
+                });
             }
         });
-        return builder.create();
+        return dialog;
     }
 
     @Override

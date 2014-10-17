@@ -11,11 +11,13 @@
         android:id="@+id/dialog_abbr_add_game"
         android:dropDownHeight="wrap_content"
         android:dropDownVerticalOffset="0dp"
-        android:hint="@string/dialog_abbr_add_game"/>
+        android:singleLine="true"
+        android:hint="@string/dialog_abbr_add_hint_game"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_abbr_add_abbr"
-        android:hint="@string/dialog_abbr_add_abbr"/>
+        android:singleLine="true"
+        android:hint="@string/dialog_abbr_add_hint_abbr"/>
 
 </LinearLayout>
