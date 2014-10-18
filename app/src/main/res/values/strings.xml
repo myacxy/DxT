@@ -91,4 +91,5 @@
     <string name="action_show_viewers">Show Viewers</string>
     <string name="action_show_status">Show Status</string>
     <string name="action_show_game">Show Game</string>
+    <string name="dialog_interval_minutes">minutes</string>
 </resources>

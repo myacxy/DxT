@@ -42,7 +42,6 @@ import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract.ChannelEntry;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
-import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -102,7 +101,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 // save currently selected channels
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 SharedPreferences.Editor editor = sp.edit();
-                mSelectedFollowedChannels = new HashSet<String>(mSelectedFollowedChannelsTemp);
+                mSelectedFollowedChannels = new HashSet<>(mSelectedFollowedChannelsTemp);
                 editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels).apply();
                 // update database
@@ -122,7 +121,7 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 sp.edit().putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
                         mSelectedFollowedChannels).apply();
-                mSelectedFollowedChannelsTemp = new HashSet<String>(mSelectedFollowedChannels);
+                mSelectedFollowedChannelsTemp = new HashSet<>(mSelectedFollowedChannels);
             }
         });
     } // buildDialog
@@ -142,20 +141,10 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
         public void bindView(View view, Context context, Cursor cursor) {
             // initialize view for display name
             final String displayName = cursor.getString(ChannelQuery.displayName);
-            boolean online = cursor.getInt(ChannelQuery.online) == 1;
             TextView selectionDisplayName = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_display_name);
-            selectionDisplayName.setText(displayName + " (" + (online ? "online" : "offline") + ")");
-            // initialize view for game
-            TextView selectionGame = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_game);
-            TwitchDbHelper dbHelper = new TwitchDbHelper(getContext());
-            TwitchGame game = dbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
-            selectionGame.setText(context.getResources().getString(R.string.main_list_item_game) + ": " + game.name);
-            // initialize view for status
-            TextView selectionStatus = (TextView) view.findViewById(
-                    R.id.dialog_following_selection_status);
-            selectionStatus.setText(cursor.getString(ChannelQuery.status));
+                    R.id.dialog_following_selection_name);
+            selectionDisplayName.setText(displayName);
+
             // check the checkbox if was selected beforehand
             final CheckBox checkBox = (CheckBox) view.findViewById(
                     R.id.dialog_following_selection_checkbox);

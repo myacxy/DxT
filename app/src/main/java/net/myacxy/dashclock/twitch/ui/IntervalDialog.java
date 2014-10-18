@@ -34,13 +34,12 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.NumberPicker;
-import android.widget.RelativeLayout;
 
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
-import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 
 public class IntervalDialog extends Preference {
 
@@ -63,7 +62,7 @@ public class IntervalDialog extends Preference {
         builder.setTitle(getContext().getResources().getString(
                 R.string.dialog_update_interval_title));
         // init layout
-        RelativeLayout layout = (RelativeLayout) View.inflate(getContext(),
+        View layout = View.inflate(getContext(),
                 R.layout.dialog_interval, null);
         builder.setView(layout);
         // set up number picker
