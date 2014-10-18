@@ -22,8 +22,6 @@ android {
         versionName "v0.3-" + getRevision()
     }
     buildTypes {
-        debug {
-        }
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
