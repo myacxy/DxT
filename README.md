@@ -19,7 +19,7 @@ Screenshots
 
 <img src="https://cloud.githubusercontent.com/assets/4597425/4571470/cdb6b6c2-4f77-11e4-90c8-15979e05baf1.png" width="320px"/>
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/4571469/cdb5d874-4f77-11e4-954c-17528c4bddf0.png" width="320px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/4690177/fb61bcb8-56dc-11e4-91ed-b77660038c97.png" width="320px"/>
 
 Support
 =======
