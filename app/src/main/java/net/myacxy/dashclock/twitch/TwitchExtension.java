@@ -63,6 +63,12 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_CHAR_LIMIT = "pref_char_limit";
     public static String PREF_ABBR_COUNT = "pref_abbr_count";
     public static String PREF_GAMES_COUNT = "pref_games_count";
+    public static String PREF_MAIN_LIST_SHOW_NAME = "pref_main_list_show_name";
+    public static String PREF_MAIN_LIST_SHOW_GAME = "pref_main_list_show_game";
+    public static String PREF_MAIN_LIST_SHOW_STATUS = "pref_main_list_show_status";
+    public static String PREF_MAIN_LIST_SHOW_VIEWERS = "pref_main_list_show_viewers";
+    public static String PREF_MAIN_LIST_SHOW_FOLLOWERS = "pref_main_list_show_followers";
+    public static String PREF_MAIN_LIST_SHOW_UPDATED = "pref_main_list_show_updated";
 
     private AsyncTask task;
 

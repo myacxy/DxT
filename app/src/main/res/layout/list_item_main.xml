@@ -16,8 +16,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/main_list_item_display_name_text">
 
+
         <!--Game-->
-        <TableRow >
+        <TableRow
+            android:id="@+id/main_list_item_row_game">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +35,8 @@
         </TableRow>
 
         <!--Status-->
-        <TableRow>
+        <TableRow
+            android:id="@+id/main_list_item_row_status">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +44,7 @@
                 android:paddingEnd="6dp"
                 android:text="@string/main_list_item_status"/>
 
-            <TextView android:id="@+id/main_list_status_text"
+            <TextView android:id="@+id/main_list_item_status_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -50,7 +53,8 @@
         </TableRow>
 
         <!--Viewers-->
-        <TableRow>
+        <TableRow
+            android:id="@+id/main_list_item_row_viewers">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +62,25 @@
                 android:paddingEnd="6dp"
                 android:text="@string/main_list_item_viewers"/>
 
-            <TextView android:id="@+id/main_list_viewers_text"
+            <TextView android:id="@+id/main_list_item_viewers_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </TableRow>
+
+        <!--Followers-->
+        <TableRow
+            android:id="@+id/main_list_item_row_followers">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_list_item_followers"
+                android:paddingEnd="6dp"
+                android:text="@string/main_list_item_followers"/>
+
+            <TextView android:id="@+id/main_list_item_followers_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -67,15 +89,16 @@
         </TableRow>
 
         <!--Updated At-->
-        <TableRow>
+        <TableRow
+            android:id="@+id/main_list_item_row_updated">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/main_list_item_updated_at"
+                android:id="@+id/main_list_item_updated"
                 android:paddingEnd="6dp"
-                android:text="@string/main_list_item_updated_at"/>
+                android:text="@string/main_list_item_updated"/>
 
-            <TextView android:id="@+id/main_list_updated_at_text"
+            <TextView android:id="@+id/main_list_item_updated_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

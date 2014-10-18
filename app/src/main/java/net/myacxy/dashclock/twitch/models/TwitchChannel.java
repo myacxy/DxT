@@ -30,8 +30,11 @@ import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.io.JsonGetter;
 import net.myacxy.dashclock.twitch.io.TwitchChannelOnlineChecker;
 import net.myacxy.dashclock.twitch.io.TwitchGameSearcher;
+import net.myacxy.dashclock.twitch.utils.ISO8601;
 
 import org.json.JSONObject;
+
+import java.text.ParseException;
 
 /**
  * Class representing a channel from Twitch.tv
@@ -139,8 +142,13 @@ public class TwitchChannel
         // 300x300 logo for now, no individual check by tcoc yet
         logo = JsonGetter.getString(channelObject, "logo");
         updatedAt = JsonGetter.getString(channelObject, "updated_at");
-        updatedAt = updatedAt.replace('T', ' ').replace('Z', ' ').trim();
+        try {
+            updatedAt = ISO8601.toCalendar(updatedAt).getTime().toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         // simple initialization in order to pass it to tgs later
         game = new TwitchGame(JsonGetter.getString(channelObject, "game"), null);
     }
 } // TwitchChannel
+

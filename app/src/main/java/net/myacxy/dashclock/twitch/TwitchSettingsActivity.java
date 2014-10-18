@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
@@ -59,6 +60,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected IntervalDialog intervalPreference;
     protected CharLimiterDialog charLimiterPreference;
     protected CheckBoxPreference customVisibilityPreference;
+    protected MultiSelectListPreference itemCustomizationPrererence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,8 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         donatePreference = findPreference("pref_donate");
         hideEmptyPreference = (CheckBoxPreference) findPreference("pref_hide_empty");
         updateGameDbPreference = findPreference("pref_game_db_update");
+        itemCustomizationPrererence = (MultiSelectListPreference)
+                findPreference("pref_main_list_item_customization");
 
         bindIntervalPreference();
         bindCharLimiterPreference();
@@ -94,6 +98,14 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             public boolean onPreferenceClick(Preference preference) {
                 new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 return true;
+            }
+        });
+
+        itemCustomizationPrererence.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                return false;
             }
         });
 

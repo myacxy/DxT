@@ -57,9 +57,13 @@
             android:enabled="true"/>
     </PreferenceCategory>
     <!--Main Dialog-->
-    <!--<PreferenceCategory android:title="@string/pref_category_dialog">-->
-
-    <!--</PreferenceCategory>-->
+    <PreferenceCategory android:title="@string/pref_category_dialog">
+        <net.myacxy.dashclock.twitch.ui.ItemCustomizationDialog
+            android:key="pref_main_list_item_customization"
+            android:title="@string/pref_main_list_item_customization_title"
+            android:summary="@string/pref_main_list_item_customization_summary"
+            android:dialogTitle="@string/pref_main_list_item_customization_dialog_title"/>
+    </PreferenceCategory>
 
     <!--Support-->
     <PreferenceCategory android:title="@string/pref_category_support">

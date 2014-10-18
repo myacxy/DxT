@@ -53,6 +53,8 @@ import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
+import java.util.ArrayList;
+
 public class MainDialogActivity extends Activity {
 
     protected SharedPreferences mSharedPreferences;
@@ -60,6 +62,44 @@ public class MainDialogActivity extends Activity {
     protected Cursor mCursor;
     private TwitchUserFollowsGetter mFollowsGetter;
     private boolean showOffline;
+
+    private ArrayList<String> rowKeys = new ArrayList<String>() {{
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_NAME);
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_GAME);
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_STATUS);
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_VIEWERS);
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_FOLLOWERS);
+        add(TwitchExtension.PREF_MAIN_LIST_SHOW_UPDATED);
+    }};
+
+    private ArrayList<Integer> rowIds = new ArrayList<Integer>() {{
+        add(R.id.main_list_item_display_name_text);
+        add(R.id.main_list_item_row_game);
+        add(R.id.main_list_item_row_status);
+        add(R.id.main_list_item_row_viewers);
+        add(R.id.main_list_item_row_followers);
+        add(R.id.main_list_item_row_updated);
+    }};
+
+    private ArrayList<Integer> queryIds = new ArrayList<Integer>() {{
+        add(ChannelQuery.displayName);
+        add(ChannelQuery.gameId);
+        add(ChannelQuery.status);
+        add(ChannelQuery.viewers);
+        add(ChannelQuery.followers);
+        add(ChannelQuery.updatedAt);
+    }};
+
+    private ArrayList<Integer> textIds = new ArrayList<Integer>() {{
+        add(R.id.main_list_item_display_name_text);
+        add(R.id.main_list_item_game_text);
+        add(R.id.main_list_item_status_text);
+        add(R.id.main_list_item_viewers_text);
+        add(R.id.main_list_item_followers_text);
+        add(R.id.main_list_item_updated_text);
+    }};
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,27 +249,23 @@ public class MainDialogActivity extends Activity {
         /** Set elements of each row */
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            // initialize view for display name
-            String displayName = cursor.getString(ChannelQuery.displayName);
-            TextView displayNameView = (TextView) view.findViewById(
-                    R.id.main_list_item_display_name_text);
-            displayNameView.setText(displayName);
-            // initialize view for game
-            TextView gameView = (TextView) view.findViewById(R.id.main_list_item_game_text);
-            TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
-            gameView.setText(game.name);
 
-            // initialize view for status
-            TextView statusView = (TextView) view.findViewById(R.id.main_list_status_text);
-            statusView.setText(cursor.getString(ChannelQuery.status));
+            for(String key : rowKeys) {
+                int index = rowKeys.indexOf(key);
+                boolean visible = mSharedPreferences.getBoolean(key, true);
+                if(!visible) {
+                    view.findViewById(rowIds.get(index)).setVisibility(View.GONE);
+                }
 
-            // initialize view for viewers
-            TextView viewersView = (TextView) view.findViewById(R.id.main_list_viewers_text);
-            viewersView.setText(cursor.getString(ChannelQuery.viewers));
-
-            // initialize view for viewers
-            TextView updatedAtView = (TextView) view.findViewById(R.id.main_list_updated_at_text);
-            updatedAtView.setText(cursor.getString(ChannelQuery.updatedAt));
+                if(queryIds.get(index) == ChannelQuery.gameId) {
+                    TextView gameView = (TextView) view.findViewById(R.id.main_list_item_game_text);
+                    TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
+                    gameView.setText(game.name);
+                } else {
+                    TextView textView = (TextView) view.findViewById(textIds.get(index));
+                    textView.setText(cursor.getString(queryIds.get(index)));
+                }
+            }
 
         } // bindView
     } // ListAdapter
