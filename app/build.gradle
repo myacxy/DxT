@@ -18,15 +18,13 @@ android {
         applicationId "net.myacxy.dashclock.twitch"
         minSdkVersion 17
         targetSdkVersion 20
-        versionCode 1
-        versionName "0.2"
+        versionCode 3
+        versionName "v0.3-" + getRevision()
     }
     buildTypes {
         debug {
-            versionNameSuffix "-" + getRevision()
         }
         release {
-            versionNameSuffix "-" + getRevision()
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
