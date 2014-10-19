@@ -258,6 +258,12 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         for (TwitchChannel tc : allChannels) {
             String body = "";
             // game name has abbreviation
+            if(tc.game == null) {
+                body = String.format("%s playing %s: %s",
+                        tc.displayName,
+                        "nothing",
+                        tc.status);
+            }
             if(tc.game.abbreviation != null) {
                 body = String.format("%s playing %s: %s",
                         tc.displayName,

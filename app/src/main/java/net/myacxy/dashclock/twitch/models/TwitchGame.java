@@ -96,4 +96,9 @@ public class TwitchGame {
         this.channels = channels;
         this.viewers = viewers;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

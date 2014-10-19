@@ -48,15 +48,16 @@ public class TwitchUserFollowsGetter extends JsonGetter {
      *
      * @param context activity from which the class has been called
      */
-    public TwitchUserFollowsGetter(Context context, ProgressDialog progressDialog) {
-        super(context, progressDialog);
+    public TwitchUserFollowsGetter(Context context, boolean showProgress) {
+        super(context, showProgress);
     }
 
     @Override
     protected void onPreExecute() {
-        if(mProgressDialog != null) {
+        if(mShowProgress) {
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setTitle(mProgressDialogMessage);
+            mProgressDialog.setMessage("Fetching follows...");
             mProgressDialog.show();
         }
     }
@@ -93,13 +94,17 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         ArrayList<TwitchChannel> allFollowedChannels = parseJsonObject(jsonAllFollowedChannels);
 
         if (allFollowedChannels != null) {
-            tgsManager = new TgsManager(mContext);
-            tgsManager.mProgressDialog = mProgressDialog;
+            // check each channel's game
+            tgsManager = new TgsManager(mContext, mShowProgress);
             tgsManager.setAsyncTaskListener(new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
-                    tcocManager = new TcocManager(tgsManager.mChannels, mContext, mProgressDialog, mListener);
+                    // receive channels with updated games from tgsManager
+                    // and check their online status
+                    tcocManager = new TcocManager(mContext, mShowProgress, tgsManager.mChannels);
+                    tcocManager.setAsyncTaskListener(mListener);
                     tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR);
+                    if(mProgressDialog != null) mProgressDialog.dismiss();
                 }
             });
             tgsManager.run(allFollowedChannels);
@@ -111,7 +116,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
      *
      * @return List of all the user's followed channels
      */
-    public void updateAllFollowedChannels()
+    public void run()
     {
         // get user name from preferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);

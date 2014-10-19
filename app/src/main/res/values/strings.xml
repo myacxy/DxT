@@ -36,7 +36,7 @@
 
     <!--Preferences-->
     <string name="pref_user_name_title">Set User Name</string>
-    <string name="pref_char_limit_title">Adjust Character Limit</string>
+    <string name="pref_char_limit_title">Expanded Body Item Character Limit</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet tortor et urna dictum pharetra a sit amet purus. In tempus dictum eros. Proin congue cursus ipsum eu faucibus. Curabitur nullam.</string>
 
 
@@ -92,4 +92,5 @@
     <string name="action_show_status">Show Status</string>
     <string name="action_show_game">Show Game</string>
     <string name="dialog_interval_minutes">minutes</string>
+    <string name="pref_char_limiter_preview">Preview</string>
 </resources>

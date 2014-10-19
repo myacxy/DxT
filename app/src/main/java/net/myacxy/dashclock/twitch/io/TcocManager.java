@@ -44,26 +44,34 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
     protected Context mContext;
+    protected boolean mShowProgress;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
     protected ArrayList<TwitchChannel> mOnlineChannels;
 
-    public TcocManager(ArrayList<TwitchChannel> allChannels, Context context, ProgressDialog progressDialog, AsyncTaskListener listener)
+    public TcocManager(Context context, boolean showProgress, ArrayList<TwitchChannel> allChannels)
     {
-        mAllChannels = allChannels;
         mContext = context;
-        mProgressDialog = progressDialog;
-        mListener = listener;
+        mShowProgress = showProgress;
+        mAllChannels = allChannels;
         mOnlineChannels = new ArrayList<>();
         mTcocs = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
+        if(mShowProgress) {
+            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMessage(mAllChannels.get(0).displayName);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setMax(mAllChannels.size());
+            mProgressDialog.show();
+        }
         for(TwitchChannel tc : mAllChannels)
         {
             TwitchChannelOnlineChecker onlineChecker =
-                    new TwitchChannelOnlineChecker(mContext, mProgressDialog);
+                    new TwitchChannelOnlineChecker(mContext, mShowProgress);
             mTcocs.add(onlineChecker);
             onlineChecker.run(tc);
         }
@@ -93,6 +101,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
             for(TwitchChannelOnlineChecker tcoc : mTcocs) {
                 if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel))
                     mOnlineChannels.add(tcoc.mTwitchChannel);
+                    mProgressDialog.setMessage(tcoc.mTwitchChannel.displayName);
                     publishProgress(1);
             }
             if(mOnlineChannels.size() == mAllChannels.size()) break;
@@ -105,6 +114,10 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     protected void onCancelled() {
         for(AsyncTask task : mTcocs) task.cancel(true);
         super.onCancelled();
+    }
+
+    public void setAsyncTaskListener(AsyncTaskListener listener) {
+        mListener = listener;
     }
 
     /**

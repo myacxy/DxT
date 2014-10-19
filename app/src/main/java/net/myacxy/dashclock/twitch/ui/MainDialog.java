@@ -47,7 +47,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -149,7 +148,7 @@ public class MainDialog extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         followsGetter = TwitchExtension.updateTwitchChannels(builder.getContext(),
-                                new ProgressDialog(builder.getContext()),
+                                true,
                                 new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {

@@ -14,8 +14,8 @@ public class TwitchTopGamesGetter extends JsonGetter {
 
     public ArrayList<TwitchGame> games;
 
-    public TwitchTopGamesGetter(Context context) {
-        super(context, null);
+    public TwitchTopGamesGetter(Context context, boolean showProgress) {
+        super(context, showProgress);
     }
 
     @Override

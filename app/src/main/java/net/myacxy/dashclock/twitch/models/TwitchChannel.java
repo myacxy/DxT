@@ -150,5 +150,10 @@ public class TwitchChannel
         // simple initialization in order to pass it to tgs later
         game = new TwitchGame(JsonGetter.getString(channelObject, "game"), null);
     }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
 } // TwitchChannel
 

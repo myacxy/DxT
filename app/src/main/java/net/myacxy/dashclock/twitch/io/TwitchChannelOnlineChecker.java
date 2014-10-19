@@ -24,7 +24,6 @@
 
 package net.myacxy.dashclock.twitch.io;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 
@@ -37,13 +36,13 @@ public class TwitchChannelOnlineChecker extends JsonGetter
 {
     protected TwitchChannel mTwitchChannel;
 
-    public TwitchChannelOnlineChecker(Context context, ProgressDialog progressDialog) {
-        super(context, progressDialog);
+    public TwitchChannelOnlineChecker(Context context, boolean showProgress) {
+        super(context, showProgress);
     }
 
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
+
     }
 
     @Override
@@ -66,7 +65,7 @@ public class TwitchChannelOnlineChecker extends JsonGetter
     @Override
     protected void onProgressUpdate(String... values) {
         // display current progress
-        if(mProgressDialog != null) mProgressDialog.setTitle("Checking " + values[0] + "...");
+        if(mProgressDialog != null) mProgressDialog.setMessage("Checking " + values[0] + "...");
         Log.d("TwitchChannelOnlineChecker", values[0]);
     }
 

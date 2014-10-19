@@ -14,6 +14,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
 
     protected ArrayList<TwitchTopGamesGetter> mTggs;
     protected Context mContext;
+    protected boolean mShowProgress;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
     public ArrayList<TwitchGame> games;
@@ -22,14 +23,15 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
 
     public TtggManager(Context context, boolean showProgress) {
         mContext = context;
-        if(showProgress) mProgressDialog = new ProgressDialog(context);
+        mShowProgress = showProgress;
         games = new ArrayList<>();
         mTggs = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
-        if(mProgressDialog != null) {
+        if(mShowProgress) {
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mTotal / mLimit);
@@ -59,7 +61,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
 
         for (int offset = 0; offset < mTotal; offset += mLimit) {
-            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext);
+            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext, mShowProgress);
             mTggs.add(tgg);
             tgg.run(mLimit, offset);
         }

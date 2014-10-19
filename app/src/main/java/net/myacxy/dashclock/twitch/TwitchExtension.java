@@ -24,7 +24,6 @@
 
 package net.myacxy.dashclock.twitch;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,9 +34,9 @@ import android.util.Log;
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
 
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TcocManager;
-import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.TwitchUserFollowsGetter;
 
 import java.util.ArrayList;
@@ -70,6 +69,7 @@ public class TwitchExtension extends DashClockExtension {
     public static String PREF_MAIN_LIST_SHOW_FOLLOWERS = "pref_main_list_show_followers";
     public static String PREF_MAIN_LIST_SHOW_UPDATED = "pref_main_list_show_updated";
 
+    public static boolean DEVELOPER_MODE = true;
     private AsyncTask task;
 
     @Override
@@ -83,7 +83,7 @@ public class TwitchExtension extends DashClockExtension {
         // update data if it is outdated
         if(task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
             if (!TcocManager.checkRecentlyUpdated(this)) {
-                task = updateTwitchChannels(this, null, new AsyncTaskListener() {
+                task = updateTwitchChannels(this, false, new AsyncTaskListener() {
                     @Override
                     public void handleAsyncTaskFinished() {
                         Log.d("TwitchExtension", "handleAsyncTaskFinished");
@@ -123,12 +123,12 @@ public class TwitchExtension extends DashClockExtension {
                 .clickIntent(intent));
     } // onUpdateData
 
-    public static TwitchUserFollowsGetter updateTwitchChannels(final Context context, final ProgressDialog progressDialog, final AsyncTaskListener listener) {
+    public static TwitchUserFollowsGetter updateTwitchChannels(final Context context, final boolean showProgress, final AsyncTaskListener listener) {
         Log.d("TwitchExtension", "updateTwitchChannels");
         // initialize JsonGetter
-        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, progressDialog);
+        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, showProgress);
         twitchUserFollowsGetter.setAsyncTaskListener(listener);
-        twitchUserFollowsGetter.updateAllFollowedChannels();
+        twitchUserFollowsGetter.run();
         return twitchUserFollowsGetter;
     } // updateTwitchChannels
 } // TwitchActivity

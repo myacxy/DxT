@@ -66,7 +66,7 @@ public class CharLimiterDialog extends Preference {
                 R.layout.dialog_char_limiter, null);
         builder.setView(layout);
 
-        final TextView preview = (TextView) layout.findViewById(R.id.pref_char_limiter_preview);
+        final TextView preview = (TextView) layout.findViewById(R.id.pref_char_limiter_preview_text);
         final NumberPicker numberPicker = (NumberPicker) layout.findViewById(R.id.pref_char_limiter_value);// setup number picker
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(200);

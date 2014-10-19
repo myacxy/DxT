@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:id="@+id/dialog_interval_number_picker"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

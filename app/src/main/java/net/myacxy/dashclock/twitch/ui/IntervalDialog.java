@@ -25,7 +25,6 @@
 package net.myacxy.dashclock.twitch.ui;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -84,7 +83,7 @@ public class IntervalDialog extends Preference {
                 // update channels if last update is older than new interval
                 if (!TcocManager.checkRecentlyUpdated(getContext())) {
                     TwitchExtension.updateTwitchChannels(getContext(),
-                            new ProgressDialog(getContext()),
+                            true,
                             new AsyncTaskListener() {
                         @Override
                         public void handleAsyncTaskFinished() {

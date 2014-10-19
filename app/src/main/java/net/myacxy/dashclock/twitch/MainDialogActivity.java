@@ -25,7 +25,6 @@
 package net.myacxy.dashclock.twitch;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -162,7 +161,7 @@ public class MainDialogActivity extends Activity {
             }
             case R.id.action_update: {
                 mFollowsGetter = TwitchExtension.updateTwitchChannels(this,
-                        new ProgressDialog(this),
+                        true,
                         new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {
@@ -189,7 +188,6 @@ public class MainDialogActivity extends Activity {
      * to separate online and offline channels and display a corresponding header.
      */
     public void initView() {
-
 
         // adapter merging multiple views and adapters
         MergeAdapter mergeAdapter = new MergeAdapter();

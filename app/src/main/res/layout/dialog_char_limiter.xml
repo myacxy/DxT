@@ -4,21 +4,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
+    <!--Value Picker-->
     <NumberPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/pref_char_limiter_value"/>
+
+    <!--Preview-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pref_char_limiter_value"
+        android:layout_below="@+id/pref_char_limiter_value"
+        android:id="@+id/pref_char_limiter_preview"
+        android:text="@string/pref_char_limiter_preview"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <!--Preview Text-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pref_char_limiter_preview"
         android:padding="16dp"
         android:fontFamily="sans-serif"
         android:maxLines="5"
         android:textSize="12sp"
         android:textIsSelectable="false"
-        android:id="@+id/pref_char_limiter_preview"/>
+        android:id="@+id/pref_char_limiter_preview_text"/>
 
 
 

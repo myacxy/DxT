@@ -18,16 +18,19 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
     private ArrayList<TwitchGameSearcher> finishedTgss;
+    private boolean mShowProgress;
 
-    public TgsManager(Context context) {
+    public TgsManager(Context context, boolean showProgress) {
         mContext = context;
+        mShowProgress = showProgress;
         finishedTgss = new ArrayList<>();
         mTgss = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
-        if(mProgressDialog != null) {
+        if(mShowProgress) {
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mChannels.size());
@@ -37,7 +40,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if (mProgressDialog != null) mProgressDialog.incrementSecondaryProgressBy(values[0]);
+        if (mProgressDialog != null) mProgressDialog.incrementProgressBy(values[0]);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
         // search for the game each channel is playing
         for (final TwitchChannel tc : mChannels) {
-            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext);
+            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext, mShowProgress);
             // set result as new game
             tgs.setAsyncTaskListener(new AsyncTaskListener() {
                 @Override

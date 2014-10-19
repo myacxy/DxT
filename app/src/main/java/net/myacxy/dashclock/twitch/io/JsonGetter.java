@@ -56,7 +56,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected Context mContext;
     // Dialog displaying the progress for the async task getting json from http
     protected ProgressDialog mProgressDialog;
-    protected String mProgressDialogMessage;
+    protected boolean mShowProgress;
     protected String mToastMessage;
     protected AsyncTaskListener mListener;
 
@@ -81,21 +81,19 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      *
      * @param context activity from which the class has been called
      */
-    public JsonGetter(Context context, ProgressDialog progressDialog)
+    public JsonGetter(Context context, boolean showProgress)
     {
         mContext = context;
-        mProgressDialog = progressDialog;
-        mProgressDialogMessage = mContext.getResources().getString(
-                R.string.pref_following_selection_progress_title);
+        mShowProgress = showProgress;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         // initialize dialog
-        if(mProgressDialog != null) {
+        if(mShowProgress) {
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage(mProgressDialogMessage);
             mProgressDialog.show();
         }
     }
@@ -104,14 +102,12 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected void onPostExecute(JSONObject jsonObject) {
         super.onPostExecute(jsonObject);
         // close dialog after having fetched the data
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null) {
             // display Toast on error
             if (jsonObject == null) {
                 Toast.makeText(mContext, mContext.getResources().getString(
                         R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
             }
-        }
-        if(mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
         asyncTaskFinished();
@@ -121,7 +117,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected void onCancelled() {
         Log.d("JsonGetter", "Cancelled.");
         if(mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
+            mProgressDialog.dismiss();
             Toast.makeText(mContext, mToastMessage, Toast.LENGTH_LONG).show();
         }
         super.onCancelled();

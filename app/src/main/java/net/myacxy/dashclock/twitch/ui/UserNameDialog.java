@@ -24,7 +24,6 @@
 
 package net.myacxy.dashclock.twitch.ui;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -33,8 +32,8 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
-import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
+import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 
 import java.util.HashSet;
 
@@ -70,7 +69,7 @@ public class UserNameDialog extends EditTextPreference
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
             TwitchExtension.updateTwitchChannels(getContext(),
-                    new ProgressDialog(getContext()),
+                    true,
                     new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
