@@ -63,7 +63,6 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         if(mShowProgress) {
             mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setMessage(mAllChannels.get(0).displayName);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mAllChannels.size());
             mProgressDialog.show();
@@ -99,10 +98,11 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 
         while(true) {
             for(TwitchChannelOnlineChecker tcoc : mTcocs) {
-                if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel))
+                if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel)) {
                     mOnlineChannels.add(tcoc.mTwitchChannel);
-                    mProgressDialog.setMessage(tcoc.mTwitchChannel.displayName);
                     publishProgress(1);
+                }
+
             }
             if(mOnlineChannels.size() == mAllChannels.size()) break;
         }
