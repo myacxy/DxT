@@ -256,15 +256,15 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         Set<String> expandedBody = new HashSet<>();
         // build body
         for (TwitchChannel tc : allChannels) {
-            String body = "";
-            // game name has abbreviation
+            String body;
             if(tc.game == null) {
                 body = String.format("%s playing %s: %s",
                         tc.displayName,
                         "nothing",
                         tc.status);
             }
-            if(tc.game.abbreviation != null) {
+            // game name has abbreviation
+            else if(tc.game.abbreviation != null) {
                 body = String.format("%s playing %s: %s",
                         tc.displayName,
                         tc.game.abbreviation,

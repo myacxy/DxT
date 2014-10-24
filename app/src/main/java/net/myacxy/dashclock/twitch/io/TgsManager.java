@@ -8,20 +8,21 @@ import android.util.Log;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> {
 
     protected ArrayList<TwitchChannel> mChannels;
     protected ArrayList<TwitchGameSearcher> mTgss;
-    protected Context mContext;
+    protected WeakReference<Context> mContext;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
     private ArrayList<TwitchGameSearcher> finishedTgss;
     private boolean mShowProgress;
 
     public TgsManager(Context context, boolean showProgress) {
-        mContext = context;
+        mContext = new WeakReference<>(context);
         mShowProgress = showProgress;
         finishedTgss = new ArrayList<>();
         mTgss = new ArrayList<>();
@@ -30,7 +31,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     @Override
     protected void onPreExecute() {
         if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mChannels.size());
@@ -54,7 +55,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
         // search for the game each channel is playing
         for (final TwitchChannel tc : mChannels) {
-            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext, mShowProgress);
+            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext.get(), mShowProgress);
             // set result as new game
             tgs.setAsyncTaskListener(new AsyncTaskListener() {
                 @Override
@@ -100,7 +101,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     public void run(ArrayList<TwitchChannel> channels) {
         mChannels = channels;
-        executeOnExecutor(THREAD_POOL_EXECUTOR);
+        executeOnExecutor(SERIAL_EXECUTOR);
     }
 
     public void setAsyncTaskListener(AsyncTaskListener asyncTaskListener) {

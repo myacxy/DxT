@@ -8,12 +8,13 @@ import android.util.Log;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> {
 
     protected ArrayList<TwitchTopGamesGetter> mTggs;
-    protected Context mContext;
+    protected WeakReference<Context> mContext;
     protected boolean mShowProgress;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
@@ -22,7 +23,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     private int mLimit;
 
     public TtggManager(Context context, boolean showProgress) {
-        mContext = context;
+        mContext = new WeakReference<>(context);
         mShowProgress = showProgress;
         games = new ArrayList<>();
         mTggs = new ArrayList<>();
@@ -31,7 +32,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     @Override
     protected void onPreExecute() {
         if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mTotal / mLimit);
@@ -49,7 +50,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     @Override
     protected void onPostExecute(ArrayList<TwitchGame> games) {
         if(games != null){
-            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
             dbHelper.insertOrReplaceGameEntries(games);
 
             if (mProgressDialog != null) mProgressDialog.dismiss();
@@ -61,7 +62,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
 
         for (int offset = 0; offset < mTotal; offset += mLimit) {
-            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext, mShowProgress);
+            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext.get(), mShowProgress);
             mTggs.add(tgg);
             tgg.run(mLimit, offset);
         }

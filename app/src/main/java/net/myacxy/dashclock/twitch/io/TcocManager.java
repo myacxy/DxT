@@ -35,6 +35,7 @@ import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -43,17 +44,16 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 {
     protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
-    protected Context mContext;
+    protected WeakReference<Context> mContext;
     protected boolean mShowProgress;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
     protected ArrayList<TwitchChannel> mOnlineChannels;
 
-    public TcocManager(Context context, boolean showProgress, ArrayList<TwitchChannel> allChannels)
+    public TcocManager(Context context, boolean showProgress)
     {
-        mContext = context;
+        mContext = new WeakReference<>(context);
         mShowProgress = showProgress;
-        mAllChannels = allChannels;
         mOnlineChannels = new ArrayList<>();
         mTcocs = new ArrayList<>();
     }
@@ -61,7 +61,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     @Override
     protected void onPreExecute() {
         if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mProgressDialog.setMax(mAllChannels.size());
@@ -70,7 +70,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         for(TwitchChannel tc : mAllChannels)
         {
             TwitchChannelOnlineChecker onlineChecker =
-                    new TwitchChannelOnlineChecker(mContext, mShowProgress);
+                    new TwitchChannelOnlineChecker(mContext.get(), mShowProgress);
             mTcocs.add(onlineChecker);
             onlineChecker.run(tc);
         }
@@ -87,7 +87,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         // save all followed channels to shared preferences
         saveTwitchChannelsToPreferences(mAllChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
         // save all followed channels to database
-        new TwitchDbHelper(mContext).saveChannels(mAllChannels);
+        new TwitchDbHelper(mContext.get()).saveChannels(mAllChannels);
         // save the time of this update
         saveCurrentTime();
         if(mListener != null) mListener.handleAsyncTaskFinished();
@@ -110,6 +110,12 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         return mOnlineChannels;
     }
 
+    protected void run(ArrayList<TwitchChannel> allChannels)
+    {
+        mAllChannels = allChannels;
+        executeOnExecutor(SERIAL_EXECUTOR);
+    }
+
     @Override
     protected void onCancelled() {
         for(AsyncTask task : mTcocs) task.cancel(true);
@@ -130,7 +136,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     public void saveTwitchChannelsToPreferences(ArrayList<TwitchChannel> twitchChannels, String key)
     {
         // initialize
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext.get());
         SharedPreferences.Editor editor = sp.edit();
         // retrieve display names
         HashSet<String> values = new HashSet<String>();
@@ -148,7 +154,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
      */
     public void saveCurrentTime()
     {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext.get());
         SharedPreferences.Editor editor = sp.edit();
         long currentMillis = Calendar.getInstance().getTimeInMillis();
         editor.putLong(TwitchExtension.PREF_LAST_UPDATE, currentMillis);

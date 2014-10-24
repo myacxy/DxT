@@ -38,10 +38,13 @@ public class TwitchGameSearcher extends JsonGetter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(gamesJson == null) cancel(true);
-        else this.games = parseJson(gamesJson);
+        if(searchQuery.equals("null")) {
+            games = new ArrayList<>();
+            games.add(new TwitchGame("null", null));
+        }
+        else games = parseJson(gamesJson);
 
-        TwitchDbHelper dbHelper = new TwitchDbHelper(mContext);
+        TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
 
         if(games.size() == 0) {
             TwitchGame tg = new TwitchGame(searchQuery, null);
@@ -61,7 +64,7 @@ public class TwitchGameSearcher extends JsonGetter {
         this.searchQuery = searchQuery;
         String url = String.format("https://api.twitch.tv/kraken/search/games?q=%s&type=suggest",
                 searchQuery);
-        if(!searchQuery.equals("null")) executeOnExecutor(THREAD_POOL_EXECUTOR, url);
+        executeOnExecutor(THREAD_POOL_EXECUTOR, url);
     }
 
     @Override

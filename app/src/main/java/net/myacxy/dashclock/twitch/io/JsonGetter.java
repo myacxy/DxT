@@ -43,6 +43,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -53,7 +54,7 @@ import java.io.InputStreamReader;
 public class JsonGetter extends AsyncTask<String, String, JSONObject>
 {
     // Main Activity's context
-    protected Context mContext;
+    protected WeakReference<Context> mContext;
     // Dialog displaying the progress for the async task getting json from http
     protected ProgressDialog mProgressDialog;
     protected boolean mShowProgress;
@@ -83,7 +84,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      */
     public JsonGetter(Context context, boolean showProgress)
     {
-        mContext = context;
+        mContext = new WeakReference<>(context);
         mShowProgress = showProgress;
     }
 
@@ -92,7 +93,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         super.onPreExecute();
         // initialize dialog
         if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.show();
         }
@@ -105,7 +106,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         if (mProgressDialog != null) {
             // display Toast on error
             if (jsonObject == null) {
-                Toast.makeText(mContext, mContext.getResources().getString(
+                Toast.makeText(mContext.get(), mContext.get().getResources().getString(
                         R.string.pref_following_selection_progress_fail), Toast.LENGTH_LONG).show();
             }
             mProgressDialog.dismiss();
@@ -118,7 +119,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         Log.d("JsonGetter", "Cancelled.");
         if(mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
-            Toast.makeText(mContext, mToastMessage, Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext.get(), mToastMessage, Toast.LENGTH_LONG).show();
         }
         super.onCancelled();
     }

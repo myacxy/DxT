@@ -55,7 +55,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
     @Override
     protected void onPreExecute() {
         if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setMessage("Fetching follows...");
             mProgressDialog.show();
@@ -70,7 +70,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
         if(jsonObject.has("status"))
         {
             try {
-                Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext.get(), jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                 if(mProgressDialog != null) mProgressDialog.dismiss();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -82,7 +82,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
             jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
             if (jsonAllFollowedChannels.length() == 0)
             {
-                Toast.makeText(mContext, "No channels being followed.", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext.get(), "No channels being followed.", Toast.LENGTH_LONG).show();
                 if(mProgressDialog != null) mProgressDialog.dismiss();
                 return;
             }
@@ -95,15 +95,15 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
         if (allFollowedChannels != null) {
             // check each channel's game
-            tgsManager = new TgsManager(mContext, mShowProgress);
+            tgsManager = new TgsManager(mContext.get(), mShowProgress);
             tgsManager.setAsyncTaskListener(new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
                     // receive channels with updated games from tgsManager
                     // and check their online status
-                    tcocManager = new TcocManager(mContext, mShowProgress, tgsManager.mChannels);
+                    tcocManager = new TcocManager(mContext.get(), mShowProgress);
                     tcocManager.setAsyncTaskListener(mListener);
-                    tcocManager.executeOnExecutor(THREAD_POOL_EXECUTOR);
+                    tcocManager.run(tgsManager.mChannels);
                     if(mProgressDialog != null) mProgressDialog.dismiss();
                 }
             });
@@ -119,7 +119,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
     public void run()
     {
         // get user name from preferences
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.get());
         String userName = sharedPreferences.getString(TwitchExtension.PREF_USER_NAME, "test_user1");
         userName = userName.trim();
         // initialize url
