@@ -78,9 +78,9 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                 if (tgs.getStatus() == Status.FINISHED && !finishedTgss.contains(tgs)) {
                     if(tgs.games != null) {
                         Log.d(tgs.toString(), String.valueOf(tgs.games.size()));
-                        publishProgress(1);
-                        finishedTgss.add(tgs);
                     }
+                    publishProgress(1);
+                    finishedTgss.add(tgs);
                 }
             }
             if(mProgressDialog != null && !mProgressDialog.isShowing()) {
