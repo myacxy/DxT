@@ -33,9 +33,9 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TtggManager;
-import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.ui.AbbreviationDialog;
 import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
 import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
@@ -112,7 +112,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         donatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FBWHP6A4GDM9Q";
+                String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PX9PJ4USMUWU8";
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
