@@ -42,9 +42,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
+import android.widget.TabHost;
 import android.widget.TextView;
-
-import com.commonsware.cwac.merge.MergeAdapter;
 
 import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.database.TwitchContract;
@@ -57,11 +56,11 @@ import java.util.ArrayList;
 
 public class MainDialogActivity extends Activity {
 
+    protected TabHost mTabHost;
     protected SharedPreferences mSharedPreferences;
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
     private TwitchUserFollowsGetter mFollowsGetter;
-    private boolean showOffline;
 
     private ArrayList<String> rowKeys = new ArrayList<String>() {{
         add(TwitchExtension.PREF_MAIN_LIST_SHOW_NAME);
@@ -106,12 +105,34 @@ public class MainDialogActivity extends Activity {
         super.onCreate(savedInstanceState);
         showAsPopup(this);
         setContentView(R.layout.main);
-
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        showOffline = mSharedPreferences.getBoolean(
-                TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
 
-        initView();
+        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+        mTabHost.setup();
+        mTabHost.addTab(mTabHost.newTabSpec("online")
+                .setIndicator("Online")
+                .setContent(R.id.main_tab_online));
+        mTabHost.addTab(mTabHost.newTabSpec("offline")
+                .setIndicator("Offline")
+                .setContent(R.id.main_tab_offline));
+
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                switch (tabId) {
+                    case "online":
+                        initView((ListView) findViewById(R.id.main_tab_online_list),
+                                TwitchDbHelper.State.ONLINE);
+                        break;
+                    case "offline":
+                        initView((ListView) findViewById(R.id.main_tab_offline_list),
+                                TwitchDbHelper.State.OFFLINE);
+                        break;
+                }
+            }
+        });
+        mTabHost.setCurrentTabByTag("offline");
+        mTabHost.setCurrentTabByTag("online");
     }
 
     public void showAsPopup(Activity activity) {
@@ -143,7 +164,6 @@ public class MainDialogActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        menu.findItem(R.id.action_show_offline).setChecked(showOffline);
         return true;
     }
 
@@ -151,15 +171,6 @@ public class MainDialogActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_show_offline: {
-                showOffline = !item.isChecked();
-                mSharedPreferences.edit()
-                        .putBoolean(TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, showOffline)
-                        .apply();
-                item.setChecked(showOffline);
-                initView();
-                break;
-            }
             case R.id.action_update: {
                 mFollowsGetter = TwitchExtension.updateTwitchChannels(this,
                         true,
@@ -169,9 +180,10 @@ public class MainDialogActivity extends Activity {
                                 Log.d("MainDialog", "Update finished.");
                                 if (getApplicationContext() != null) {
                                     // reinit view and update data
-                                    initView();
                                     new TwitchDbHelper(getApplicationContext())
                                             .updatePublishedData();
+                                    mTabHost.setCurrentTabByTag("offline");
+                                    mTabHost.setCurrentTabByTag("online");
                                 }
                             }
                         });
@@ -188,53 +200,18 @@ public class MainDialogActivity extends Activity {
      * Initializes the ListView inside the main dialog. A MergeAdapter is being used
      * to separate online and offline channels and display a corresponding header.
      */
-    public void initView() {
-
-        // adapter merging multiple views and adapters
-        MergeAdapter mergeAdapter = new MergeAdapter();
-        if(showOffline) {
-            // add online header
-            TextView header = new TextView(this);
-            header.setText(R.string.dialog_header_online);
-            header.setTextAppearance(this, android.R.style.TextAppearance_Holo_DialogWindowTitle);
-            mergeAdapter.addView(header);
-            // add divider
-            View divider = View.inflate(this, R.layout.divider, null);
-            mergeAdapter.addView(divider);
-        }
+    public void initView(ListView listView, TwitchDbHelper.State state) {
 
         // initialize database
         boolean selected = mSharedPreferences.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_NAME;
         mDbHelper = new TwitchDbHelper(this);
         // get cursor for the channels that are online
-        mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.ONLINE, sortOrder);
+        mCursor = mDbHelper.getChannelsCursor(selected, state, sortOrder);
         // add online list adapter
         ListAdapter listAdapter = new ListAdapter(this);
         listAdapter.swapCursor(mCursor);
-        mergeAdapter.addAdapter(listAdapter);
-
-        // display offline channels?
-        if(showOffline) {
-            // add offline header
-            TextView header = new TextView(this);
-            header.setText(R.string.dialog_header_offline);
-            header.setTextAppearance(this, android.R.style.TextAppearance_Holo_DialogWindowTitle);
-            mergeAdapter.addView(header);
-            // add divider
-            View divider = View.inflate(this, R.layout.divider, null);
-            mergeAdapter.addView(divider);
-            // get cursor for the channels that are offline
-            mCursor = mDbHelper.getChannelsCursor(selected, TwitchDbHelper.State.OFFLINE, sortOrder);
-            // add offline list adapter
-            listAdapter = new ListAdapter(this);
-            listAdapter.swapCursor(mCursor);
-            mergeAdapter.addAdapter(listAdapter);
-        }
-
-        // get list from the dialog view
-        ListView listView = (ListView) findViewById(R.id.main_list);
-        listView.setAdapter(mergeAdapter);
+        listView.setAdapter(listAdapter);
     }
 
     public class ListAdapter extends ResourceCursorAdapter

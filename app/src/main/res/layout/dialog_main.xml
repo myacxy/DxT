@@ -8,6 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_main_list"
-        android:clickable="true"/>
+        android:clickable="false"/>
 
 </RelativeLayout>
