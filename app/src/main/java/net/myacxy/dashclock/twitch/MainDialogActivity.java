@@ -196,10 +196,6 @@ public class MainDialogActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Initializes the ListView inside the main dialog. A MergeAdapter is being used
-     * to separate online and offline channels and display a corresponding header.
-     */
     public void initView(ListView listView, TwitchDbHelper.State state) {
 
         // initialize database
