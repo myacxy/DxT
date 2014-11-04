@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class TwitchGameSearcher extends JsonGetter {
 
-    public ArrayList<TwitchGame> games;
-    public TwitchGame game;
+    public ArrayList<TwitchGame> searchResults;
+    public TwitchGame result;
     private String searchQuery;
     public TwitchGameSearcher(Context context, boolean showProgress) {
         super(context, showProgress);
@@ -22,7 +22,7 @@ public class TwitchGameSearcher extends JsonGetter {
 
     @Override
     protected void onPreExecute() {
-
+        searchResults = new ArrayList<>();
     }
 
     @Override
@@ -39,21 +39,35 @@ public class TwitchGameSearcher extends JsonGetter {
             e.printStackTrace();
         }
         if(searchQuery.equals("null")) {
-            games = new ArrayList<>();
-            games.add(new TwitchGame("null", null));
+            searchResults.add(new TwitchGame("null", null));
         }
-        else games = parseJson(gamesJson);
+        else searchResults = parseJson(gamesJson);
 
         TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
 
-        if(games.size() == 0) {
+        // could not find a game by the given name
+        if(searchResults.size() == 0) {
+            // add the new game
             TwitchGame tg = new TwitchGame(searchQuery, null);
             tg.id = dbHelper.insertOrReplaceGameEntry(tg);
-            games.add(tg);
-        } else {
-            // retrieve game in question from results
-            for(TwitchGame tg : games) {
-                tg.id = dbHelper.insertOrReplaceGameEntry(tg);
+            result = tg;
+        }
+        // retrieve game in question from results
+        else {
+            for (TwitchGame game : searchResults) {
+                // insert game into database
+                game.id = dbHelper.insertOrReplaceGameEntry(game);
+                // exact match
+                if (game.name.equals(searchQuery)) {
+                    result = game;
+                }
+                // no exact match found
+                else if (searchResults.indexOf(game) == searchResults.size() - 1) {
+                    // add the new game
+                    TwitchGame tg = new TwitchGame(searchQuery, null);
+                    tg.id = dbHelper.insertOrReplaceGameEntry(tg);
+                    result = game;
+                }
             }
         }
 

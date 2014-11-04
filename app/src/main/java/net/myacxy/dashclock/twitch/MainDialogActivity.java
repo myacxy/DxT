@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -246,25 +247,39 @@ public class MainDialogActivity extends Activity {
 
         /** Set elements of each row */
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
+        public void bindView(final View view, Context context, final Cursor cursor) {
 
             for(String key : rowKeys) {
-                int index = rowKeys.indexOf(key);
+                final int index = rowKeys.indexOf(key);
                 boolean visible = mSharedPreferences.getBoolean(key, true);
-                if(!visible) {
-                    view.findViewById(rowIds.get(index)).setVisibility(View.GONE);
-                }
+                if(!visible) view.findViewById(rowIds.get(index)).setVisibility(View.GONE);
 
                 if(queryIds.get(index) == ChannelQuery.gameId) {
                     TextView gameView = (TextView) view.findViewById(R.id.main_list_item_game_text);
                     TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
                     gameView.setText(game.name);
+                }
+                else if (queryIds.get(index) == ChannelQuery.displayName)
+                {
+                    view.setTag(cursor.getString(ChannelQuery.name));
+
+                    TextView textView = (TextView) view.findViewById(textIds.get(index));
+                    textView.setText(cursor.getString(queryIds.get(index)));
                 } else {
                     TextView textView = (TextView) view.findViewById(textIds.get(index));
                     textView.setText(cursor.getString(queryIds.get(index)));
                 }
-            }
 
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url = "http://www.twitch.tv/" + view.getTag().toString();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                    }
+                });
+            }
         } // bindView
     } // ListAdapter
 

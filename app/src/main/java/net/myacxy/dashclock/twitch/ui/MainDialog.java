@@ -253,7 +253,7 @@ public class MainDialog extends DialogFragment {
 
         /** Set elements of each row */
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
+        public void bindView(View view, Context context, final Cursor cursor) {
             // initialize view for display name
             String displayName = cursor.getString(ChannelQuery.displayName);
             TextView displayNameView = (TextView) view.findViewById(
@@ -268,7 +268,6 @@ public class MainDialog extends DialogFragment {
             TextView statusView = (TextView) view.findViewById(
                     R.id.main_list_item_status);
             statusView.setText(cursor.getString(ChannelQuery.status));
-
         } // bindView
     } // ListAdapter
 } // MainDialog
