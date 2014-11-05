@@ -69,7 +69,7 @@ public class AboutDialog extends Preference
         String version = packageInfo.versionName;
         String title = getContext().getResources().getString(R.string.app_name) + " " + version;
 
-        String body = getContext().getResources().getString(R.string.about_body);
+        String body = getContext().getResources().getString(R.string.pref_about_body);
         TextView textView = (TextView) View.inflate(getContext(), R.layout.dialog_about, null);
         textView.setText(Html.fromHtml(body));
 

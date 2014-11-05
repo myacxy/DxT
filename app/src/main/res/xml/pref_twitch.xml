@@ -47,7 +47,7 @@
 
         <!--Game Database Update-->
         <Preference
-            android:title="@string/pref_game_db_update"
+            android:title="@string/pref_game_db_update_title"
             android:key="pref_game_db_update"/>
 
         <!--Char Limiter-->
@@ -68,11 +68,11 @@
     <!--Support-->
     <PreferenceCategory android:title="@string/pref_category_support">
         <!--Rate-->
-        <Preference
-            android:key="pref_rate"
-            android:title="@string/pref_rate_title"
-            android:summary="@string/pref_rate_summary"
-            android:enabled="false"/>
+        <net.myacxy.dashclock.twitch.ui.UserVoiceDialog
+            android:key="pref_user_voice"
+            android:title="@string/pref_user_voice_title"
+            android:summary="@string/pref_user_voice_summary"
+            />
 
         <!--Donate-->
         <Preference

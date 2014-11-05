@@ -1,16 +1,26 @@
-DashClockTwitch
-===============
+DashClock Twitch
+================
 
-This is the repository for DashClock Twitch, an extension for DashClock Widget on Android. The extension shows information on Twitch.tv channels that you are following and is designed to list streamers that are currently online. You may select your favorite channels to be displayed but upon clicking the extension all followed streamers that are online will be available in more detail.
+This is the repository for DashClock Twitch, an extension for DashClock Widget on Android. The extension shows information on Twitch.tv channels that you follow and reveals more detailed information upon clicking it.
+
+Features
+========
+
+* No authentication is needed as public information is used to retrieve your account information.
+* Customizable ipdate interval.
+* Filter which channels you really want to display.
+* Customize the detailed information of a channel being presented.
+* Integration of a game database that helps you abbreviate game titles by predicting their proper names.
+* Create custom game title abbreviations in order to save space.
+* Limit the length of the information displayed inside the extension. (DashClock does not use a monospaced font, though, and thus results may differ)
 
 How to use
 ==========
 
-* Install <a href="https://play.google.com/store/apps/details?id=net.nurik.roman.dashclock&hl=en">DashClock Widget</a>
+* Install <a href="https://play.google.com/store/apps/details?id=net.nurik.roman.dashclock&hl=en">DashClock Widget</a>.
 * Install the <a href="https://github.com/myacxy/DashClockTwitch/releases/latest">Latest Release</a>.
 * Add the extension to DashClock.
-* Change your user name.
-* (Adjust the update interval.)
+* Change your user name. (no password needed)
 
 Screenshots
 ===========
@@ -23,5 +33,7 @@ Screenshots
 
 Support
 =======
+
+Back further development by donating!
 
 [![PayPal Donation](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PX9PJ4USMUWU8)

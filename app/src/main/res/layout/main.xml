@@ -47,6 +47,6 @@
         android:layout_margin="0dp"
         android:padding="0dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="@string/dismiss"/>
+        android:text="@string/dialog_dismiss"/>
 
 </LinearLayout>

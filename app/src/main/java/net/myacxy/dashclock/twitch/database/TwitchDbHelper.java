@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
+import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
@@ -284,7 +285,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         // initialize published data
         int onlineCount = expandedBody.size();
         String status = String.format("%d Live", onlineCount);
-        String expandedTitle = String.format("%s Channel%s", status, onlineCount != 1 ? "s" : "");
+        String expandedTitle = mContext.getResources()
+                .getQuantityString(R.plurals.extension_expanded_title, onlineCount, onlineCount);
 
         // save data to preferences
         editor.putInt(TwitchExtension.PREF_ONLINE_COUNT, onlineCount);

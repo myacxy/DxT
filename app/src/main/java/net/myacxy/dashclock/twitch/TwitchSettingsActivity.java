@@ -33,6 +33,9 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
+import com.uservoice.uservoicesdk.Config;
+import com.uservoice.uservoicesdk.UserVoice;
+
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 import net.myacxy.dashclock.twitch.io.TtggManager;
@@ -41,13 +44,13 @@ import net.myacxy.dashclock.twitch.ui.CharLimiterDialog;
 import net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog;
 import net.myacxy.dashclock.twitch.ui.IntervalDialog;
 import net.myacxy.dashclock.twitch.ui.UserNameDialog;
+import net.myacxy.dashclock.twitch.ui.UserVoiceDialog;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-/**
- * Source=DashClock Example Extension Settings
- */
 public class TwitchSettingsActivity extends BaseSettingsActivity
 {
     protected SharedPreferences mSharedPreferences;
@@ -61,12 +64,23 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected CharLimiterDialog charLimiterPreference;
     protected CheckBoxPreference customVisibilityPreference;
     protected MultiSelectListPreference itemCustomizationPrererence;
+    protected UserVoiceDialog userVoicePreference;
+
+    private Config mConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.twitch_purple);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // UserVoice
+        mConfig = new Config("myacxy.uservoice.com");
+        Map<String, String> customFields = new HashMap<>();
+        customFields.put("Type", "DashClock Twitch");
+        mConfig.setCustomFields(customFields);
+        mConfig.setForumId(272219);
+        UserVoice.init(mConfig, TwitchSettingsActivity.this);
     }
 
     @Override
@@ -85,6 +99,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         updateGameDbPreference = findPreference("pref_game_db_update");
         itemCustomizationPrererence = (MultiSelectListPreference)
                 findPreference("pref_main_list_item_customization");
+        userVoicePreference = (UserVoiceDialog) findPreference("pref_user_voice");
 
         bindIntervalPreference();
         bindCharLimiterPreference();
@@ -158,6 +173,30 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 return true;
             }
         });
+
+        userVoicePreference.setListener(new UserVoiceDialog.DialogItemClickedListener() {
+            @Override
+            public void itemClicked(int position) {
+                switch (position) {
+                    // Help Center
+                    case 0:
+                        UserVoice.launchUserVoice(TwitchSettingsActivity.this);
+                        break;
+                    // Feedback Forum
+                    case 1:
+                        UserVoice.launchForum(TwitchSettingsActivity.this);
+                        break;
+                    // Contact Form
+                    case 2:
+                        UserVoice.launchContactUs(TwitchSettingsActivity.this);
+                        break;
+                    // Post Idea Form
+                    case 3:
+                        UserVoice.launchPostIdea(TwitchSettingsActivity.this);
+                        break;
+                }
+            }
+        });
     } // onPostCreate
 
     private void bindIntervalPreference() {
@@ -165,7 +204,8 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         intervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preference.setSummary(newValue + " minutes");
+                String summary = newValue + getString(R.string.dialog_interval_minutes);
+                preference.setSummary(summary);
                 return true;
             }
         });
@@ -179,12 +219,15 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         followingSelectionPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+
                 Set<String> allChannels = mSharedPreferences.getStringSet(
                         TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS, new HashSet<String>());
                 int totalCount = allChannels.size();
                 Set<String> selectedChannels = (Set<String>) newValue;
                 int selectedCount = selectedChannels.size();
-                String summary = String.format("%d out of %d channels selected", selectedCount, totalCount);
+                String summary = getResources()
+                        .getQuantityString(R.plurals.pref_following_selection_summary,
+                                totalCount, selectedCount, totalCount);
                 preference.setSummary(summary);
                 return true;
             }
@@ -250,9 +293,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         abbreviationPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preference.setSummary(newValue + " custom abbreviations");
+                int count = (int) newValue;
+                String summary = getResources()
+                        .getQuantityString(R.plurals.pref_abbr_summary, count, count);
+                preference.setSummary(summary);
                 mSharedPreferences.edit()
-                        .putInt(TwitchExtension.PREF_ABBR_COUNT, (int) newValue)
+                        .putInt(TwitchExtension.PREF_ABBR_COUNT, count)
                         .apply();
                 new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                 return true;
@@ -269,10 +315,13 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         updateGameDbPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                int count = (int) newValue;
+                String summary = getResources()
+                        .getQuantityString(R.plurals.pref_game_db_update_summary, count, count);
                 mSharedPreferences.edit()
-                        .putInt(TwitchExtension.PREF_GAMES_COUNT, (int) newValue)
+                        .putInt(TwitchExtension.PREF_GAMES_COUNT, count)
                         .apply();
-                preference.setSummary(newValue + " games in database");
+                preference.setSummary(summary);
                 return true;
             }
         });
