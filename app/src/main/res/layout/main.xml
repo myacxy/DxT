@@ -34,7 +34,7 @@
                     android:id="@+id/main_tab_offline"/>
             </FrameLayout>
 
-            </LinearLayout>
+         </LinearLayout>
 
     </TabHost>
 
