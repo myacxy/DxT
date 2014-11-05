@@ -6,21 +6,22 @@ This is the repository for DashClock Twitch, an extension for DashClock Widget o
 Features
 ========
 
-* No authentication is needed as public information is used to retrieve your account information.
-* Customizable ipdate interval.
-* Filter which channels you really want to display.
-* Customize the detailed information of a channel being presented.
-* Integration of a game database that helps you abbreviate game titles by predicting their proper names.
-* Create custom game title abbreviations in order to save space.
-* Limit the length of the information displayed inside the extension. (DashClock does not use a monospaced font, though, and thus results may differ)
+* No authentication is needed as public information is used to retrieve your account information
+* Customizable update interval
+* Filter which channels you really want to display
+* Customize the detailed information of a channel being presented
+* Integration of a game database that helps you abbreviate game titles by predicting their proper names
+* Create custom game title abbreviations in order to save space
+* Limit the length of the information displayed inside the extension (DashClock does not use a monospaced font, though, and thus results may differ)
+* UserVoice integration
 
 How to use
 ==========
 
-* Install <a href="https://play.google.com/store/apps/details?id=net.nurik.roman.dashclock&hl=en">DashClock Widget</a>.
-* Install the <a href="https://github.com/myacxy/DashClockTwitch/releases/latest">Latest Release</a>.
-* Add the extension to DashClock.
-* Change your user name. (no password needed)
+* Install <a href="https://play.google.com/store/apps/details?id=net.nurik.roman.dashclock&hl=en">DashClock Widget</a>
+* Install the <a href="https://github.com/myacxy/DashClockTwitch/releases/latest">Latest Release</a>
+* Add the extension to DashClock
+* Change your user name (no password needed)
 
 Screenshots
 ===========
