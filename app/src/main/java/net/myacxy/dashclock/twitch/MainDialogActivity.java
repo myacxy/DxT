@@ -62,6 +62,7 @@ public class MainDialogActivity extends Activity {
     protected TwitchDbHelper mDbHelper;
     protected Cursor mCursor;
     private TwitchUserFollowsGetter mFollowsGetter;
+    private boolean showOffline;
 
     private ArrayList<String> rowKeys = new ArrayList<String>() {{
         add(TwitchExtension.PREF_MAIN_LIST_SHOW_NAME);
@@ -165,6 +166,7 @@ public class MainDialogActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.action_show_offline).setChecked(showOffline);
         return true;
     }
 
@@ -190,6 +192,16 @@ public class MainDialogActivity extends Activity {
                         });
                 break;
             }
+            case R.id.action_show_offline: {
+                showOffline = !item.isChecked();
+                mSharedPreferences.edit()
+                                .putBoolean(TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, showOffline)
+                                .apply();
+                item.setChecked(showOffline);
+                mTabHost.setCurrentTabByTag("offline");
+                mTabHost.setCurrentTabByTag("online");
+                break;
+            }
             case R.id.action_settings: {
                 startActivity(new Intent(this, TwitchSettingsActivity.class));
             }
@@ -198,7 +210,8 @@ public class MainDialogActivity extends Activity {
     }
 
     public void initView(ListView listView, TwitchDbHelper.State state) {
-
+        showOffline = mSharedPreferences.getBoolean(
+                                TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
         // initialize database
         boolean selected = mSharedPreferences.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_NAME;
@@ -218,6 +231,9 @@ public class MainDialogActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        if(showOffline) mTabHost.getTabWidget().setVisibility(View.VISIBLE);
+        else mTabHost.getTabWidget().setVisibility(View.GONE);
     }
 
     public class ListAdapter extends ResourceCursorAdapter
