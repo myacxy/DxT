@@ -9,9 +9,9 @@ Features
 * No authentication is needed as public information is used to retrieve your account information
 * Customizable update interval
 * Filter which channels you really want to display
-* Customize the detailed information of a channel being presented
-* Integration of a game database that helps you abbreviate game titles by predicting their proper names
+* Customize which detailed information you want to be presented
 * Create custom game title abbreviations in order to save space
+* Integration of a game database that helps you abbreviate game titles by predicting their proper names
 * Limit the length of the information displayed inside the extension (DashClock does not use a monospaced font, though, and thus results may differ)
 * UserVoice integration
 

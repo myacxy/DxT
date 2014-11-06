@@ -8,12 +8,15 @@
     android:paddingEnd="24dp"
     android:orientation="horizontal">
 
+
     <NumberPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/dialog_interval_number_picker"/>
+        android:id="@+id/dialog_interval_number_picker"
+        />
 
+    <!--Label-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +25,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:text="@string/dialog_interval_minutes"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        />
 
 </RelativeLayout>

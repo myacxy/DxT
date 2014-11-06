@@ -32,6 +32,7 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import net.myacxy.dashclock.twitch.TwitchExtension;
+import net.myacxy.dashclock.twitch.database.TwitchContract;
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.io.AsyncTaskListener;
 
@@ -63,7 +64,18 @@ public class UserNameDialog extends EditTextPreference
             SharedPreferences.Editor editor = sp.edit();
             // deselect previously selected channels
             editor.putStringSet(TwitchExtension.PREF_SELECTED_FOLLOWED_CHANNELS,
-                    new HashSet<String>()).apply();
+                    new HashSet<String>())
+                  .apply();
+            editor.putStringSet(TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS,
+                    new HashSet<String>())
+                  .apply();
+            TwitchDbHelper dbHelper = new TwitchDbHelper(getContext());
+
+            dbHelper.getWritableDatabase()
+                    .delete(TwitchContract.ChannelEntry.TABLE_NAME, null, null);
+            dbHelper.close();
+            dbHelper.updatePublishedData();
+
             // remove whitespaces
             final String userName = getEditText().getText().toString().trim();
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();

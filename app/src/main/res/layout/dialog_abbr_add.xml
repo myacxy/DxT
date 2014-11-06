@@ -5,6 +5,7 @@
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <!--Game Name-->
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,12 +13,16 @@
         android:dropDownHeight="wrap_content"
         android:dropDownVerticalOffset="0dp"
         android:singleLine="true"
-        android:hint="@string/dialog_abbr_add_hint_game"/>
+        android:hint="@string/dialog_abbr_add_hint_game"
+        />
+
+    <!--Game Abbreviation-->
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_abbr_add_abbr"
         android:singleLine="true"
-        android:hint="@string/dialog_abbr_add_hint_abbr"/>
+        android:hint="@string/dialog_abbr_add_hint_abbr"
+        />
 
 </LinearLayout>

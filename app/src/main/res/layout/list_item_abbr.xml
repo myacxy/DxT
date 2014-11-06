@@ -13,7 +13,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:id="@+id/dialog_abbr_check"
-        android:clickable="false"/>
+        android:clickable="false"
+        />
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -24,19 +25,26 @@
         android:layout_toStartOf="@id/dialog_abbr_check"
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
+
+        <!--Game Name-->
         <TextView
             android:id="@+id/dialog_abbr_game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            />
+
+        <!--Game Abbreviation-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/dialog_abbr_abbreviation"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/tertiary_text_dark"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            />
+
     </LinearLayout>
 
 </RelativeLayout>

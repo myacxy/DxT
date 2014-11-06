@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:id="@+id/pref_char_limiter_value"/>
+        android:id="@+id/pref_char_limiter_value"
+        />
 
     <!--Preview-->
     <TextView
@@ -20,7 +21,8 @@
         android:id="@+id/pref_char_limiter_preview"
         android:text="@string/pref_char_limiter_preview"
         android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
 
     <!--Preview Text-->
     <TextView
@@ -32,7 +34,8 @@
         android:maxLines="5"
         android:textSize="12sp"
         android:textIsSelectable="false"
-        android:id="@+id/pref_char_limiter_preview_text"/>
+        android:id="@+id/pref_char_limiter_preview_text"
+        />
 
 
 

@@ -204,7 +204,9 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         intervalPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                String summary = newValue + getString(R.string.dialog_interval_minutes);
+                int count = (int) newValue;
+                String summary = getResources().getQuantityString(R.plurals.pref_abbr_summary,
+                        count, count);
                 preference.setSummary(summary);
                 return true;
             }

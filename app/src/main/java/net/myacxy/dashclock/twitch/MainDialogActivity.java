@@ -209,7 +209,14 @@ public class MainDialogActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initView(ListView listView, TwitchDbHelper.State state) {
+    public void initView(ListView listView, TwitchDbHelper.State state) {TextView empty;
+        if(state == TwitchDbHelper.State.ONLINE) {
+            empty = (TextView) findViewById(R.id.main_tab_online_empty);
+            empty.setText(getString(R.string.main_list_empty_online));
+        } else {
+            empty = (TextView) findViewById(R.id.main_tab_offline_empty);
+            empty.setText(getString(R.string.main_list_empty_offline));
+        }
         showOffline = mSharedPreferences.getBoolean(
                                 TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
         // initialize database
@@ -218,19 +225,29 @@ public class MainDialogActivity extends Activity {
         mDbHelper = new TwitchDbHelper(this);
         // get cursor for the channels that are online
         mCursor = mDbHelper.getChannelsCursor(selected, state, sortOrder);
-        // add online list adapter
-        ListAdapter listAdapter = new ListAdapter(this);
-        listAdapter.swapCursor(mCursor);
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url = "http://www.twitch.tv/" + view.getTag().toString();
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            }
-        });
+
+        if(mCursor.getCount() == -1 || mCursor.getCount() == 0) {
+            listView.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            empty.setVisibility(View.GONE);
+            // add list adapter
+            ListAdapter listAdapter = new ListAdapter(this);
+            listAdapter.swapCursor(mCursor);
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String url = "http://www.twitch.tv/" + view.getTag().toString();
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                }
+            });
+        }
+
+
 
         if(showOffline) mTabHost.getTabWidget().setVisibility(View.VISIBLE);
         else mTabHost.getTabWidget().setVisibility(View.GONE);
@@ -275,6 +292,7 @@ public class MainDialogActivity extends Activity {
                     textView.setText(cursor.getString(queryIds.get(index)));
                 }
             }
+
         } // bindView
     } // ListAdapter
 

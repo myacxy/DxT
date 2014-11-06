@@ -4,11 +4,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ListView
         android:padding="6dp"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/main_tab_online_list"
-        android:clickable="true"/>
+        android:clickable="true"
+        />
+
+    <!--Empty-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_tab_online_empty"
+        android:padding="12dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@android:color/tertiary_text_dark"
+        android:gravity="center"
+        />
+
 </LinearLayout>

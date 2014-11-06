@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!--General-->
     <string name="app_name">DashClock Twitch</string>
     <string name="extension_description">Displays information about Twitch.tv live streams that you follow.</string>
@@ -21,7 +22,10 @@
     <string name="main_list_item_viewers">Viewers</string>
     <string name="main_list_item_followers">Followers</string>
     <string name="main_list_item_updated">Updated</string>
+    <string name="main_list_empty_offline">no channels offline</string>
+    <string name="main_list_empty_online">no channels online</string>
     <string name="action_update">Update</string>
+    <string name="action_show_offline">Show Offline</string>
 
     <!--Main List Customization-->
     <string name="pref_main_list_item_customization_title">Customize Displayed Information</string>
@@ -80,7 +84,10 @@
 
     <!--Interval-->
     <string name="pref_update_interval_title">Set Update Interval</string>
-    <string name="pref_update_interval_summary">Choose an interval in minutes</string>
+    <plurals name="pref_update_interval_summary">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
     <string name="dialog_update_interval_title">Pick an interval</string>
     <string name="dialog_interval_minutes">minutes</string>
 
@@ -102,10 +109,8 @@
         <![CDATA[
         Copyright © 2014, Johannes Hoffmann<br>
         All rights reserved.<br>
-        Licensed under the BSD 2-Clause License.<br><br>
 
         Source Code available on GitHub.]]>
     </string>
-    <string name="action_show_offline">Show Offline</string>
 
 </resources>
