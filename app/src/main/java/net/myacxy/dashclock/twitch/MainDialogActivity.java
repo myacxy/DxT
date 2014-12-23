@@ -239,7 +239,7 @@ public class MainDialogActivity extends Activity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String url = "http://www.twitch.tv/" + view.getTag().toString();
+                    String url = "twitch://stream/" + view.getTag().toString();
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
                     startActivity(intent);

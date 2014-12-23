@@ -26,6 +26,8 @@ package net.myacxy.dashclock.twitch.models;
 
 import android.database.Cursor;
 
+import com.google.gson.annotations.SerializedName;
+
 import net.myacxy.dashclock.twitch.database.ChannelQuery;
 import net.myacxy.dashclock.twitch.io.JsonGetter;
 import net.myacxy.dashclock.twitch.io.TwitchChannelOnlineChecker;
@@ -48,6 +50,7 @@ public class TwitchChannel
     /**
      * twitch's id
      */
+    @SerializedName("_id")
     public int entryId;
     /**
      * number of viewers of this specific channel.
@@ -74,6 +77,7 @@ public class TwitchChannel
     /**
      * name displayed to the user. may contain whitespaces
      */
+    @SerializedName("display_name")
     public String displayName;
     /**
      * url to the online source of a picture. template includes adjustable {width} and {height} parameters.
@@ -95,7 +99,9 @@ public class TwitchChannel
      *
      * example: "2014-10-15T04:36:32Z"
      */
+    @SerializedName("updated_at")
     public String updatedAt;
+
     public TwitchGame game;
 
     public TwitchChannel()

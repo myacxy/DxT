@@ -205,7 +205,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 int count = (int) newValue;
-                String summary = getResources().getQuantityString(R.plurals.pref_abbr_summary,
+                String summary = getResources().getQuantityString(R.plurals.pref_update_interval_summary,
                         count, count);
                 preference.setSummary(summary);
                 return true;
