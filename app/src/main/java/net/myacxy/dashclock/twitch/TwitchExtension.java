@@ -24,6 +24,7 @@
 
 package net.myacxy.dashclock.twitch;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -116,7 +117,7 @@ public class TwitchExtension extends DashClockExtension {
         // publish data
         publishUpdate(new ExtensionData()
                 .visible(visible)
-                .icon(R.drawable.twitch_purple)
+                .icon(R.drawable.twitch_white)
                 .status(status)
                 .expandedTitle(expandedTitle)
                 .expandedBody(expandedBody)
@@ -124,11 +125,20 @@ public class TwitchExtension extends DashClockExtension {
     } // onUpdateData
 
     public static TwitchUserFollowsGetter updateTwitchChannels(final Context context, final boolean showProgress, final AsyncTaskListener listener) {
+        ProgressDialog progressDialog = null;
         Log.d("TwitchExtension", "updateTwitchChannels");
+        if(showProgress)
+        {
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMax(100);
+            progressDialog.show();
+        }
         // initialize JsonGetter
-        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, showProgress);
+        final TwitchUserFollowsGetter twitchUserFollowsGetter = new TwitchUserFollowsGetter(context, progressDialog);
         twitchUserFollowsGetter.setAsyncTaskListener(listener);
         twitchUserFollowsGetter.run();
         return twitchUserFollowsGetter;
     } // updateTwitchChannels
-} // TwitchActivity
+} // TwitchExtension

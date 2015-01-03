@@ -45,32 +45,25 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
     protected ArrayList<TwitchChannel> mAllChannels;
     protected ArrayList<TwitchChannelOnlineChecker> mTcocs;
     protected WeakReference<Context> mContext;
-    protected boolean mShowProgress;
     protected ProgressDialog mProgressDialog;
     protected AsyncTaskListener mListener;
-    protected ArrayList<TwitchChannel> mOnlineChannels;
+    protected ArrayList<TwitchChannel> mCheckedChannels;
 
-    public TcocManager(Context context, boolean showProgress)
+    public TcocManager(Context context, ProgressDialog progressDialog)
     {
         mContext = new WeakReference<>(context);
-        mShowProgress = showProgress;
-        mOnlineChannels = new ArrayList<>();
+        mProgressDialog = progressDialog;
+        mCheckedChannels = new ArrayList<>();
         mTcocs = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
-        if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext.get());
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMax(mAllChannels.size());
-            mProgressDialog.show();
-        }
+
         for(TwitchChannel tc : mAllChannels)
         {
             TwitchChannelOnlineChecker onlineChecker =
-                    new TwitchChannelOnlineChecker(mContext.get(), mShowProgress);
+                    new TwitchChannelOnlineChecker(mContext.get(), mProgressDialog);
             mTcocs.add(onlineChecker);
             onlineChecker.run(tc);
         }
@@ -78,12 +71,12 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if(mProgressDialog != null) mProgressDialog.incrementProgressBy(values[0]);
+        int percent = 50 + Math.round(mCheckedChannels.size() * 50f / mAllChannels.size());
+        if (mProgressDialog != null) mProgressDialog.setProgress(percent);
     }
 
     @Override
     protected void onPostExecute(ArrayList<TwitchChannel> channels) {
-        if(mProgressDialog != null) mProgressDialog.dismiss();
         // save all followed channels to shared preferences
         saveTwitchChannelsToPreferences(mAllChannels, TwitchExtension.PREF_ALL_FOLLOWED_CHANNELS);
         // save all followed channels to database
@@ -91,6 +84,7 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
         // save the time of this update
         saveCurrentTime();
         if(mListener != null) mListener.handleAsyncTaskFinished();
+        if(mProgressDialog != null) mProgressDialog.dismiss();
     }
 
     @Override
@@ -98,16 +92,15 @@ public class TcocManager extends AsyncTask<Void, Integer, ArrayList<TwitchChanne
 
         while(true) {
             for(TwitchChannelOnlineChecker tcoc : mTcocs) {
-                if(tcoc.getStatus() == Status.FINISHED && !mOnlineChannels.contains(tcoc.mTwitchChannel)) {
-                    mOnlineChannels.add(tcoc.mTwitchChannel);
+                if(tcoc.getStatus() == Status.FINISHED && !mCheckedChannels.contains(tcoc.mTwitchChannel)) {
+                    mCheckedChannels.add(tcoc.mTwitchChannel);
                     publishProgress(1);
                 }
-
             }
-            if(mOnlineChannels.size() == mAllChannels.size()) break;
+            if(mCheckedChannels.size() == mAllChannels.size()) break;
         }
         Log.d("OnlineCheckerManager", "doInBackground finished");
-        return mOnlineChannels;
+        return mCheckedChannels;
     }
 
     protected void run(ArrayList<TwitchChannel> allChannels)

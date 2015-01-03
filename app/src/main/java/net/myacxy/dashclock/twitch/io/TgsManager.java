@@ -27,30 +27,20 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     private ArrayList<TwitchGameSearcher> finishedTgss;
     protected WeakReference<Context> mContext;
     protected ProgressDialog mProgressDialog;
-    private boolean mShowProgress;
     protected AsyncTaskListener mListener;
 
-    public TgsManager(Context context, boolean showProgress) {
+    public TgsManager(Context context, ProgressDialog progressDialog) {
         mContext = new WeakReference<>(context);
-        mShowProgress = showProgress;
+        mProgressDialog = progressDialog;
         finishedTgss = new ArrayList<>();
         mTgss = new ArrayList<>();
     }
 
     @Override
     protected void onPreExecute() {
-        // prepare progress dialog
-        if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext.get());
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMax(mChannels.size());
-            mProgressDialog.show();
-        }
-
         // search for the game each channel is playing
         for (final TwitchChannel tc : mChannels) {
-            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext.get(), mShowProgress);
+            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext.get(), mProgressDialog);
             mTgss.add(tgs);
             // set result as new game
             tgs.setAsyncTaskListener(new AsyncTaskListener() {
@@ -66,12 +56,13 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if (mProgressDialog != null) mProgressDialog.incrementProgressBy(values[0]);
+        int percent = Math.round((finishedTgss.size() * 50f) / mTgss.size());
+        if (mProgressDialog != null) mProgressDialog.setProgress(percent);
     }
 
     @Override
     protected void onPostExecute(ArrayList<TwitchGame> games) {
-        if (mProgressDialog != null) mProgressDialog.dismiss();
+
         if (mListener != null) mListener.handleAsyncTaskFinished();
     }
 
@@ -84,9 +75,9 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                 // new task finished
                 if (tgs.getStatus() == Status.FINISHED && !finishedTgss.contains(tgs)) {
                     Log.d(tgs.toString(), String.valueOf(tgs.searchResults.size()));
+                    finishedTgss.add(tgs);
                     // update progress
                     publishProgress(1);
-                    finishedTgss.add(tgs);
                 }
             }
             // cancel everything of progress dialog was closed by user

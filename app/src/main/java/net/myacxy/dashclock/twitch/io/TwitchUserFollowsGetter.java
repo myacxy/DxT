@@ -48,18 +48,13 @@ public class TwitchUserFollowsGetter extends JsonGetter {
      *
      * @param context activity from which the class has been called
      */
-    public TwitchUserFollowsGetter(Context context, boolean showProgress) {
-        super(context, showProgress);
+    public TwitchUserFollowsGetter(Context context, ProgressDialog progressDialog) {
+        super(context, progressDialog);
     }
 
     @Override
     protected void onPreExecute() {
-        if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext.get());
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage("Fetching follows...");
-            mProgressDialog.show();
-        }
+
     }
 
     @Override
@@ -95,16 +90,15 @@ public class TwitchUserFollowsGetter extends JsonGetter {
 
         if (allFollowedChannels != null) {
             // check each channel's game
-            tgsManager = new TgsManager(mContext.get(), mShowProgress);
+            tgsManager = new TgsManager(mContext.get(), mProgressDialog);
             tgsManager.setAsyncTaskListener(new AsyncTaskListener() {
                 @Override
                 public void handleAsyncTaskFinished() {
                     // receive channels with updated games from tgsManager
                     // and check their online status
-                    tcocManager = new TcocManager(mContext.get(), mShowProgress);
+                    tcocManager = new TcocManager(mContext.get(), mProgressDialog);
                     tcocManager.setAsyncTaskListener(mListener);
                     tcocManager.run(tgsManager.mChannels);
-                    if(mProgressDialog != null) mProgressDialog.dismiss();
                 }
             });
             tgsManager.run(allFollowedChannels);

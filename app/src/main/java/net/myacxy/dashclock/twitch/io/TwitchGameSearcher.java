@@ -1,5 +1,6 @@
 package net.myacxy.dashclock.twitch.io;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 
 import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
@@ -16,8 +17,8 @@ public class TwitchGameSearcher extends JsonGetter {
     public ArrayList<TwitchGame> searchResults;
     public TwitchGame result;
     private String searchQuery;
-    public TwitchGameSearcher(Context context, boolean showProgress) {
-        super(context, showProgress);
+    public TwitchGameSearcher(Context context, ProgressDialog progressDialog) {
+        super(context, progressDialog);
     }
 
     @Override

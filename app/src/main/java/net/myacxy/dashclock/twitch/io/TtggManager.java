@@ -35,7 +35,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
             mProgressDialog = new ProgressDialog(mContext.get());
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMax(mTotal / mLimit);
+            mProgressDialog.setMax(100);
             mProgressDialog.show();
         }
     }
@@ -53,8 +53,8 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
             TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
             dbHelper.insertOrReplaceGameEntries(games);
 
-            if (mProgressDialog != null) mProgressDialog.dismiss();
             if (mListener != null) mListener.handleAsyncTaskFinished();
+            if (mProgressDialog != null) mProgressDialog.dismiss();
         }
     }
 
@@ -62,7 +62,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
 
         for (int offset = 0; offset < mTotal; offset += mLimit) {
-            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext.get(), mShowProgress);
+            final TwitchTopGamesGetter tgg = new TwitchTopGamesGetter(mContext.get(), mProgressDialog);
             mTggs.add(tgg);
             tgg.run(mLimit, offset);
         }

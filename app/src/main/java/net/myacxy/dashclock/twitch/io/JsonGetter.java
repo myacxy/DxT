@@ -57,7 +57,6 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
     protected WeakReference<Context> mContext;
     // Dialog displaying the progress for the async task getting json from http
     protected ProgressDialog mProgressDialog;
-    protected boolean mShowProgress;
     protected String mToastMessage;
     protected AsyncTaskListener mListener;
 
@@ -82,21 +81,15 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
      *
      * @param context activity from which the class has been called
      */
-    public JsonGetter(Context context, boolean showProgress)
+    public JsonGetter(Context context, ProgressDialog progressDialog)
     {
         mContext = new WeakReference<>(context);
-        mShowProgress = showProgress;
+        mProgressDialog = progressDialog;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        // initialize dialog
-        if(mShowProgress) {
-            mProgressDialog = new ProgressDialog(mContext.get());
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.show();
-        }
     }
 
     @Override

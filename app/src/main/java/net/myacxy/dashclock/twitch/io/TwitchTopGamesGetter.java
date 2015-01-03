@@ -1,5 +1,6 @@
 package net.myacxy.dashclock.twitch.io;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 
 import net.myacxy.dashclock.twitch.models.TwitchGame;
@@ -14,8 +15,8 @@ public class TwitchTopGamesGetter extends JsonGetter {
 
     public ArrayList<TwitchGame> games;
 
-    public TwitchTopGamesGetter(Context context, boolean showProgress) {
-        super(context, showProgress);
+    public TwitchTopGamesGetter(Context context, ProgressDialog progressDialog) {
+        super(context, progressDialog);
     }
 
     @Override
