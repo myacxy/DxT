@@ -32,6 +32,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
+import com.google.android.apps.dashclock.api.DashClockExtension;
+
 import net.myacxy.dashclock.twitch.R;
 import net.myacxy.dashclock.twitch.TwitchExtension;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
@@ -295,6 +297,8 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         editor.putStringSet(TwitchExtension.PREF_EXPANDED_BODY, expandedBody);
         editor.putString(TwitchExtension.PREF_LONGEST_BODY, longestBody);
         editor.apply();
+
+        TwitchExtension.getInstance().onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
     } // updateSharedPreferencesData
 
     public Cursor getGamesCursor(boolean abbreviated) {
@@ -409,8 +413,6 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     private int insertOrReplaceGameEntry(TwitchGame game, SQLiteDatabase db)
     {
-        if(game.abbreviation == null) game.abbreviation = checkExampleAbbr(game);
-
         String sql = "INSERT OR REPLACE INTO " + TwitchContract.GameEntry.TABLE_NAME
                 + " ( "
                 + TwitchContract.GameEntry._ID + COMMA_SEP
@@ -438,31 +440,35 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         return id;
     } // updateOnlineStatus
 
-    private String checkExampleAbbr(TwitchGame game) {
+    public void addExampleAbbreviations() {
 
-        switch (game.name) {
-            case "League of Legends":
-                return "LoL";
-            case "Hearthstone: Heroes of Warcraft":
-                return "HS";
-            case "Counter-Strike: Global Offensive":
-                return "CSGO";
-            case "World of Warcraft: Mists of Pandaria":
-                return "WoW";
-            case "World of Warcraft: Warlords of Draenor":
-                return "WoW";
-            case "StarCraft II: Heart of the Swarm":
-                return "SC2";
-            case "Diablo III: Reaper of Souls":
-                return "D3";
-            case "Final Fantasy XIV Online: A Realm Reborn":
-                return "FFXIV";
-            case "Path of Exile":
-                return "PoE";
-            case "Ultra Street Fighter IV":
-                return "SFIV";
-            default:
-                return null;
+        ArrayList<String> games = new ArrayList<String>() { {
+            add("League of Legends");
+            add("Hearthstone: Heroes of Warcraft");
+            add("Counter-Strike: Global Offensive");
+            add("World of Warcraft: Warlords of Draenor");
+            add("StarCraft II: Heart of the Swarm");
+            add("Diablo III: Reaper of Souls");
+            add("Final Fantasy XIV Online: A Realm Reborn");
+            add("Path of Exile");
+            add("Ultra Street Fighter IV");
+        }};
+
+        ArrayList<String> abbreviations = new ArrayList<String>() { {
+            add("LoL");
+            add("HS");
+            add("CSGO");
+            add("WoW");
+            add("SC2");
+            add("D3");
+            add("FFXIV");
+            add("PoE");
+            add("SFIV");
+        }};
+
+        for(String game : games)
+        {
+            insertOrReplaceGameEntry(new TwitchGame(game, abbreviations.get(games.indexOf(game))));
         }
     }
 

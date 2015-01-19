@@ -175,7 +175,7 @@ public class MainDialogActivity extends Activity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_update: {
-                mFollowsGetter = TwitchExtension.updateTwitchChannels(this,
+                mFollowsGetter = TwitchExtension.getInstance().updateTwitchChannels(this,
                         true,
                         new AsyncTaskListener() {
                             @Override
@@ -221,7 +221,7 @@ public class MainDialogActivity extends Activity {
                                 TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
         // initialize database
         boolean selected = mSharedPreferences.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
-        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_NAME;
+        String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
         mDbHelper = new TwitchDbHelper(this);
         // get cursor for the channels that are online
         mCursor = mDbHelper.getChannelsCursor(selected, state, sortOrder);

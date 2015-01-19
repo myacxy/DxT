@@ -43,7 +43,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
     @Override
     protected void onProgressUpdate(Integer... values) {
         if (mProgressDialog != null) {
-            mProgressDialog.incrementProgressBy(values[0]);
+            mProgressDialog.incrementProgressBy(100 / mTggs.size());
         }
     }
 
@@ -76,7 +76,7 @@ public class TtggManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>>
                     }
                 }
             }
-            if (mProgressDialog.getProgress() == mTggs.size()) break;
+            if (mProgressDialog.getProgress() == 100) break;
             if(!mProgressDialog.isShowing()) {
                 cancel(true);
                 return null;

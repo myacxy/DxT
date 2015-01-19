@@ -82,7 +82,7 @@ public class IntervalDialog extends Preference {
                          .apply();
                 // update channels if last update is older than new interval
                 if (!TcocManager.checkRecentlyUpdated(getContext())) {
-                    TwitchExtension.updateTwitchChannels(getContext(),
+                    TwitchExtension.getInstance().updateTwitchChannels(getContext(),
                             true,
                             new AsyncTaskListener() {
                         @Override

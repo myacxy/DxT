@@ -117,6 +117,7 @@ public class AbbreviationDialog extends MultiSelectListPreference {
                         mAdapter.getCount());
                 mCursor.close();
                 mDbHelper.close();
+                mDbHelper.updatePublishedData();
             }
         });
 

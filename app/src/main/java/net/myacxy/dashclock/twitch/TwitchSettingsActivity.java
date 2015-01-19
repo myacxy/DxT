@@ -63,7 +63,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected IntervalDialog intervalPreference;
     protected CharLimiterDialog charLimiterPreference;
     protected CheckBoxPreference customVisibilityPreference;
-    protected MultiSelectListPreference itemCustomizationPrererence;
+    protected MultiSelectListPreference itemCustomizationPreference;
     protected UserVoiceDialog userVoicePreference;
 
     private Config mConfig;
@@ -97,7 +97,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         donatePreference = findPreference("pref_donate");
         hideEmptyPreference = (CheckBoxPreference) findPreference("pref_hide_empty");
         updateGameDbPreference = findPreference("pref_game_db_update");
-        itemCustomizationPrererence = (MultiSelectListPreference)
+        itemCustomizationPreference = (MultiSelectListPreference)
                 findPreference("pref_main_list_item_customization");
         userVoicePreference = (UserVoiceDialog) findPreference("pref_user_voice");
 
@@ -116,7 +116,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        itemCustomizationPrererence.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        itemCustomizationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
@@ -150,8 +150,8 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         updateGameDbPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final TtggManager tggManager = new TtggManager(TwitchSettingsActivity.this, true);
-                tggManager.setAsyncTaskListener(new AsyncTaskListener() {
+                final TtggManager ttggManager = new TtggManager(TwitchSettingsActivity.this, true);
+                ttggManager.setAsyncTaskListener(new AsyncTaskListener() {
                     @Override
                     public void handleAsyncTaskFinished() {
                         TwitchDbHelper dbHelper = new TwitchDbHelper(getApplicationContext());
@@ -169,7 +169,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                         new TwitchDbHelper(getApplicationContext()).updatePublishedData();
                     }
                 });
-                tggManager.run(500, 100);
+                ttggManager.run(500, 100);
                 return true;
             }
         });
@@ -231,6 +231,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                         .getQuantityString(R.plurals.pref_following_selection_summary,
                                 totalCount, selectedCount, totalCount);
                 preference.setSummary(summary);
+
                 return true;
             }
         });

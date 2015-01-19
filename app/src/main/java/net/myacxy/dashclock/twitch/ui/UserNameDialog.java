@@ -80,7 +80,7 @@ public class UserNameDialog extends EditTextPreference
             final String userName = getEditText().getText().toString().trim();
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
-            TwitchExtension.updateTwitchChannels(getContext(),
+            TwitchExtension.getInstance().updateTwitchChannels(getContext(),
                     true,
                     new AsyncTaskListener() {
                 @Override

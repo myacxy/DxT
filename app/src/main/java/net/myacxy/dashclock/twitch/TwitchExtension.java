@@ -72,14 +72,28 @@ public class TwitchExtension extends DashClockExtension {
 
     public static boolean DEVELOPER_MODE = true;
     private AsyncTask task;
+    private static TwitchExtension mInstance;
+
+    public static TwitchExtension getInstance() {
+        return mInstance;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp.getBoolean("pref_first_launch", true))
+        {
+            new TwitchDbHelper(this).addExampleAbbreviations();
+            sp.edit().putBoolean("pref_first_launch", false).apply();
+        }
+
+        mInstance = this;
     }
 
     @Override
-    protected void onUpdateData(int reason) {
+    public void onUpdateData(int reason) {
         Log.d("TwitchExtension", "onUpdateData");
         // update data if it is outdated
         if(task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
@@ -124,7 +138,7 @@ public class TwitchExtension extends DashClockExtension {
                 .clickIntent(intent));
     } // onUpdateData
 
-    public static TwitchUserFollowsGetter updateTwitchChannels(final Context context, final boolean showProgress, final AsyncTaskListener listener) {
+    public TwitchUserFollowsGetter updateTwitchChannels(final Context context, final boolean showProgress, final AsyncTaskListener listener) {
         ProgressDialog progressDialog = null;
         Log.d("TwitchExtension", "updateTwitchChannels");
         if(showProgress)
