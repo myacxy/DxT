@@ -29,9 +29,12 @@ import android.content.Context;
 import android.util.Log;
 
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
+import net.myacxy.dashclock.twitch.utils.ISO8601;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
 
 public class TwitchChannelOnlineChecker extends JsonGetter
 {
@@ -50,9 +53,11 @@ public class TwitchChannelOnlineChecker extends JsonGetter
     protected void onPostExecute(JSONObject jsonObject) {
         // check if stream is online
         JSONObject stream = null;
+        JSONObject channel = null;
         try {
             if(!jsonObject.isNull("stream")) {
                 stream = jsonObject.getJSONObject("stream");
+                channel = stream.getJSONObject("channel");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -60,6 +65,15 @@ public class TwitchChannelOnlineChecker extends JsonGetter
         if(stream != null) {
             mTwitchChannel.online = true;
             mTwitchChannel.viewers = JsonGetter.getInt(stream, "viewers");
+            // workaround https://github.com/justintv/Twitch-API/issues/335
+            mTwitchChannel.game.name = JsonGetter.getString(channel, "game");
+            mTwitchChannel.status = JsonGetter.getString(channel, "status");
+            mTwitchChannel.updatedAt = JsonGetter.getString(channel, "updated_at");
+            try {
+                mTwitchChannel.updatedAt = ISO8601.toCalendar(mTwitchChannel.updatedAt).getTime().toString();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
