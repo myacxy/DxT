@@ -298,7 +298,10 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         editor.putString(TwitchExtension.PREF_LONGEST_BODY, longestBody);
         editor.apply();
 
-        TwitchExtension.getInstance().onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
+        if(TwitchExtension.getInstance() != null)
+        {
+            TwitchExtension.getInstance().onUpdateData(DashClockExtension.UPDATE_REASON_MANUAL);
+        }
     } // updateSharedPreferencesData
 
     public Cursor getGamesCursor(boolean abbreviated) {

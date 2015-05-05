@@ -101,12 +101,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 findPreference("pref_main_list_item_customization");
         userVoicePreference = (UserVoiceDialog) findPreference("pref_user_voice");
 
+        bindUserNamePreference();
         bindIntervalPreference();
         bindCharLimiterPreference();
         bindSelectionPreference();
         bindAbbreviationsPreference();
         bindGameDbPreference();
-        bindUserNamePreference();
 
         customVisibilityPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -252,19 +252,29 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 preference.setSummary(newValue.toString());
 
                 // reset custom selections
+                if(followingSelectionPreference.getOnPreferenceChangeListener() != null)
+                {
+                    followingSelectionPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                            followingSelectionPreference, new HashSet<String>());
+                }
 
-                followingSelectionPreference.getOnPreferenceChangeListener().onPreferenceChange(
-                        followingSelectionPreference, new HashSet<String>());
 
                 // update games database count
                 int gamesCount = dbHelper.getGames(false).size();
-                updateGameDbPreference.getOnPreferenceChangeListener().onPreferenceChange(
-                        updateGameDbPreference, gamesCount);
+                if(updateGameDbPreference.getOnPreferenceChangeListener() != null)
+                {
+                    updateGameDbPreference.getOnPreferenceChangeListener().onPreferenceChange(
+                            updateGameDbPreference, gamesCount);
+                }
+
 
                 // update abbreviation count
                 int abbreviatedGamesCount = dbHelper.getGames(true).size();
-                abbreviationPreference.getOnPreferenceChangeListener()
-                        .onPreferenceChange(abbreviationPreference, abbreviatedGamesCount);
+                if(abbreviationPreference.getOnPreferenceChangeListener() != null)
+                {
+                    abbreviationPreference.getOnPreferenceChangeListener()
+                            .onPreferenceChange(abbreviationPreference, abbreviatedGamesCount);
+                }
 
                 return true;
             }
