@@ -452,6 +452,7 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             add("Final Fantasy XIV Online: A Realm Reborn");
             add("Path of Exile");
             add("Ultra Street Fighter IV");
+            add("Grand Theft Auto V");
         }};
 
         ArrayList<String> abbreviations = new ArrayList<String>() { {
@@ -461,9 +462,10 @@ public class TwitchDbHelper extends SQLiteOpenHelper
             add("WoW");
             add("SC2");
             add("D3");
-            add("FFXIV");
+            add("FF14");
             add("PoE");
-            add("SFIV");
+            add("SF4");
+            add("GTA5");
         }};
 
         for(String game : games)

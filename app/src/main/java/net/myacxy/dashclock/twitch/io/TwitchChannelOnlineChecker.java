@@ -79,7 +79,7 @@ public class TwitchChannelOnlineChecker extends JsonGetter
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Log.d("TwitchChannelOnlineChecker", values[0]);
+        Log.d("Tcoc", values[0]);
     }
 
     @Override

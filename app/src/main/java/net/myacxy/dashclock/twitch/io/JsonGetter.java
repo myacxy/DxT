@@ -145,7 +145,7 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
             HttpEntity entity = response.getEntity();
             is = entity.getContent();
         } catch(Exception e) {
-            mToastMessage = "Http Error";
+            mToastMessage = "DCT: http error";
             cancel(true);
             return null;
         }
@@ -161,14 +161,14 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
             is.close();
             jsonString=sb.toString();
         } catch(Exception e) {
-            mToastMessage = "Http Error";
+            mToastMessage = "DCT: http error";
             cancel(true);
             return null;
         }
         try {
             jsonObject = new JSONObject(jsonString);
         } catch (JSONException e) {
-            mToastMessage = "JSON Exception";
+            mToastMessage = "DCT: JSON Exception";
             cancel(true);
             return null;
         }
