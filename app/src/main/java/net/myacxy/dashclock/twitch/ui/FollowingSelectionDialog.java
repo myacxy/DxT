@@ -148,7 +148,11 @@ public class FollowingSelectionDialog extends MultiSelectListPreference
             // check the checkbox if was selected beforehand
             final CheckBox checkBox = (CheckBox) view.findViewById(
                     R.id.dialog_following_selection_checkbox);
-            checkBox.setChecked(mSelectedFollowedChannels.contains(displayName));
+            if(mSelectedFollowedChannelsTemp.contains(displayName)
+                    || mSelectedFollowedChannels.contains(displayName)) {
+                checkBox.setChecked(true);
+            }
+            else { checkBox.setChecked(false); }
 
             // enable clicking the check box
             view.setOnClickListener(new View.OnClickListener() {

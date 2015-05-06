@@ -40,7 +40,9 @@ import net.myacxy.dashclock.twitch.models.TwitchChannel;
 import net.myacxy.dashclock.twitch.models.TwitchGame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -445,35 +447,27 @@ public class TwitchDbHelper extends SQLiteOpenHelper
 
     public void addExampleAbbreviations() {
 
-        ArrayList<String> games = new ArrayList<String>() { {
-            add("League of Legends");
-            add("Hearthstone: Heroes of Warcraft");
-            add("Counter-Strike: Global Offensive");
-            add("World of Warcraft: Warlords of Draenor");
-            add("StarCraft II: Heart of the Swarm");
-            add("Diablo III: Reaper of Souls");
-            add("Final Fantasy XIV Online: A Realm Reborn");
-            add("Path of Exile");
-            add("Ultra Street Fighter IV");
-            add("Grand Theft Auto V");
+        Map<String, String> dict = new HashMap<String, String>() { {
+            put("Counter-Strike: Global Offensive", "CSGO");
+            put("Call of Duty: Advanced Warfare", "CoD");
+            put("Dark Souls II: Scholar of the First Sin", "DaS2");
+            put("Diablo III: Reaper of Souls", "D3");
+            put("Final Fantasy XIV Online: A Realm Reborn", "FF14");
+            put("Grand Theft Auto V", "GTA5");
+            put("Hearthstone: Heroes of Warcraft", "HS");
+            put("League of Legends", "LoL");
+            put("Mortal Kombat X", "MK10");
+            put("Path of Exile", "PoE");
+            put("StarCraft II: Heart of the Swarm", "SC2");
+            put("The Binding of Isaac: Rebirth", "Isaac");
+            put("Ultra Street Fighter IV", "SF4");
+            put("World of Tanks", "WoT");
+            put("World of Warcraft: Warlords of Draenor", "WoW");
         }};
 
-        ArrayList<String> abbreviations = new ArrayList<String>() { {
-            add("LoL");
-            add("HS");
-            add("CSGO");
-            add("WoW");
-            add("SC2");
-            add("D3");
-            add("FF14");
-            add("PoE");
-            add("SF4");
-            add("GTA5");
-        }};
-
-        for(String game : games)
+        for(Map.Entry<String, String> entry : dict.entrySet())
         {
-            insertOrReplaceGameEntry(new TwitchGame(game, abbreviations.get(games.indexOf(game))));
+            insertOrReplaceGameEntry(new TwitchGame(entry.getKey(), entry.getValue()));
         }
     }
 

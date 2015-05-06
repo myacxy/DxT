@@ -28,7 +28,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 
+import net.myacxy.dashclock.twitch.database.TwitchDbHelper;
 import net.myacxy.dashclock.twitch.models.TwitchChannel;
+import net.myacxy.dashclock.twitch.models.TwitchGame;
 import net.myacxy.dashclock.twitch.utils.ISO8601;
 
 import org.json.JSONException;
@@ -63,10 +65,14 @@ public class TwitchChannelOnlineChecker extends JsonGetter
             e.printStackTrace();
         }
         if(stream != null) {
+
             mTwitchChannel.online = true;
             mTwitchChannel.viewers = JsonGetter.getInt(stream, "viewers");
             // workaround https://github.com/justintv/Twitch-API/issues/335
-            mTwitchChannel.game.name = JsonGetter.getString(channel, "game");
+            TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
+            TwitchGame game = new TwitchGame(JsonGetter.getString(channel, "game"), null);
+            game.id = dbHelper.insertOrReplaceGameEntry(game);
+            mTwitchChannel.game = game;
             mTwitchChannel.status = JsonGetter.getString(channel, "status");
             mTwitchChannel.updatedAt = JsonGetter.getString(channel, "updated_at");
             try {
