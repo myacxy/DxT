@@ -32,7 +32,7 @@ MERGED from com.android.support:support-v4:21.0.3:16:5
 		ADDED from AndroidManifest.xml:12:9
 	android:theme
 		ADDED from AndroidManifest.xml:14:9
-service#net.myacxy.dashclock.twitch.TwitchExtension
+service#net.myacxy.dxt.TwitchExtension
 ADDED from AndroidManifest.xml:16:9
 	android:label
 		ADDED from AndroidManifest.xml:18:18
@@ -72,7 +72,7 @@ ADDED from AndroidManifest.xml:29:13
 		ADDED from AndroidManifest.xml:30:24
 	android:name
 		ADDED from AndroidManifest.xml:29:24
-activity#net.myacxy.dashclock.twitch.MainDialogActivity
+activity#net.myacxy.dxt.MainDialogActivity
 ADDED from AndroidManifest.xml:42:9
 	android:exported
 		ADDED from AndroidManifest.xml:45:19
@@ -82,7 +82,7 @@ ADDED from AndroidManifest.xml:42:9
 		ADDED from AndroidManifest.xml:43:19
 	android:name
 		ADDED from AndroidManifest.xml:42:19
-activity#net.myacxy.dashclock.twitch.TwitchSettingsActivity
+activity#net.myacxy.dxt.TwitchSettingsActivity
 ADDED from AndroidManifest.xml:47:9
 	android:label
 		ADDED from AndroidManifest.xml:48:19

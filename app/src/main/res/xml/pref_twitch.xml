@@ -5,7 +5,7 @@
     <!--General-->
     <PreferenceCategory android:title="@string/pref_category_general">
         <!--User Name-->
-        <net.myacxy.dashclock.twitch.ui.UserNameDialog
+        <net.myacxy.dxt.ui.UserNameDialog
             android:defaultValue="test_user1"
             android:selectAllOnFocus="true"
             android:key="pref_user_name"
@@ -19,7 +19,7 @@
             android:defaultValue="true"/>
 
         <!--Interval Dialog-->
-        <net.myacxy.dashclock.twitch.ui.IntervalDialog
+        <net.myacxy.dxt.ui.IntervalDialog
             android:key="pref_update_interval"
             android:title="@string/pref_update_interval_title"/>
 
@@ -35,13 +35,13 @@
             android:summary="@string/pref_custom_visibility_summary"/>
 
         <!--Selection Dialog-->
-        <net.myacxy.dashclock.twitch.ui.FollowingSelectionDialog
+        <net.myacxy.dxt.ui.FollowingSelectionDialog
             android:key="pref_following_selection"
             android:dependency="pref_custom_visibility"
             android:title="@string/pref_following_selection_title"/>
 
         <!--Custom Game Titles-->
-        <net.myacxy.dashclock.twitch.ui.AbbreviationDialog
+        <net.myacxy.dxt.ui.AbbreviationDialog
             android:key="pref_abbr"
             android:title="@string/pref_abbr_title"/>
 
@@ -51,14 +51,14 @@
             android:key="pref_game_db_update"/>
 
         <!--Char Limiter-->
-        <net.myacxy.dashclock.twitch.ui.CharLimiterDialog
+        <net.myacxy.dxt.ui.CharLimiterDialog
             android:key="pref_char_limiter"
             android:title="@string/pref_char_limit_title"
             android:enabled="true"/>
     </PreferenceCategory>
     <!--Main Dialog-->
     <PreferenceCategory android:title="@string/pref_category_dialog">
-        <net.myacxy.dashclock.twitch.ui.ItemCustomizationDialog
+        <net.myacxy.dxt.ui.ItemCustomizationDialog
             android:key="pref_main_list_item_customization"
             android:title="@string/pref_main_list_item_customization_title"
             android:summary="@string/pref_main_list_item_customization_summary"
@@ -68,7 +68,7 @@
     <!--Support-->
     <PreferenceCategory android:title="@string/pref_category_support">
         <!--Rate-->
-        <net.myacxy.dashclock.twitch.ui.UserVoiceDialog
+        <net.myacxy.dxt.ui.UserVoiceDialog
             android:key="pref_user_voice"
             android:title="@string/pref_user_voice_title"
             android:summary="@string/pref_user_voice_summary"
@@ -81,7 +81,7 @@
             android:summary="@string/pref_donate_summary"/>
 
         <!--About-->
-        <net.myacxy.dashclock.twitch.ui.AboutDialog
+        <net.myacxy.dxt.ui.AboutDialog
             android:key="pref_about"
             android:title="@string/pref_about_title"/>
 
