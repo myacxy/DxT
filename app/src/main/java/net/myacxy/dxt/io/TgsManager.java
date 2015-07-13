@@ -49,6 +49,11 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                     tc.game = tgs.result;
                 }
             });
+            // cannot query empty string
+            if(tc.game.name.trim().equals(""))
+            {
+                tc.game.name = "null";
+            }
             // start task
             tgs.run(tc.game.name);
         }
