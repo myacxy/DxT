@@ -51,12 +51,16 @@ import net.myacxy.dxt.database.TwitchContract;
 import net.myacxy.dxt.database.TwitchDbHelper;
 import net.myacxy.dxt.io.AsyncTaskListener;
 import net.myacxy.dxt.io.TwitchUserFollowsGetter;
+import net.myacxy.dxt.models.TwitchChannelListViewEntry;
 import net.myacxy.dxt.models.TwitchGame;
 
 import java.util.ArrayList;
 
 public class MainDialogActivity extends Activity {
 
+    /**
+     * online / offline tabs
+     */
     protected TabHost mTabHost;
     protected SharedPreferences mSharedPreferences;
     protected TwitchDbHelper mDbHelper;
@@ -64,46 +68,52 @@ public class MainDialogActivity extends Activity {
     private TwitchUserFollowsGetter mFollowsGetter;
     private boolean showOffline;
 
-    private ArrayList<String> rowKeys = new ArrayList<String>() {{
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_NAME);
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_GAME);
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_STATUS);
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_VIEWERS);
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_FOLLOWERS);
-        add(TwitchExtension.PREF_MAIN_LIST_SHOW_UPDATED);
-    }};
-
-    private ArrayList<Integer> rowIds = new ArrayList<Integer>() {{
-        add(R.id.main_list_item_display_name_text);
-        add(R.id.main_list_item_row_game);
-        add(R.id.main_list_item_row_status);
-        add(R.id.main_list_item_row_viewers);
-        add(R.id.main_list_item_row_followers);
-        add(R.id.main_list_item_row_updated);
-    }};
-
-    private ArrayList<Integer> queryIds = new ArrayList<Integer>() {{
-        add(ChannelQuery.displayName);
-        add(ChannelQuery.gameId);
-        add(ChannelQuery.status);
-        add(ChannelQuery.viewers);
-        add(ChannelQuery.followers);
-        add(ChannelQuery.updatedAt);
-    }};
-
-    private ArrayList<Integer> textIds = new ArrayList<Integer>() {{
-        add(R.id.main_list_item_display_name_text);
-        add(R.id.main_list_item_game_text);
-        add(R.id.main_list_item_status_text);
-        add(R.id.main_list_item_viewers_text);
-        add(R.id.main_list_item_followers_text);
-        add(R.id.main_list_item_updated_text);
-    }};
-
-
+    private ArrayList<TwitchChannelListViewEntry> listEntry = new ArrayList<TwitchChannelListViewEntry>()
+    {
+        // rowKey, rowId, queryId, textId
+        {
+            // display name
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_NAME,
+                    R.id.main_list_item_display_name_text,
+                    ChannelQuery.displayName,
+                    R.id.main_list_item_display_name_text));
+            // game
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_GAME,
+                    R.id.main_list_item_row_game,
+                    ChannelQuery.gameId,
+                    R.id.main_list_item_game_text));
+            // status
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_STATUS,
+                    R.id.main_list_item_row_status,
+                    ChannelQuery.status,
+                    R.id.main_list_item_status_text));
+            // viewers
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_VIEWERS,
+                    R.id.main_list_item_row_viewers,
+                    ChannelQuery.viewers,
+                    R.id.main_list_item_viewers_text));
+            // followers
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_FOLLOWERS,
+                    R.id.main_list_item_row_followers,
+                    ChannelQuery.followers,
+                    R.id.main_list_item_followers_text));
+            // last updated
+            add(new TwitchChannelListViewEntry(
+                    TwitchExtension.PREF_MAIN_LIST_SHOW_UPDATED,
+                    R.id.main_list_item_row_updated,
+                    ChannelQuery.updatedAt,
+                    R.id.main_list_item_updated_text));
+        }
+    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         showAsPopup(this);
         setContentView(R.layout.main);
@@ -118,10 +128,13 @@ public class MainDialogActivity extends Activity {
                 .setIndicator("Offline")
                 .setContent(R.id.main_tab_offline));
 
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
+        {
             @Override
-            public void onTabChanged(String tabId) {
-                switch (tabId) {
+            public void onTabChanged(String tabId)
+            {
+                switch (tabId)
+                {
                     case "online":
                         initView((ListView) findViewById(R.id.main_tab_online_list),
                                 TwitchDbHelper.State.ONLINE);
@@ -133,12 +146,15 @@ public class MainDialogActivity extends Activity {
                 }
             }
         });
+        // refresh online tab view
         mTabHost.setCurrentTabByTag("offline");
         mTabHost.setCurrentTabByTag("online");
-    }
+    } // onCreate
 
     public void showAsPopup(Activity activity) {
-        //To show activity as dialog and dim the background, you need to declare android:theme="@style/PopupTheme" on for the chosen activity on the manifest
+        // To show activity as dialog and dim the background,
+        // you need to declare android:theme="@style/PopupTheme"
+        // on for the chosen activity on the manifest
         activity.requestWindowFeature(Window.FEATURE_ACTION_BAR);
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,
                 WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -148,20 +164,23 @@ public class MainDialogActivity extends Activity {
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         activity.getWindow().setAttributes(params);
-    }
+    } // showAsPopup
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
 
         Button button = (Button) findViewById(R.id.main_dismiss);
-        button.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 finish();
             }
         });
-    }
+    } // onPostCreate
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,16 +194,16 @@ public class MainDialogActivity extends Activity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_update: {
-                mFollowsGetter = TwitchExtension.getInstance().updateTwitchChannels(this,
-                        true,
+                mFollowsGetter = TwitchExtension.getInstance().updateTwitchChannels(this, true,
                         new AsyncTaskListener() {
                             @Override
                             public void handleAsyncTaskFinished() {
                                 Log.d("MainDialog", "Update finished.");
                                 if (getApplicationContext() != null) {
-                                    // reinit view and update data
+                                    // update data
                                     new TwitchDbHelper(getApplicationContext())
                                             .updatePublishedData();
+                                    // refresh view
                                     mTabHost.setCurrentTabByTag("offline");
                                     mTabHost.setCurrentTabByTag("online");
                                 }
@@ -209,36 +228,61 @@ public class MainDialogActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initView(ListView listView, TwitchDbHelper.State state) {TextView empty;
-        if(state == TwitchDbHelper.State.ONLINE) {
+    public void initView(ListView listView, TwitchDbHelper.State state)
+    {
+        // text if no channel is online / offline
+        TextView empty;
+        if(state == TwitchDbHelper.State.ONLINE)
+        {
             empty = (TextView) findViewById(R.id.main_tab_online_empty);
             empty.setText(getString(R.string.main_list_empty_online));
-        } else {
+        }
+        else
+        {
             empty = (TextView) findViewById(R.id.main_tab_offline_empty);
             empty.setText(getString(R.string.main_list_empty_offline));
         }
+        // display tab host?
         showOffline = mSharedPreferences.getBoolean(
                                 TwitchExtension.PREF_DIALOG_SHOW_OFFLINE, false);
+
+        if(showOffline)
+        {
+            mTabHost.getTabWidget().setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mTabHost.getTabWidget().setVisibility(View.GONE);
+        }
+
         // initialize database
-        boolean selected = mSharedPreferences.getBoolean(TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
+        boolean selected = mSharedPreferences.getBoolean(
+                TwitchExtension.PREF_CUSTOM_VISIBILITY, false);
         String sortOrder = TwitchContract.ChannelEntry.COLUMN_NAME_DISPLAY_NAME;
         mDbHelper = new TwitchDbHelper(this);
         // get cursor for the channels that are online
         mCursor = mDbHelper.getChannelsCursor(selected, state, sortOrder);
 
-        if(mCursor.getCount() == -1 || mCursor.getCount() == 0) {
+        // no channel online / offline -> display empty text
+        if(mCursor.getCount() == -1 || mCursor.getCount() == 0)
+        {
             listView.setVisibility(View.GONE);
             empty.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             listView.setVisibility(View.VISIBLE);
             empty.setVisibility(View.GONE);
-            // add list adapter
+            // populate list view
             ListAdapter listAdapter = new ListAdapter(this);
             listAdapter.swapCursor(mCursor);
             listView.setAdapter(listAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    // try to open selected channel in Twitch app
                     String url = "twitch://stream/" + view.getTag().toString();
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
@@ -246,13 +290,11 @@ public class MainDialogActivity extends Activity {
                 }
             });
         }
+    } // initView
 
-
-
-        if(showOffline) mTabHost.getTabWidget().setVisibility(View.VISIBLE);
-        else mTabHost.getTabWidget().setVisibility(View.GONE);
-    }
-
+    /***
+     * Populates a list with information on all Twitch channels that are online or offline
+     */
     public class ListAdapter extends ResourceCursorAdapter
     {
         public ListAdapter(Context context)
@@ -263,33 +305,48 @@ public class MainDialogActivity extends Activity {
 
         /** Set elements of each row */
         @Override
-        public void bindView(final View view, Context context, final Cursor cursor) {
+        public void bindView(final View view, Context context, final Cursor cursor)
+        {
+            for(TwitchChannelListViewEntry entry : listEntry)
+            {
+                boolean isRowVisible;
 
-            for(String key : rowKeys) {
-                final int index = rowKeys.indexOf(key);
-                boolean visible;
+                // always hide viewer count in offline tab
                 if(mTabHost.getCurrentTabTag().equals("offline")
-                        && key.equals(TwitchExtension.PREF_MAIN_LIST_SHOW_VIEWERS)) {
-                    visible = false;
-                } else {
-                    visible = mSharedPreferences.getBoolean(key, true);
+                        && entry.rowKey.equals(TwitchExtension.PREF_MAIN_LIST_SHOW_VIEWERS))
+                {
+                    isRowVisible = false;
                 }
-                if(!visible) view.findViewById(rowIds.get(index)).setVisibility(View.GONE);
+                // check user preference
+                else
+                {
+                    isRowVisible = mSharedPreferences.getBoolean(entry.rowKey, true);
+                }
+                // hide row?
+                if(!isRowVisible)
+                {
+                    view.findViewById(entry.rowId).setVisibility(View.GONE);
+                }
 
-                if(queryIds.get(index) == ChannelQuery.gameId) {
+                // game? -> retrieve game from database
+                if(entry.queryId == ChannelQuery.gameId)
+                {
                     TextView gameView = (TextView) view.findViewById(R.id.main_list_item_game_text);
                     TwitchGame game = mDbHelper.getGame(cursor.getInt(ChannelQuery.gameId));
                     gameView.setText(game.name);
                 }
-                else if (queryIds.get(index) == ChannelQuery.displayName)
+                // display name? -> also set tag of the view to identify it on being clicked
+                else if (entry.queryId == ChannelQuery.displayName)
                 {
                     view.setTag(cursor.getString(ChannelQuery.name));
 
-                    TextView textView = (TextView) view.findViewById(textIds.get(index));
-                    textView.setText(cursor.getString(queryIds.get(index)));
-                } else {
-                    TextView textView = (TextView) view.findViewById(textIds.get(index));
-                    textView.setText(cursor.getString(queryIds.get(index)));
+                    TextView textView = (TextView) view.findViewById(entry.textId);
+                    textView.setText(cursor.getString(entry.queryId));
+                }
+                else
+                {
+                    TextView textView = (TextView) view.findViewById(entry.textId);
+                    textView.setText(cursor.getString(entry.queryId));
                 }
             }
 
@@ -300,14 +357,29 @@ public class MainDialogActivity extends Activity {
     public void onDestroy() {
         mDbHelper.close();
         mCursor.close();
-        // cancel async tasks
-        if(mFollowsGetter == null);
-        else if(mFollowsGetter.getStatus() != AsyncTask.Status.FINISHED)
-            mFollowsGetter.cancel(true);
-        else if(mFollowsGetter.tcocManager != null)
-            if(mFollowsGetter.tcocManager.getStatus() != AsyncTask.Status.FINISHED)
-                mFollowsGetter.tcocManager.cancel(true);
+
+        cancelAsyncTasks();
 
         super.onDestroy();
     }
-}
+
+    private void cancelAsyncTasks()
+    {
+        if(mFollowsGetter != null)
+        {
+            // still getting followed channels?
+            if(mFollowsGetter.getStatus() != AsyncTask.Status.FINISHED)
+            {
+                mFollowsGetter.cancel(true);
+            }
+            // still checking each channel?
+            else if(mFollowsGetter.tcocManager != null)
+            {
+                if(mFollowsGetter.tcocManager.getStatus() != AsyncTask.Status.FINISHED)
+                {
+                    mFollowsGetter.tcocManager.cancel(true);
+                }
+            }
+        }
+    } // cancelAsyncTasks
+} // MainDialogActivity

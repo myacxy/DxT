@@ -26,6 +26,7 @@ package net.myacxy.dxt.io;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,7 +46,7 @@ import java.lang.ref.WeakReference;
 
 
 /**
- * Network Access cannot be made on the UI / Main Thread and therefore an AsyncTask needs to be
+ * Network Access should not be made on the UI / Main Thread and therefore an AsyncTask needs to be
  * executed in order to retrieve a JSON Object via HTTP. Upon creating a JSONGetter a Progress
  * Dialog will be shown until the task has finished working in the background.
  */
@@ -136,10 +137,13 @@ public class JsonGetter extends AsyncTask<String, String, JSONObject>
         JSONObject jsonObject;
         String jsonString;
 
+        TrafficStats.setThreadStatsTag(0xF00D);
+
         Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/vnd.twitchtv.v3+json")
                 .build();
+
         try {
             Response response = client.newCall(request).execute();
             jsonString = response.body().string();

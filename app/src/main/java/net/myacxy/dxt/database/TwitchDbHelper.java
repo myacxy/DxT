@@ -450,9 +450,9 @@ public class TwitchDbHelper extends SQLiteOpenHelper
         Map<String, String> dict = new HashMap<String, String>() { {
             put("Counter-Strike: Global Offensive", "CSGO");
             put("Call of Duty: Advanced Warfare", "CoD");
-            put("Dark Souls II: Scholar of the First Sin", "DaS2");
+            put("Dark Souls II: Scholar of the First Sin", "DkS2");
             put("Diablo III: Reaper of Souls", "D3");
-            put("Final Fantasy XIV Online: A Realm Reborn", "FF14");
+            put("Final Fantasy XIV: Heavensward", "FF14");
             put("Grand Theft Auto V", "GTA5");
             put("Hearthstone: Heroes of Warcraft", "HS");
             put("League of Legends", "LoL");

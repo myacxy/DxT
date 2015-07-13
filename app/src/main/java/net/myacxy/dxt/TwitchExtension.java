@@ -41,36 +41,36 @@ import net.myacxy.dxt.io.TcocManager;
 import net.myacxy.dxt.io.TwitchUserFollowsGetter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 
 public class TwitchExtension extends DashClockExtension {
 
     // initialize shared preference keys
-    public static String PREF_USER_NAME = "pref_user_name";
-    public static String PREF_CUSTOM_VISIBILITY = "pref_custom_visibility";
-    public static String PREF_ALL_FOLLOWED_CHANNELS = "pref_all_followed_channels";
-    public static String PREF_SELECTED_FOLLOWED_CHANNELS = "pref_selected_followed_channels";
-    public static String PREF_UPDATE_INTERVAL = "pref_update_interval";
-    public static String PREF_LAST_UPDATE = "pref_last_update";
-    public static String PREF_ONLINE_COUNT = "pref_online_count";
-    public static String PREF_STATUS = "pref_status";
-    public static String PREF_EXPANDED_TITLE = "pref_expanded_title";
-    public static String PREF_EXPANDED_BODY = "pref_expanded_body";
-    public static String PREF_LONGEST_BODY = "pref_longest_body";
-    public static String PREF_DIALOG_SHOW_OFFLINE = "pref_dialog_show_offline";
-    public static String PREF_HIDE_EMPTY = "pref_hide_empty";
-    public static String PREF_CHAR_LIMIT = "pref_char_limit";
-    public static String PREF_ABBR_COUNT = "pref_abbr_count";
-    public static String PREF_GAMES_COUNT = "pref_games_count";
-    public static String PREF_MAIN_LIST_SHOW_NAME = "pref_main_list_show_name";
-    public static String PREF_MAIN_LIST_SHOW_GAME = "pref_main_list_show_game";
-    public static String PREF_MAIN_LIST_SHOW_STATUS = "pref_main_list_show_status";
-    public static String PREF_MAIN_LIST_SHOW_VIEWERS = "pref_main_list_show_viewers";
-    public static String PREF_MAIN_LIST_SHOW_FOLLOWERS = "pref_main_list_show_followers";
-    public static String PREF_MAIN_LIST_SHOW_UPDATED = "pref_main_list_show_updated";
+    public final static String PREF_USER_NAME = "pref_user_name";
+    public final static String PREF_CUSTOM_VISIBILITY = "pref_custom_visibility";
+    public final static String PREF_ALL_FOLLOWED_CHANNELS = "pref_all_followed_channels";
+    public final static String PREF_SELECTED_FOLLOWED_CHANNELS = "pref_selected_followed_channels";
+    public final static String PREF_UPDATE_INTERVAL = "pref_update_interval";
+    public final static String PREF_LAST_UPDATE = "pref_last_update";
+    public final static String PREF_ONLINE_COUNT = "pref_online_count";
+    public final static String PREF_STATUS = "pref_status";
+    public final static String PREF_EXPANDED_TITLE = "pref_expanded_title";
+    public final static String PREF_EXPANDED_BODY = "pref_expanded_body";
+    public final static String PREF_LONGEST_BODY = "pref_longest_body";
+    public final static String PREF_DIALOG_SHOW_OFFLINE = "pref_dialog_show_offline";
+    public final static String PREF_HIDE_EMPTY = "pref_hide_empty";
+    public final static String PREF_CHAR_LIMIT = "pref_char_limit";
+    public final static String PREF_ABBR_COUNT = "pref_abbr_count";
+    public final static String PREF_GAMES_COUNT = "pref_games_count";
+    public final static String PREF_MAIN_LIST_SHOW_NAME = "pref_main_list_show_name";
+    public final static String PREF_MAIN_LIST_SHOW_GAME = "pref_main_list_show_game";
+    public final static String PREF_MAIN_LIST_SHOW_STATUS = "pref_main_list_show_status";
+    public final static String PREF_MAIN_LIST_SHOW_VIEWERS = "pref_main_list_show_viewers";
+    public final static String PREF_MAIN_LIST_SHOW_FOLLOWERS = "pref_main_list_show_followers";
+    public final static String PREF_MAIN_LIST_SHOW_UPDATED = "pref_main_list_show_updated";
 
-    public static boolean DEVELOPER_MODE = true;
     private AsyncTask task;
     private static TwitchExtension mInstance;
 
@@ -114,6 +114,7 @@ public class TwitchExtension extends DashClockExtension {
         String expandedTitle = sp.getString(PREF_EXPANDED_TITLE, "Empty");
         ArrayList<String> expandedBodyList = new ArrayList<String>(
                 sp.getStringSet(PREF_EXPANDED_BODY, new HashSet<String>()));
+        Collections.sort(expandedBodyList);
         int charLimit = sp.getInt(TwitchExtension.PREF_CHAR_LIMIT, 200);
         String expandedBody = "";
         for (String string : expandedBodyList) {
