@@ -39,25 +39,33 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     @Override
     protected void onPreExecute() {
         // search for the game each channel is playing
-        for (final TwitchChannel tc : mChannels) {
-            final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext.get(), mProgressDialog);
-            mTgss.add(tgs);
-            // set result as new game
-            tgs.setAsyncTaskListener(new AsyncTaskListener() {
-                @Override
-                public void handleAsyncTaskFinished() {
-                    tc.game = tgs.result;
-                }
-            });
-            // cannot query empty string
-            if(tc.game.name.trim().equals(""))
+        for (final TwitchChannel tc : mChannels)
+        {
+            // check for queries of the same game
+            boolean isDuplicate = false;
+            for (TwitchGameSearcher tgs : mTgss)
             {
-                tc.game.name = "null";
+                if(tgs.searchQuery.equals(tc.game.name))
+                {
+                    isDuplicate = true;
+                    break;
+                }
             }
-            // start task
-            tgs.run(tc.game.name);
-        }
-    }
+            // execute game query
+            if(!isDuplicate)
+            {
+                final TwitchGameSearcher tgs = new TwitchGameSearcher(mContext.get(), mProgressDialog);
+                mTgss.add(tgs);
+                // cannot query empty string
+                if(tc.game.name.trim().equals(""))
+                {
+                    tc.game.name = "null";
+                }
+                // start task
+                tgs.run(tc.game.name);
+            }
+        } // for
+    } // onPreExecute
 
     @Override
     protected void onProgressUpdate(Integer... values) {
@@ -66,14 +74,28 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     }
 
     @Override
-    protected void onPostExecute(ArrayList<TwitchGame> games) {
+    protected void onPostExecute(ArrayList<TwitchGame> games)
+    {
+        // assign a game to each channel
+        for (TwitchGame game : games)
+        {
+            for(TwitchChannel tc : mChannels)
+            {
+                if(tc.game.name.equals(game.name))
+                {
+                    tc.game = game;
+                }
+            }
+        }
 
+        // execute callback
         if (mListener != null) mListener.handleAsyncTaskFinished();
     }
 
     @Override
     protected ArrayList<TwitchGame> doInBackground(Void... params) {
 
+        ArrayList<TwitchGame> games = new ArrayList<>();
         // loop until each task finished
         while (true) {
             for (TwitchGameSearcher tgs : mTgss) {
@@ -81,6 +103,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
                 if (tgs.getStatus() == Status.FINISHED && !finishedTgss.contains(tgs)) {
                     Log.d(tgs.toString(), String.valueOf(tgs.searchResults.size()));
                     finishedTgss.add(tgs);
+                    games.add(tgs.result);
                     // update progress
                     publishProgress(1);
                 }
@@ -94,7 +117,7 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
             else if (finishedTgss.size() == mTgss.size()) break;
         }
         Log.d("TgsManager", "doInBackground finished");
-        return null;
+        return games;
     }
 
     @Override
@@ -112,4 +135,4 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     public void setAsyncTaskListener(AsyncTaskListener asyncTaskListener) {
         mListener = asyncTaskListener;
     }
-} // TtggManager
+} // TgsManager

@@ -16,7 +16,7 @@ public class TwitchGameSearcher extends JsonGetter {
 
     public ArrayList<TwitchGame> searchResults;
     public TwitchGame result;
-    private String searchQuery;
+    protected String searchQuery;
     public TwitchGameSearcher(Context context, ProgressDialog progressDialog) {
         super(context, progressDialog);
     }
