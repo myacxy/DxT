@@ -1,7 +1,7 @@
 DashClock × Twitch
 ==================
 
-This is the repository for DashClock × Twitch, an extension for DashClock on Android. The extension enables and simplifies the monitoring of your followed Twitch channels.
+This is the repository for DashClock × Twitch (D×T), an extension for DashClock on Android. The extension enables and simplifies the monitoring of your followed Twitch channels.
 
 Features
 ========
@@ -26,6 +26,6 @@ Screenshots
 
 <img src="https://cloud.githubusercontent.com/assets/4597425/8663808/c94d12b0-29cf-11e5-872b-ab6dc27a11b5.png" title="Expanded" width="320px"/>
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/8663981/798ec0e6-29d1-11e5-868b-dcc328b2870a.png" title="Dialog" width="320px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/8664068/72ca7efc-29d2-11e5-8475-fc2cd207792a.png" title="Dialog" width="320px"/>
 
-<img src="https://cloud.githubusercontent.com/assets/4597425/8663978/6dee649e-29d1-11e5-8f40-d6799e2e6dc7.png" title="Settings" width="320px"/>
+<img src="https://cloud.githubusercontent.com/assets/4597425/8664072/7a401c6e-29d2-11e5-81bf-2003f0b9f7b6.png" title="Settings" width="320px"/>
