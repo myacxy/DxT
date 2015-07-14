@@ -2,11 +2,11 @@
 <resources>
 
     <!--General-->
-    <string name="app_name">DxT</string>
+    <string name="app_name">D×T</string>
     <string name="extension_description">Displays information about Twitch channels that you follow.</string>
     <string name="action_settings">Settings</string>
     <string name="dialog_dismiss">Dismiss</string>
-    <string name="settings_title">DxT Settings</string>
+    <string name="settings_title">D×T Settings</string>
     <string name="pref_ringtone_silent">Silent</string>
 
     <!--Extension-->

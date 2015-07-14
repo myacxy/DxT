@@ -19,7 +19,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 4
-        versionName "v0.4-" + getRevision()
+        versionName "v0.5-" + getRevision()
     }
     buildTypes {
         release {
