@@ -17,7 +17,9 @@ public class TwitchGameSearcher extends JsonGetter {
     public ArrayList<TwitchGame> searchResults;
     public TwitchGame result;
     protected String searchQuery;
-    public TwitchGameSearcher(Context context, ProgressDialog progressDialog) {
+
+    public TwitchGameSearcher(Context context, ProgressDialog progressDialog)
+    {
         super(context, progressDialog);
     }
 
@@ -67,7 +69,7 @@ public class TwitchGameSearcher extends JsonGetter {
                     // add the new game
                     TwitchGame tg = new TwitchGame(searchQuery, null);
                     tg.id = dbHelper.insertOrReplaceGameEntry(tg);
-                    result = game;
+                    result = tg;
                 }
             }
         }

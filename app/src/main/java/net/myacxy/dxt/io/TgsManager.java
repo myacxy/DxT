@@ -77,13 +77,14 @@ public class TgsManager extends AsyncTask<Void, Integer, ArrayList<TwitchGame>> 
     protected void onPostExecute(ArrayList<TwitchGame> games)
     {
         // assign a game to each channel
-        for (TwitchGame game : games)
+        for(TwitchChannel tc : mChannels)
         {
-            for(TwitchChannel tc : mChannels)
+            for (TwitchGame game : games)
             {
                 if(tc.game.name.equals(game.name))
                 {
                     tc.game = game;
+                    break;
                 }
             }
         }

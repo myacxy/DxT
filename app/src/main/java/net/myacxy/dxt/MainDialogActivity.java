@@ -167,6 +167,24 @@ public class MainDialogActivity extends Activity {
     } // showAsPopup
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // refresh view
+        String currentTabTag = mTabHost.getCurrentTabTag();
+        if(currentTabTag.equals("offline"))
+        {
+            mTabHost.setCurrentTabByTag("online");
+            mTabHost.setCurrentTabByTag("offline");
+        }
+        else
+        {
+            mTabHost.setCurrentTabByTag("offline");
+            mTabHost.setCurrentTabByTag("online");
+        }
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
