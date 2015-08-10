@@ -34,50 +34,62 @@ public class TwitchGameSearcher extends JsonGetter {
     }
 
     @Override
-    protected void onPostExecute(JSONObject jsonObject) {
+    protected void onPostExecute(JSONObject jsonObject)
+    {
         JSONArray gamesJson = null;
-        try {
-            gamesJson = jsonObject.getJSONArray("games");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(searchQuery.equals("null")) {
+
+        if(searchQuery.equals("null"))
+        {
             searchResults.add(new TwitchGame("null", null));
         }
-        else searchResults = parseJson(gamesJson);
+        else if(jsonObject != null)
+        {
+            try {
+                gamesJson = jsonObject.getJSONArray("games");
+                searchResults = parseJson(gamesJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         TwitchDbHelper dbHelper = new TwitchDbHelper(mContext.get());
 
         // could not find a game by the given name
-        if(searchResults.size() == 0) {
+        if(searchResults.size() == 0)
+        {
             // add the new game
             TwitchGame tg = new TwitchGame(searchQuery, null);
             tg.id = dbHelper.insertOrReplaceGameEntry(tg);
             result = tg;
         }
         // retrieve game in question from results
-        else {
-            for (TwitchGame game : searchResults) {
+        else
+        {
+            for (TwitchGame game : searchResults)
+            {
                 // insert game into database
                 game.id = dbHelper.insertOrReplaceGameEntry(game);
                 // exact match
-                if (game.name.equals(searchQuery)) {
+                if (game.name.equals(searchQuery))
+                {
                     result = game;
                 }
                 // no exact match found
-                else if (searchResults.indexOf(game) == searchResults.size() - 1) {
+                else if (searchResults.indexOf(game) == searchResults.size() - 1)
+                {
                     // add the new game
                     TwitchGame tg = new TwitchGame(searchQuery, null);
                     tg.id = dbHelper.insertOrReplaceGameEntry(tg);
                     result = tg;
                 }
-            }
+            } // for
         }
 
         if(mListener != null) mListener.handleAsyncTaskFinished();
-    }
+    } // onPostExecute
 
-    public void run(String searchQuery) {
+    public void run(String searchQuery)
+    {
         this.searchQuery = searchQuery;
         String url = String.format("https://api.twitch.tv/kraken/search/games?q=%s&type=suggest",
                 searchQuery);
