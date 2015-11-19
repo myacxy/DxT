@@ -79,7 +79,8 @@ public class TwitchExtension extends DashClockExtension {
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -126,7 +127,7 @@ public class TwitchExtension extends DashClockExtension {
             expandedBody += string;
             if(index < expandedBodyList.size() - 1) expandedBody += "\n";
         }
-        boolean hideEmpty = sp.getBoolean(PREF_HIDE_EMPTY, true);
+        boolean hideEmpty = sp.getBoolean(PREF_HIDE_EMPTY, false);
         boolean visible = onlineCount > 0 || !hideEmpty;
         Intent intent = new Intent(TwitchExtension.this, MainDialogActivity.class);
         // publish data

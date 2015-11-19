@@ -16,7 +16,7 @@
             android:key="pref_hide_empty"
             android:title="@string/pref_hide_empty_title"
             android:summary="@string/pref_hide_empty_summary"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
 
         <!--Interval Dialog-->
         <net.myacxy.dxt.ui.IntervalDialog

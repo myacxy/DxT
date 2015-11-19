@@ -293,7 +293,7 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
                 mSharedPreferences.edit()
                         .putInt(TwitchExtension.PREF_CHAR_LIMIT, (int) newValue)
                         .apply();
-                preference.setSummary(newValue.toString());
+                preference.setSummary(newValue.toString() + " characters");
                 return true;
             }
         });

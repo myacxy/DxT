@@ -77,7 +77,7 @@ public class TwitchUserFollowsGetter extends JsonGetter {
             jsonAllFollowedChannels = jsonObject.getJSONArray("follows");
             if (jsonAllFollowedChannels.length() == 0)
             {
-                Toast.makeText(mContext.get(), "No channels being followed.", Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext.get(), "DxT: no channels being followed.", Toast.LENGTH_LONG).show();
                 if(mProgressDialog != null) mProgressDialog.dismiss();
                 return;
             }

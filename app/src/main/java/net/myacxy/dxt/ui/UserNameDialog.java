@@ -30,12 +30,14 @@ import android.content.SharedPreferences;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 import net.myacxy.dxt.TwitchExtension;
 import net.myacxy.dxt.database.TwitchContract;
 import net.myacxy.dxt.database.TwitchDbHelper;
 import net.myacxy.dxt.io.AsyncTaskListener;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -59,6 +61,15 @@ public class UserNameDialog extends EditTextPreference
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
+
+            // remove whitespaces
+            final String userName = getEditText().getText().toString().trim();
+
+            if(userName.equals(""))
+            {
+                Toast.makeText(getContext(), "user name cannot be empty", Toast.LENGTH_LONG).show();
+                return;
+            }
             // edit preferences
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
             SharedPreferences.Editor editor = sp.edit();
@@ -76,8 +87,6 @@ public class UserNameDialog extends EditTextPreference
             dbHelper.close();
             dbHelper.updatePublishedData();
 
-            // remove whitespaces
-            final String userName = getEditText().getText().toString().trim();
             editor.putString(TwitchExtension.PREF_USER_NAME, userName).apply();
             // update channels for new user name
             TwitchExtension.getInstance().updateTwitchChannels(getContext(),
@@ -92,4 +101,4 @@ public class UserNameDialog extends EditTextPreference
         }
         super.onClick(dialog, which);
     }
-}
+} // UserNameDialog
