@@ -9,10 +9,4 @@
     </string-array>
 
     <string-array name="empty_array" />
-    <string-array name="pref_feedback_entries">
-        <item>@string/pref_user_voice_help_center</item>
-        <item>@string/pref_user_voice_feedback_forum</item>
-        <item>@string/pref_user_voice_contact_form</item>
-        <item>@string/pref_user_voice_post_idea_form</item>
-    </string-array>
 </resources>

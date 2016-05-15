@@ -10,7 +10,6 @@ Features
 * Save space by customizing which channels and what information you really want to display
 * Create custom game title abbreviations in order to save even more space (D×T helps you abbreviating the game titles by suggesting their proper names on Twitch)
 * Save battery and bandwidth by customizing the update interval
-* Leave feedback and get support via the UserVoice integration
 * No advertisements
 
 How to use

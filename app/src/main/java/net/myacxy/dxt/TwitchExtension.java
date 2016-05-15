@@ -45,8 +45,8 @@ import java.util.Collections;
 import java.util.HashSet;
 
 
-public class TwitchExtension extends DashClockExtension {
-
+public class TwitchExtension extends DashClockExtension
+{
     // initialize shared preference keys
     public final static String PREF_USER_NAME = "pref_user_name";
     public final static String PREF_CUSTOM_VISIBILITY = "pref_custom_visibility";
@@ -95,6 +95,7 @@ public class TwitchExtension extends DashClockExtension {
 
     @Override
     public void onUpdateData(int reason) {
+
         Log.d("TwitchExtension", "onUpdateData");
         // update data if it is outdated
         if(task == null || task.getStatus() == AsyncTask.Status.FINISHED) {

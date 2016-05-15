@@ -33,9 +33,6 @@ import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
-import com.uservoice.uservoicesdk.Config;
-import com.uservoice.uservoicesdk.UserVoice;
-
 import net.myacxy.dxt.database.TwitchDbHelper;
 import net.myacxy.dxt.io.AsyncTaskListener;
 import net.myacxy.dxt.io.TtggManager;
@@ -44,7 +41,6 @@ import net.myacxy.dxt.ui.CharLimiterDialog;
 import net.myacxy.dxt.ui.FollowingSelectionDialog;
 import net.myacxy.dxt.ui.IntervalDialog;
 import net.myacxy.dxt.ui.UserNameDialog;
-import net.myacxy.dxt.ui.UserVoiceDialog;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,23 +60,12 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
     protected CharLimiterDialog charLimiterPreference;
     protected CheckBoxPreference customVisibilityPreference;
     protected MultiSelectListPreference itemCustomizationPreference;
-    protected UserVoiceDialog userVoicePreference;
-
-    private Config mConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.twitch_white);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // UserVoice
-        mConfig = new Config("myacxy.uservoice.com");
-        Map<String, String> customFields = new HashMap<>();
-        customFields.put("Type", "DashClock Twitch");
-        mConfig.setCustomFields(customFields);
-        mConfig.setForumId(272219);
-        UserVoice.init(mConfig, TwitchSettingsActivity.this);
     }
 
     @Override
@@ -99,7 +84,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
         updateGameDbPreference = findPreference("pref_game_db_update");
         itemCustomizationPreference = (MultiSelectListPreference)
                 findPreference("pref_main_list_item_customization");
-        userVoicePreference = (UserVoiceDialog) findPreference("pref_user_voice");
 
         bindUserNamePreference();
         bindIntervalPreference();
@@ -174,29 +158,6 @@ public class TwitchSettingsActivity extends BaseSettingsActivity
             }
         });
 
-        userVoicePreference.setListener(new UserVoiceDialog.DialogItemClickedListener() {
-            @Override
-            public void itemClicked(int position) {
-                switch (position) {
-                    // Help Center
-                    case 0:
-                        UserVoice.launchUserVoice(TwitchSettingsActivity.this);
-                        break;
-                    // Feedback Forum
-                    case 1:
-                        UserVoice.launchForum(TwitchSettingsActivity.this);
-                        break;
-                    // Contact Form
-                    case 2:
-                        UserVoice.launchContactUs(TwitchSettingsActivity.this);
-                        break;
-                    // Post Idea Form
-                    case 3:
-                        UserVoice.launchPostIdea(TwitchSettingsActivity.this);
-                        break;
-                }
-            }
-        });
     } // onPostCreate
 
     private void bindIntervalPreference() {
