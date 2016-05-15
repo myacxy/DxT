@@ -17,6 +17,8 @@ public class AppApplication extends Application
     {
         super.onCreate();
 
+        SimpleViewModelLocator.initialize(getApplicationContext());
+
         RetroTwitch.getInstance()
                 .configure()
                 .setLogLevel(HttpLoggingInterceptor.Level.BODY)
