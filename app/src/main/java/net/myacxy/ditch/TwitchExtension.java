@@ -10,7 +10,7 @@ public class TwitchExtension extends DashClockExtension
         // publish data
         publishUpdate(new ExtensionData()
                 .visible(true)
-                .icon(R.drawable.twitch_white)
+                .icon(R.drawable.ic_glitch_white_24dp)
                 .status("Status")
                 .expandedTitle("Expanded Title")
                 .expandedBody("Expanded Body")
