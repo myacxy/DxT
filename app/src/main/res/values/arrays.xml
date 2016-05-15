@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="pref_main_list_item_entries">
-        <item>@string/main_list_item_game</item>
-        <item>@string/main_list_item_status</item>
-        <item>@string/main_list_item_viewers</item>
-        <item>@string/main_list_item_followers</item>
-        <item>@string/main_list_item_updated</item>
-    </string-array>
 
-    <string-array name="empty_array" />
 </resources>

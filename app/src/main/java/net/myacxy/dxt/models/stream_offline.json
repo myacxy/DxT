@@ -1,8 +1,0 @@
-{
-    "_links":
-    {
-        "self":"https://api.twitch.tv/kraken/streams/purgegamers",
-        "channel":"https://api.twitch.tv/kraken/channels/purgegamers"
-    },
-    "stream":null
-}

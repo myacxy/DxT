@@ -15,12 +15,13 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        applicationId "net.myacxy.dxt"
-        minSdkVersion 19
+        applicationId "net.myacxy.ditch"
+        minSdkVersion 16
         targetSdkVersion 23
-        versionCode 4
-        versionName "v0.6-" + getRevision()
+        versionCode 5
+        versionName "v0.1-" + getRevision()
     }
+
     buildTypes {
         release {
             minifyEnabled false
