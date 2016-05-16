@@ -2,6 +2,7 @@ package net.myacxy.ditch;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.orhanobut.logger.AndroidLogTool;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
@@ -29,5 +30,7 @@ public class AppApplication extends Application
             .logLevel(LogLevel.FULL)        // default LogLevel.FULL
             .methodOffset(0)                // default 0
             .logTool(new AndroidLogTool()); // custom log tool, optional
+
+        Fresco.initialize(this);
     } // onCreate
 } // AppApplication

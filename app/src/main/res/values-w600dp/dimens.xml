@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="keyline_screen_edge">24dp</dimen>
+
+</resources>

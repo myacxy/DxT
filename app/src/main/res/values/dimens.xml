@@ -1,3 +1,5 @@
 <resources>
 
+    <dimen name="keyline_screen_edge">16dp</dimen>
+
 </resources>

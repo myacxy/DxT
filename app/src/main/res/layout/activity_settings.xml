@@ -2,18 +2,106 @@
 <layout>
 
     <data>
+        <import type="net.myacxy.ditch.viewmodels.SettingsViewModel"/>
+        <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="net.myacxy.ditch.viewmodels.SettingsViewModel"
+            type="SettingsViewModel"
             />
     </data>
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         >
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <!--User Name-->
+            <RelativeLayout
+                android:id="@+id/rl_st_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="88dp">
+
+                <FrameLayout
+                    android:id="@+id/fl_st_avatar_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    >
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/sdv_st_avatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:placeholderImage="@drawable/ic_glitch_purple_24dp"
+                        />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_toLeftOf="@+id/pb_st_user_name"
+                    android:orientation="vertical"
+                    >
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/met_st_user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="User name"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        tools:text="test"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.54"
+                        android:text="Description"
+                        android:textSize="14sp"
+                        />
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb_st_user_name"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginRight="@dimen/keyline_screen_edge"
+                    android:indeterminate="true"
+                    android:visibility="@{ viewModel.loadingUserName ? View.VISIBLE : View.INVISIBLE }"
+                    />
+
+            </RelativeLayout>
+
+            <include
+                layout="@layout/include_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="72dp"
+                />
+
+        </LinearLayout>
+        
+    </android.support.v4.widget.NestedScrollView>
 
 </layout>
