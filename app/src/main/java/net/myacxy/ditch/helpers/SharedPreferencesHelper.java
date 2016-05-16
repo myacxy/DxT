@@ -54,7 +54,8 @@ public class SharedPreferencesHelper
         return new SettingsModel()
         {
             {
-                userName = getUserName(null);
+                // TODO: 16.05.2016
+//                user = getUserName(null);
                 updateInterval = getUpdateInterval(15);
                 hideEmptyExtension = getHideEmptyExtension(true);
             }

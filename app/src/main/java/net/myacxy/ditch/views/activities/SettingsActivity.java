@@ -16,6 +16,7 @@ import com.orhanobut.logger.Logger;
 import net.myacxy.ditch.R;
 import net.myacxy.ditch.SimpleViewModelLocator;
 import net.myacxy.ditch.databinding.ActivitySettingsBinding;
+import net.myacxy.retrotwitch.models.User;
 import net.myacxy.retrotwitch.utils.StringUtil;
 
 public class SettingsActivity extends AppCompatActivity
@@ -39,33 +40,35 @@ public class SettingsActivity extends AppCompatActivity
             return false;
         });
 
-        mBinding.getViewModel().userNameError.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback()
+        mBinding.getViewModel().userError.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback()
         {
             @Override
             public void onPropertyChanged(Observable observable, int i)
             {
-                mBinding.metStUserName.setError(mBinding.getViewModel().userNameError.get());
+                mBinding.metStUserName.setError(mBinding.getViewModel().userError.get());
             }
         });
 
         GenericDraweeHierarchy hierarchy = mBinding.sdvStAvatar.getHierarchy();
         hierarchy.setRoundingParams(RoundingParams.asCircle());
         mBinding.sdvStAvatar.setHierarchy(hierarchy);
-        mBinding.getViewModel().userAvatarUrl.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback()
+        mBinding.getViewModel().user.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback()
         {
             @Override
             public void onPropertyChanged(Observable observable, int i)
             {
-                String url = mBinding.getViewModel().userAvatarUrl.get();
-                Toast.makeText(SettingsActivity.this, mBinding.getViewModel().userAvatarUrl.get(), Toast.LENGTH_SHORT).show();
-                Logger.t(1).v(url != null ? url : "");
+                User user = mBinding.getViewModel().user.get();
+                if(user != null) {
+                    Toast.makeText(SettingsActivity.this, user.logo, Toast.LENGTH_SHORT).show();
+                    Logger.t(1).v(user.logo != null ? user.logo : "");
 
-                if (!StringUtil.isBlank(url))
-                {
-                    mBinding.sdvStAvatar.setImageURI(Uri.parse(url));
-                } else {
-                    mBinding.sdvStAvatar.setImageURI(Uri.EMPTY);
+                    if (!StringUtil.isBlank(user.logo))
+                    {
+                        mBinding.sdvStAvatar.setImageURI(Uri.parse(user.logo));
+                        return;
+                    }
                 }
+                mBinding.sdvStAvatar.setImageURI(Uri.EMPTY);
             }
         });
     }

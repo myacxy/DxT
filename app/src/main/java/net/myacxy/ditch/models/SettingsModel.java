@@ -1,10 +1,12 @@
 package net.myacxy.ditch.models;
 
+import net.myacxy.retrotwitch.models.User;
+
 import java.io.Serializable;
 
 public class SettingsModel implements Serializable
 {
-    public String userName;
+    public User user;
     public boolean hideEmptyExtension;
     public int updateInterval;
 }
