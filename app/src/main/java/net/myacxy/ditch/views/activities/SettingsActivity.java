@@ -5,12 +5,17 @@ import android.databinding.Observable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.orhanobut.logger.Logger;
 
 import net.myacxy.ditch.R;
@@ -50,7 +55,10 @@ public class SettingsActivity extends AppCompatActivity
         });
 
         GenericDraweeHierarchy hierarchy = mBinding.sdvStAvatar.getHierarchy();
-        hierarchy.setRoundingParams(RoundingParams.asCircle());
+        RoundingParams roundingParams = RoundingParams.asCircle()
+                .setBorderColor(ContextCompat.getColor(this, R.color.base12))
+                .setBorderWidth(getResources().getDimension(R.dimen.divider));
+        hierarchy.setRoundingParams(roundingParams);
         mBinding.sdvStAvatar.setHierarchy(hierarchy);
         mBinding.getViewModel().user.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback()
         {
@@ -64,7 +72,15 @@ public class SettingsActivity extends AppCompatActivity
 
                     if (!StringUtil.isBlank(user.logo))
                     {
-                        mBinding.sdvStAvatar.setImageURI(Uri.parse(user.logo));
+                        Uri uri = Uri.parse(user.logo);
+                        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                                .setProgressiveRenderingEnabled(true)
+                                .build();
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(request)
+                                .setOldController(mBinding.sdvStAvatar.getController())
+                                .build();
+                        mBinding.sdvStAvatar.setController(controller);
                         return;
                     }
                 }

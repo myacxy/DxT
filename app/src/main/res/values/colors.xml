@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="base12">#1f000000</color>
+    <color name="base38">#61000000</color>
+    <color name="base60">#99000000</color>
+</resources>

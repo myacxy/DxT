@@ -12,7 +12,6 @@
 
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,13 +22,106 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+            <!--General-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="@dimen/keyline_screen_edge"
+                android:layout_marginTop="@dimen/keyline_screen_edge"
+                android:fontFamily="sans-serif-medium"
+                android:text="General"
+                android:textSize="14sp"
+                />
+
+            <!--Hide empty extension-->
+            <RelativeLayout
+                android:id="@+id/rl_st_hide_extension"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="72dp"
+                >
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:alpha="0.60"
+                    android:src="@{ viewModel.hideEmptyExtension ? @drawable/ic_visibility_off_black_24dp : @drawable/ic_visibility_black_24dp }"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_toLeftOf="@+id/sw_st_hide_extension"
+                    android:orientation="vertical"
+                    >
+
+                    <!--Title-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="Hide empty extension"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        tools:text="test"
+                        />
+
+                    <!--Description-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:alpha="0.54"
+                        android:text="Hides the extension if no channels are online"
+                        android:textSize="14sp"
+                        />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/sw_st_hide_extension"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginRight="@dimen/keyline_screen_edge"
+                    android:checked="@={ viewModel.hideEmptyExtension }"
+                    />
+
+            </RelativeLayout>
+
+            <!--Divider-->
+            <include
+                layout="@layout/include_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="@dimen/keyline_screen_edge"
+                android:layout_marginTop="@dimen/keyline_screen_edge"
+                android:fontFamily="sans-serif-medium"
+                android:text="User"
+                android:textSize="14sp"
+                />
 
             <!--User Name-->
             <RelativeLayout
                 android:id="@+id/rl_st_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="88dp">
+                android:minHeight="88dp"
+                >
 
                 <FrameLayout
                     android:id="@+id/fl_st_avatar_icon"
@@ -41,9 +133,16 @@
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/sdv_st_avatar"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:placeholderImage="@drawable/ic_glitch_purple_24dp"
+                        android:layout_width="@dimen/icon_large"
+                        android:layout_height="@dimen/icon_large"
+                        android:visibility="@{ viewModel.isUserAvatarAvailable ? View.VISIBLE : View.GONE }"
+                        />
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_small"
+                        android:layout_height="@dimen/icon_small"
+                        android:src="@drawable/ic_glitch_purple_24dp"
+                        android:visibility="@{ viewModel.isUserAvatarAvailable ? View.GONE : View.VISIBLE }"
                         />
 
                 </FrameLayout>
@@ -73,7 +172,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.54"
-                        android:text="Description"
+                        android:text="The name of your Twitch user account"
                         android:textSize="14sp"
                         />
 
@@ -92,13 +191,6 @@
                     />
 
             </RelativeLayout>
-
-            <include
-                layout="@layout/include_divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="72dp"
-                />
 
         </LinearLayout>
         
