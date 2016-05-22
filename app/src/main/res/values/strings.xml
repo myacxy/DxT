@@ -2,5 +2,7 @@
 <resources>
 
     <string name="app_name">Ditch</string>
+    <string name="title_channel_selection">Custom channel selection</string>
+    <string name="description_channel_selection">Select which of your followed channels you actually want to be displayed</string>
 
 </resources>

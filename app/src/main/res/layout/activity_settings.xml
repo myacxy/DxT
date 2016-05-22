@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
         <import type="net.myacxy.ditch.viewmodels.SettingsViewModel"/>
@@ -11,8 +15,6 @@
     </data>
 
     <android.support.v4.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -22,11 +24,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+
             <!--General-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="@dimen/keyline_screen_edge"
                 android:layout_marginTop="@dimen/keyline_screen_edge"
                 android:fontFamily="sans-serif-medium"
@@ -39,7 +41,10 @@
                 android:id="@+id/rl_st_hide_extension"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
                 android:minHeight="72dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="16dp"
                 >
 
                 <ImageView
@@ -68,7 +73,6 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textSize="16sp"
-                        tools:text="test"
                         />
 
                     <!--Description-->
@@ -101,13 +105,12 @@
                 layout="@layout/include_divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="8dp"
                 />
 
+            <!--User-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="@dimen/keyline_screen_edge"
                 android:layout_marginTop="@dimen/keyline_screen_edge"
                 android:fontFamily="sans-serif-medium"
@@ -120,7 +123,10 @@
                 android:id="@+id/rl_st_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
                 android:minHeight="88dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="16dp"
                 >
 
                 <FrameLayout
@@ -156,6 +162,7 @@
                     android:orientation="vertical"
                     >
 
+                    <!--User name-->
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/met_st_user_name"
                         android:layout_width="match_parent"
@@ -165,9 +172,9 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textSize="16sp"
-                        tools:text="test"
                         />
 
+                    <!--Description-->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -188,6 +195,77 @@
                     android:layout_marginRight="@dimen/keyline_screen_edge"
                     android:indeterminate="true"
                     android:visibility="@{ viewModel.loadingUser ? View.VISIBLE : View.INVISIBLE }"
+                    />
+
+            </RelativeLayout>
+
+            <!--Channel selection-->
+            <RelativeLayout
+                android:id="@+id/rl_st_channel_selection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="@{ viewModel.user != null ? 1f : 0.38f }"
+                android:background="?selectableItemBackground"
+                android:minHeight="88dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="16dp"
+                app:enabled="@{ viewModel.user != null ? true : false }"
+                >
+
+                <ImageView
+                    android:layout_width="@dimen/icon_small"
+                    android:layout_height="@dimen/icon_small"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:alpha="0.60"
+                    android:src="@drawable/ic_videocam_black_24dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:layout_toLeftOf="@+id/tv_st_selected_channels"
+                    android:orientation="vertical"
+                    >
+
+                    <!--Channel selection-->
+                    <TextView
+                        android:id="@+id/tv_st_channel_selection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_channel_selection"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        />
+
+                    <!--Description-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:alpha="0.54"
+                        android:text="@string/description_channel_selection"
+                        android:textSize="14sp"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_st_selected_channels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginRight="@dimen/keyline_screen_edge"
+                    android:alpha="0.54"
+                    android:text="@{ viewModel.selectedChannelsText }"
+                    android:textSize="12sp"
+                    android:visibility="@{ viewModel.user != null ? View.VISIBLE : View.INVISIBLE }"
+                    tools:text="0\u2009/\u200916"
                     />
 
             </RelativeLayout>
