@@ -73,13 +73,14 @@ dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies;
 
     compile dependencies.appCompat
-//    compile dependencies.design
-//    compile dependencies.recyclerView
+    compile dependencies.design
+    compile dependencies.recyclerView
     compile dependencies.materialEditText
     compile dependencies.logger
     compile(dependencies.rxAndroid) {
         exclude module: 'rxjava'
     }
+//    compile dependencies.rxBindingRecyclerView
 
     compile dependencies.dashclock
     compile 'com.facebook.fresco:fresco:0.10.0'

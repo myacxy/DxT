@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="userFollow"
+            type="net.myacxy.retrotwitch.models.UserFollow"
+            />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_ch_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:minHeight="72dp"
+        >
+
+        <FrameLayout
+            android:id="@+id/fl_ch_avatar_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/keyline_screen_edge"
+            >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sdv_ch_avatar"
+                android:layout_width="@dimen/icon_large"
+                android:layout_height="@dimen/icon_large"
+                android:visibility="@{ userFollow.channel.logo != null ? View.VISIBLE : View.GONE, default=gone }"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/icon_small"
+                android:layout_height="@dimen/icon_small"
+                android:src="@drawable/ic_glitch_purple_24dp"
+                android:visibility="@{ userFollow.channel.logo != null ? View.GONE : View.VISIBLE }"
+                />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="72dp"
+            android:layout_toLeftOf="@+id/accb_ch_selected"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:paddingTop="16dp"
+            >
+
+            <!--Display name-->
+            <TextView
+                android:id="@+id/tv_ch_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{ userFollow.channel.displayName }"
+                android:textColor="@color/base87"
+                android:textSize="16sp"
+                tools:text="nl_kripp"
+                />
+
+            <!--Game-->
+            <TextView
+                android:id="@+id/tv_ch_game"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{ userFollow.channel.game }"
+                android:textColor="@color/base54"
+                android:textSize="14sp"
+                tools:text="Hearthstone: Heroes of Warcraft"
+                />
+
+        </LinearLayout>
+        
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/accb_ch_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/keyline_screen_edge"
+            android:layout_marginRight="@dimen/keyline_screen_edge"
+            />
+
+    </RelativeLayout>
+
+</layout>
