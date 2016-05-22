@@ -87,5 +87,11 @@ public class SettingsActivity extends AppCompatActivity
                 mBinding.sdvStAvatar.setImageURI(Uri.EMPTY);
             }
         });
+
+        mBinding.rlStHideExtension.setOnClickListener(v -> mBinding.swStHideExtension.performClick());
+        mBinding.rlStUserName.setOnClickListener(v -> mBinding.metStUserName.requestFocus());
+        mBinding.rlStChannelSelection.setOnClickListener(v -> Toast.makeText(SettingsActivity.this,
+                "custom channel selection",
+                Toast.LENGTH_SHORT).show());
     }
 } // SettingsActivity

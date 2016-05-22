@@ -206,6 +206,7 @@
                 android:layout_height="wrap_content"
                 android:alpha="@{ viewModel.user != null ? 1f : 0.38f }"
                 android:background="?selectableItemBackground"
+                android:clickable="@{ viewModel.user != null ? true : false }"
                 android:minHeight="88dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="16dp"
