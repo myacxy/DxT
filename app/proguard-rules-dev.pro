@@ -136,3 +136,9 @@
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
+
+# Crashlytics
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep class com.crashlytics.** { *; }
+-keep class com.crashlytics.android.**

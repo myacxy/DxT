@@ -1,4 +1,4 @@
-package net.myacxy.ditch.helpers;
+package net.myacxy.palpi.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 
-import net.myacxy.ditch.models.SettingsModel;
+import net.myacxy.palpi.models.SettingsModel;
 
 public class SharedPreferencesHelper
 {
@@ -21,32 +21,32 @@ public class SharedPreferencesHelper
 
     public String getUserName(@Nullable String defValue)
     {
-        return mSharedPreferences.getString(Settings.STRING_USER_NAME.getKey(), defValue);
+        return mSharedPreferences.getString(Setting.STRING_USER_NAME.getKey(), defValue);
     }
 
     public void setUserName(String userName)
     {
-        mSharedPreferences.edit().putString(Settings.STRING_USER_NAME.getKey(), userName).apply();
+        mSharedPreferences.edit().putString(Setting.STRING_USER_NAME.getKey(), userName).apply();
     }
 
     public int getUpdateInterval(int defValue)
     {
-        return mSharedPreferences.getInt(Settings.INT_UPDATE_INTERVAL.getKey(), defValue);
+        return mSharedPreferences.getInt(Setting.INT_UPDATE_INTERVAL.getKey(), defValue);
     }
 
     public void setUpdateInterval(@IntRange(from = 15) int updateInterval)
     {
-        mSharedPreferences.edit().putInt(Settings.INT_UPDATE_INTERVAL.getKey(), updateInterval).apply();
+        mSharedPreferences.edit().putInt(Setting.INT_UPDATE_INTERVAL.getKey(), updateInterval).apply();
     }
 
     public boolean getHideEmptyExtension(boolean defValue)
     {
-        return mSharedPreferences.getBoolean(Settings.BOOL_CUSTOM_VISIBILITY.getKey(), defValue);
+        return mSharedPreferences.getBoolean(Setting.BOOL_CUSTOM_VISIBILITY.getKey(), defValue);
     }
 
     public void setHideEmptyExtension(boolean hideEmptyExtension)
     {
-        mSharedPreferences.edit().putBoolean(Settings.BOOL_CUSTOM_VISIBILITY.getKey(), hideEmptyExtension).apply();
+        mSharedPreferences.edit().putBoolean(Setting.BOOL_CUSTOM_VISIBILITY.getKey(), hideEmptyExtension).apply();
     }
 
     public SettingsModel getSettings()
@@ -62,7 +62,7 @@ public class SharedPreferencesHelper
         };
     }
 
-    enum Settings implements SharedPreferencesKey
+    enum Setting implements SharedPreferencesKey
     {
         BOOL_CUSTOM_VISIBILITY("pref.custom.visibility"),
         INT_UPDATE_INTERVAL("pref.update.interval"),
@@ -70,7 +70,7 @@ public class SharedPreferencesHelper
 
         private final String mKey;
 
-        Settings(String key)
+        Setting(String key)
         {
             mKey = key;
         }

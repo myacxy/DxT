@@ -1,4 +1,4 @@
-package net.myacxy.ditch.views.fragments;
+package net.myacxy.palpi.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.myacxy.ditch.SimpleViewModelLocator;
-import net.myacxy.ditch.databinding.FragmentChannelSelectionBinding;
-import net.myacxy.ditch.viewmodels.ChannelSelectionViewModel;
+import net.myacxy.palpi.SimpleViewModelLocator;
+import net.myacxy.palpi.databinding.FragmentChannelSelectionBinding;
+import net.myacxy.palpi.viewmodels.ChannelSelectionViewModel;
 import net.myacxy.retrotwitch.models.User;
 
 public class ChannelSelectionFragment extends Fragment

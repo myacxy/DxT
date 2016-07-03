@@ -1,4 +1,4 @@
-package net.myacxy.ditch.views.adapters;
+package net.myacxy.palpi.views.adapters;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
@@ -12,7 +12,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import net.myacxy.ditch.databinding.ItemSimpleChannelBinding;
+import net.myacxy.palpi.databinding.ItemSimpleChannelBinding;
 import net.myacxy.retrotwitch.models.UserFollow;
 import net.myacxy.retrotwitch.utils.StringUtil;
 

@@ -1,4 +1,4 @@
-package net.myacxy.ditch;
+package net.myacxy.palpi;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;

@@ -1,4 +1,4 @@
-package net.myacxy.ditch.models;
+package net.myacxy.palpi.models;
 
 import net.myacxy.retrotwitch.models.User;
 

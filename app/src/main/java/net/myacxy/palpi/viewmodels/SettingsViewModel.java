@@ -1,4 +1,4 @@
-package net.myacxy.ditch.viewmodels;
+package net.myacxy.palpi.viewmodels;
 
 import android.databinding.BindingAdapter;
 import android.databinding.ObservableBoolean;
@@ -7,7 +7,7 @@ import android.databinding.ObservableInt;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.myacxy.ditch.models.SettingsModel;
+import net.myacxy.palpi.models.SettingsModel;
 import net.myacxy.retrotwitch.RxCaller;
 import net.myacxy.retrotwitch.helpers.RxErrorFactory;
 import net.myacxy.retrotwitch.models.Error;

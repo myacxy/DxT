@@ -1,12 +1,12 @@
-package net.myacxy.ditch;
+package net.myacxy.palpi;
 
 import android.content.Context;
 
-import net.myacxy.ditch.helpers.SharedPreferencesHelper;
-import net.myacxy.ditch.models.SettingsModel;
-import net.myacxy.ditch.viewmodels.ChannelSelectionViewModel;
-import net.myacxy.ditch.viewmodels.MainViewModel;
-import net.myacxy.ditch.viewmodels.SettingsViewModel;
+import net.myacxy.palpi.helpers.SharedPreferencesHelper;
+import net.myacxy.palpi.models.SettingsModel;
+import net.myacxy.palpi.viewmodels.ChannelSelectionViewModel;
+import net.myacxy.palpi.viewmodels.MainViewModel;
+import net.myacxy.palpi.viewmodels.SettingsViewModel;
 
 import java.util.HashMap;
 import java.util.Map;

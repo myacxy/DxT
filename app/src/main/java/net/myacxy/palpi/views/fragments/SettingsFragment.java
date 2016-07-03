@@ -1,4 +1,4 @@
-package net.myacxy.ditch.views.fragments;
+package net.myacxy.palpi.views.fragments;
 
 import android.databinding.Observable;
 import android.net.Uri;
@@ -20,9 +20,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.orhanobut.logger.Logger;
 
-import net.myacxy.ditch.R;
-import net.myacxy.ditch.SimpleViewModelLocator;
-import net.myacxy.ditch.databinding.FragmentSettingsBinding;
+import net.myacxy.palpi.R;
+import net.myacxy.palpi.SimpleViewModelLocator;
+import net.myacxy.palpi.databinding.FragmentSettingsBinding;
 import net.myacxy.retrotwitch.models.User;
 import net.myacxy.retrotwitch.utils.StringUtil;
 

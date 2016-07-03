@@ -1,4 +1,4 @@
-package net.myacxy.ditch.views.activities;
+package net.myacxy.palpi.views.activities;
 
 import android.support.v7.app.AppCompatActivity;
 

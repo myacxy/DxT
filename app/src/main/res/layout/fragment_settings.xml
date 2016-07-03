@@ -6,7 +6,8 @@
     >
 
     <data>
-        <import type="net.myacxy.ditch.viewmodels.SettingsViewModel"/>
+
+        <import type="net.myacxy.palpi.viewmodels.SettingsViewModel"/>
         <import type="android.view.View" />
         <variable
             name="viewModel"
