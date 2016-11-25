@@ -17,11 +17,11 @@ import net.myacxy.retrotwitch.utils.StringUtil;
 
 import java.util.Locale;
 
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SettingsViewModel
 {
@@ -32,21 +32,38 @@ public class SettingsViewModel
     public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
     public ObservableBoolean hideEmptyExtension = new ObservableBoolean();
     public ObservableInt updateInterval = new ObservableInt();
-    private Subscription userSubscription;
-    private Subscription userFollowsSubscription;
-    private CompositeSubscription mSubscriptions = new CompositeSubscription();
+    private Disposable userSubscription;
+    private Disposable userFollowsSubscription;
+    private CompositeDisposable mSubscriptions = new CompositeDisposable();
     private final Observer<User> mUserObserver = new Observer<User>()
     {
         @Override
-        public void onCompleted()
+        public void onSubscribe(Disposable disposable)
+        {
+            mSubscriptions.add(disposable);
+        }
+
+        @Override
+        public void onNext(User user)
+        {
+            SettingsViewModel.this.user.set(user);
+            if (user != null)
+            {
+                isUserAvatarAvailable.set(!StringUtil.isBlank(user.logo));
+            }
+        }
+
+        @Override
+        public void onComplete()
         {
             User user = SettingsViewModel.this.user.get();
             if (user != null && !StringUtil.isBlank(user.name))
             {
-                mSubscriptions.add(userFollowsSubscription = RxCaller.getInstance().getUserFollows(user.name, null, null, null, null)
+
+                RxCaller.getInstance().getUserFollows(user.name, null, null, null, null)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(mUserFollowsObserver));
+                        .subscribe(mUserFollowsObserver);
             } else
             {
                 loadingUser.set(false);
@@ -68,26 +85,22 @@ public class SettingsViewModel
             mSubscriptions.remove(userSubscription);
             userSubscription = null;
         }
-
-        @Override
-        public void onNext(User user)
-        {
-            SettingsViewModel.this.user.set(user);
-            if (user != null)
-            {
-                isUserAvatarAvailable.set(!StringUtil.isBlank(user.logo));
-            }
-        }
     };
     private UserFollowsContainer mUserFollowsContainer;
     private final Observer<UserFollowsContainer> mUserFollowsObserver = new Observer<UserFollowsContainer>()
     {
         @Override
-        public void onCompleted()
+        public void onSubscribe(Disposable disposable)
+        {
+            mSubscriptions.add(disposable);
+        }
+
+        @Override
+        public void onComplete()
         {
             loadingUser.set(false);
 
-            mSubscriptions.remove(userFollowsSubscription);
+            mSubscriptions.delete(userFollowsSubscription);
             userFollowsSubscription = null;
 
             updateSelectedChannelsText();
@@ -158,11 +171,11 @@ public class SettingsViewModel
 
             loadingUser.set(true);
 
-            mSubscriptions.add(userSubscription = RxCaller.getInstance()
+            RxCaller.getInstance()
                     .getUser(userName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(mUserObserver));
+                    .subscribe(mUserObserver);
         } else
         {
             user.set(null);
@@ -187,13 +200,13 @@ public class SettingsViewModel
     {
         if (userSubscription != null)
         {
-            userSubscription.unsubscribe();
+            userSubscription.dispose();
             mSubscriptions.remove(userSubscription);
             userSubscription = null;
         }
         if (userFollowsSubscription != null)
         {
-            userFollowsSubscription.unsubscribe();
+            userFollowsSubscription.dispose();
             mSubscriptions.remove(userFollowsSubscription);
             userFollowsSubscription = null;
         }
