@@ -1,12 +1,12 @@
-package net.myacxy.palpi;
+package net.myacxy.squinch;
 
 import android.content.Context;
 
-import net.myacxy.palpi.helpers.SharedPreferencesHelper;
-import net.myacxy.palpi.models.SettingsModel;
-import net.myacxy.palpi.viewmodels.ChannelSelectionViewModel;
-import net.myacxy.palpi.viewmodels.MainViewModel;
-import net.myacxy.palpi.viewmodels.SettingsViewModel;
+import net.myacxy.squinch.helpers.SharedPreferencesHelper;
+import net.myacxy.squinch.models.SettingsModel;
+import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
+import net.myacxy.squinch.viewmodels.MainViewModel;
+import net.myacxy.squinch.viewmodels.SettingsViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,19 +14,6 @@ import java.util.Map;
 public class SimpleViewModelLocator
 {
     private static SimpleViewModelLocator INSTANCE;
-    private final MainViewModel mMainViewModel;
-    private final SettingsViewModel mSettingsViewModel;
-    private final Map<String, ChannelSelectionViewModel> mChannelSelectionViewModels;
-
-    public SimpleViewModelLocator(Context context)
-    {
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(context);
-        SettingsModel settings = sharedPreferencesHelper.getSettings();
-
-        mMainViewModel = new MainViewModel();
-        mSettingsViewModel = new SettingsViewModel(settings);
-        mChannelSelectionViewModels = new HashMap<>();
-    }
 
     public static SimpleViewModelLocator getInstance()
     {
@@ -40,6 +27,20 @@ public class SimpleViewModelLocator
     public static void initialize(Context applicationContext)
     {
         INSTANCE = new SimpleViewModelLocator(applicationContext);
+    }
+
+    private final MainViewModel mMainViewModel;
+    private final SettingsViewModel mSettingsViewModel;
+    private final Map<String, ChannelSelectionViewModel> mChannelSelectionViewModels;
+
+    private SimpleViewModelLocator(Context context)
+    {
+        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(context);
+        SettingsModel settings = sharedPreferencesHelper.getSettings();
+
+        mMainViewModel = new MainViewModel();
+        mSettingsViewModel = new SettingsViewModel(settings);
+        mChannelSelectionViewModels = new HashMap<>();
     }
 
     public MainViewModel getMainViewModel()

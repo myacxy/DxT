@@ -1,12 +1,12 @@
-package net.myacxy.palpi.views.activities;
+package net.myacxy.squinch.views.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import net.myacxy.palpi.R;
-import net.myacxy.palpi.views.fragments.SettingsFragment;
+import net.myacxy.squinch.R;
+import net.myacxy.squinch.views.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity
 {

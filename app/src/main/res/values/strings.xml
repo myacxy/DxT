@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Squinch</string>
 
-    <string name="app_name" translatable="false">Palpi</string>
-    <string name="title_channel_selection">Custom channel selection</string>
-    <string name="description_channel_selection">Select which of your followed channels you actually want to be displayed</string>
+    <string name="title_settings_general">General</string>
+    <string name="title_settings_hide_extension">Hide empty extension</string>
+    <string name="descr_settings_hide_extension">Hides the extension if no channels are online</string>
+
+    <string name="title_settings_user">User</string>
+    <string name="hint_settings_user_name">User name</string>
+    <string name="descr_settings_user_name">The name of your Twitch user account</string>
+    <string name="title_settings_channel_selection">Custom channel selection</string>
+    <string name="desc_settings_channel_selection">Select which of your followed channels you actually want to be displayed</string>
+    <string name="title_settings">Settings</string>
+
 </resources>

@@ -35,7 +35,7 @@ repositories {
 project.ext {
     buildCode = 5
     buildName = "v0.1.0"
-    signingConfig = "..\\..\\..\\.signing\\palpi.properties"
+    signingConfig = "..\\..\\..\\.signing\\squinch.properties"
 }
 
 android {
@@ -79,13 +79,13 @@ android {
 
     productFlavors {
         prod {
-            applicationId "net.myacxy.palpi"
+            applicationId "net.myacxy.squinch"
             versionName = project.ext.buildName
             signingConfig signingConfigs.release
         }
 
         dev {
-            applicationId "net.myacxy.palpi.dev"
+            applicationId "net.myacxy.squinch.dev"
             versionName = project.ext.buildName + "-" + getRevision()
         }
     }

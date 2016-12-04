@@ -1,12 +1,14 @@
-package net.myacxy.palpi.helpers;
+package net.myacxy.squinch.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
+import android.support.v4.content.SharedPreferencesCompat;
 
-import net.myacxy.palpi.models.SettingsModel;
+import net.myacxy.retrotwitch.models.User;
+import net.myacxy.squinch.models.SettingsModel;
 
 public class SharedPreferencesHelper
 {
@@ -19,14 +21,19 @@ public class SharedPreferencesHelper
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
-    public String getUserName(@Nullable String defValue)
+    public User getUser(@Nullable User defValue)
     {
-        return mSharedPreferences.getString(Setting.STRING_USER_NAME.getKey(), defValue);
+        String user = mSharedPreferences.getString(Setting.STRING_USER_NAME.getKey(), null);
+        if (user == null)
+        {
+            return defValue;
+        }
+        return null;
     }
 
-    public void setUserName(String userName)
+    public void setUser(User user)
     {
-        mSharedPreferences.edit().putString(Setting.STRING_USER_NAME.getKey(), userName).apply();
+        mSharedPreferences.edit().putString(Setting.STRING_USER_NAME.getKey(), user.toString()).apply();
     }
 
     public int getUpdateInterval(int defValue)
@@ -55,9 +62,9 @@ public class SharedPreferencesHelper
         {
             {
                 // TODO: 16.05.2016
-//                user = getUserName(null);
-                updateInterval = getUpdateInterval(15);
-                hideEmptyExtension = getHideEmptyExtension(true);
+                user.set(getUser(null));
+                updateInterval.set(getUpdateInterval(15));
+                hideEmptyExtension.set(getHideEmptyExtension(true));
             }
         };
     }

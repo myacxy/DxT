@@ -7,7 +7,7 @@
 
     <data>
 
-        <import type="net.myacxy.palpi.viewmodels.ChannelSelectionViewModel"/>
+        <import type="net.myacxy.squinch.viewmodels.ChannelSelectionViewModel"/>
         <import type="android.view.View" />
         <variable
             name="viewModel"

@@ -1,10 +1,10 @@
-package net.myacxy.palpi.viewmodels;
+package net.myacxy.squinch.viewmodels;
 
 import android.databinding.ObservableArrayList;
 
 import com.orhanobut.logger.Logger;
 
-import net.myacxy.palpi.views.adapters.SelectableUserFollowsAdapter;
+import net.myacxy.squinch.views.adapters.SelectableUserFollowsAdapter;
 import net.myacxy.retrotwitch.RxCaller;
 import net.myacxy.retrotwitch.api.Direction;
 import net.myacxy.retrotwitch.api.SortBy;

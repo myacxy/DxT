@@ -1,4 +1,4 @@
-package net.myacxy.palpi.views.fragments;
+package net.myacxy.squinch.views.fragments;
 
 import android.databinding.Observable;
 import android.net.Uri;
@@ -20,9 +20,9 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.orhanobut.logger.Logger;
 
-import net.myacxy.palpi.R;
-import net.myacxy.palpi.SimpleViewModelLocator;
-import net.myacxy.palpi.databinding.FragmentSettingsBinding;
+import net.myacxy.squinch.R;
+import net.myacxy.squinch.SimpleViewModelLocator;
+import net.myacxy.squinch.databinding.FragmentSettingsBinding;
 import net.myacxy.retrotwitch.models.User;
 import net.myacxy.retrotwitch.utils.StringUtil;
 
@@ -37,9 +37,9 @@ public class SettingsFragment extends Fragment
         @Override
         public void onPropertyChanged(Observable observable, int i)
         {
-            if(observable == mBinding.getViewModel().user) {
+            if(observable == mBinding.getViewModel().settings.user) {
                 Logger.t(1).d(String.valueOf(isAdded()));
-                User user = mBinding.getViewModel().user.get();
+                User user = mBinding.getViewModel().settings.user.get();
                 if (user != null)
                 {
                     Toast.makeText(getContext(), user.logo, Toast.LENGTH_SHORT).show();
@@ -103,7 +103,7 @@ public class SettingsFragment extends Fragment
                 .setBorderWidth(getResources().getDimension(R.dimen.divider));
         hierarchy.setRoundingParams(roundingParams);
         mBinding.sdvStAvatar.setHierarchy(hierarchy);
-        mBinding.getViewModel().user.addOnPropertyChangedCallback(mCallback);
+        mBinding.getViewModel().settings.user.addOnPropertyChangedCallback(mCallback);
 
         mBinding.rlStHideExtension.setOnClickListener(v -> mBinding.swStHideExtension.performClick());
         mBinding.rlStUserName.setOnClickListener(v -> mBinding.metStUserName.requestFocus());
@@ -123,7 +123,7 @@ public class SettingsFragment extends Fragment
     @Override
     public void onDestroy()
     {
-        mBinding.getViewModel().user.removeOnPropertyChangedCallback(mCallback);
+        mBinding.getViewModel().settings.user.removeOnPropertyChangedCallback(mCallback);
         mBinding.getViewModel().userError.removeOnPropertyChangedCallback(mCallback);
         mBinding.unbind();
         super.onDestroy();

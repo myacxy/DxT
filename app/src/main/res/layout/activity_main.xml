@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="net.myacxy.palpi.viewmodels.MainViewModel"
+            type="net.myacxy.squinch.viewmodels.MainViewModel"
             />
     </data>
 

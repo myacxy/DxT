@@ -1,18 +1,20 @@
-package net.myacxy.palpi.views.adapters;
+package net.myacxy.squinch.views.adapters;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import net.myacxy.palpi.databinding.ItemSimpleChannelBinding;
+import net.myacxy.squinch.databinding.ItemSimpleChannelBinding;
 import net.myacxy.retrotwitch.models.UserFollow;
 import net.myacxy.retrotwitch.utils.StringUtil;
 
@@ -103,6 +105,11 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
                         .setOldController(mBinding.sdvChAvatar.getController())
                         .build();
                 mBinding.sdvChAvatar.setController(controller);
+                mBinding.sdvChAvatar.getHierarchy()
+                        .setRoundingParams(
+                                RoundingParams.asCircle()
+                                        .setBorder(Color.parseColor("#ffffff"), 1.0f)
+                        );
             } else
             {
                 mBinding.sdvChAvatar.setImageURI(Uri.EMPTY);

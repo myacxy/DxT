@@ -1,4 +1,4 @@
-package net.myacxy.palpi.views.fragments;
+package net.myacxy.squinch.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.myacxy.palpi.SimpleViewModelLocator;
-import net.myacxy.palpi.databinding.FragmentChannelSelectionBinding;
-import net.myacxy.palpi.viewmodels.ChannelSelectionViewModel;
+import net.myacxy.squinch.SimpleViewModelLocator;
+import net.myacxy.squinch.databinding.FragmentChannelSelectionBinding;
+import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
 import net.myacxy.retrotwitch.models.User;
 
 public class ChannelSelectionFragment extends Fragment
@@ -37,7 +37,7 @@ public class ChannelSelectionFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        User user = SimpleViewModelLocator.getInstance().getSettingsViewModel().user.get();
+        User user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.user.get();
         ChannelSelectionViewModel viewModel = SimpleViewModelLocator.getInstance().getChannelSelectionViewModel(user.name);
         mBinding.setViewModel(viewModel);
         mBinding.rvCsChannels.setAdapter(viewModel.getAdapter());

@@ -1,4 +1,4 @@
-package net.myacxy.palpi.viewmodels;
+package net.myacxy.squinch.viewmodels;
 
 import android.databinding.BindingAdapter;
 import android.databinding.ObservableBoolean;
@@ -7,7 +7,7 @@ import android.databinding.ObservableInt;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.myacxy.palpi.models.SettingsModel;
+import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.retrotwitch.RxCaller;
 import net.myacxy.retrotwitch.helpers.RxErrorFactory;
 import net.myacxy.retrotwitch.models.Error;
@@ -25,13 +25,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SettingsViewModel
 {
-    public ObservableField<User> user = new ObservableField<>();
+    public SettingsModel settings;
+
     public ObservableBoolean loadingUser = new ObservableBoolean();
     public ObservableBoolean isUserAvatarAvailable = new ObservableBoolean();
+
     public ObservableField<String> userError = new ObservableField<>();
     public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
-    public ObservableBoolean hideEmptyExtension = new ObservableBoolean();
-    public ObservableInt updateInterval = new ObservableInt();
+
     private Disposable userSubscription;
     private Disposable userFollowsSubscription;
     private CompositeDisposable mSubscriptions = new CompositeDisposable();
@@ -40,13 +41,14 @@ public class SettingsViewModel
         @Override
         public void onSubscribe(Disposable disposable)
         {
+            userSubscription = disposable;
             mSubscriptions.add(disposable);
         }
 
         @Override
         public void onNext(User user)
         {
-            SettingsViewModel.this.user.set(user);
+            settings.user.set(user);
             if (user != null)
             {
                 isUserAvatarAvailable.set(!StringUtil.isBlank(user.logo));
@@ -56,11 +58,11 @@ public class SettingsViewModel
         @Override
         public void onComplete()
         {
-            User user = SettingsViewModel.this.user.get();
+            User user = settings.user.get();
             if (user != null && !StringUtil.isBlank(user.name))
             {
-
-                RxCaller.getInstance().getUserFollows(user.name, null, null, null, null)
+                RxCaller.getInstance()
+                        .getUserFollows(user.name, null, null, null, null)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(mUserFollowsObserver);
@@ -76,7 +78,7 @@ public class SettingsViewModel
         @Override
         public void onError(Throwable t)
         {
-            user.set(null);
+            settings.user.set(null);
             loadingUser.set(false);
             isUserAvatarAvailable.set(false);
             Error error = RxErrorFactory.fromThrowable(t);
@@ -92,6 +94,7 @@ public class SettingsViewModel
         @Override
         public void onSubscribe(Disposable disposable)
         {
+            userFollowsSubscription = disposable;
             mSubscriptions.add(disposable);
         }
 
@@ -128,9 +131,7 @@ public class SettingsViewModel
 
     public SettingsViewModel(SettingsModel settings)
     {
-        user.set(settings.user);
-        hideEmptyExtension.set(settings.hideEmptyExtension);
-        updateInterval.set(settings.updateInterval);
+        this.settings = settings;
     }
 
     @BindingAdapter("android:layout_width")
@@ -178,7 +179,7 @@ public class SettingsViewModel
                     .subscribe(mUserObserver);
         } else
         {
-            user.set(null);
+            settings.user.set(null);
             isUserAvatarAvailable.set(false);
             userError.set("user name must not be empty");
         }
@@ -211,7 +212,7 @@ public class SettingsViewModel
             userFollowsSubscription = null;
         }
 
-        user.set(null);
+        settings.user.set(null);
         isUserAvatarAvailable.set(false);
         userError.set(null);
     }

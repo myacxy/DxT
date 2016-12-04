@@ -1,7 +1,11 @@
-package net.myacxy.palpi;
+package net.myacxy.squinch;
+
+import android.content.Intent;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
+
+import net.myacxy.squinch.views.activities.SettingsActivity;
 
 public class TwitchExtension extends DashClockExtension
 {
@@ -14,7 +18,7 @@ public class TwitchExtension extends DashClockExtension
                 .status("Status")
                 .expandedTitle("Expanded Title")
                 .expandedBody("Expanded Body")
-                .clickIntent(null));
+                .clickIntent(new Intent(this, SettingsActivity.class)));
     } // onUpdateData
 
 } // TwitchExtension
