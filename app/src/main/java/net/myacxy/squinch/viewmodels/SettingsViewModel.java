@@ -28,8 +28,8 @@ public class SettingsViewModel
     public SettingsModel settings;
 
     public ObservableBoolean loadingUser = new ObservableBoolean();
-    public ObservableBoolean isUserAvatarAvailable = new ObservableBoolean();
 
+    public ObservableField<String> userLogo = new ObservableField<>();
     public ObservableField<String> userError = new ObservableField<>();
     public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
 
@@ -51,7 +51,7 @@ public class SettingsViewModel
             settings.user.set(user);
             if (user != null)
             {
-                isUserAvatarAvailable.set(!StringUtil.isBlank(user.logo));
+                userLogo.set(user.logo);
             }
         }
 
@@ -80,7 +80,7 @@ public class SettingsViewModel
         {
             settings.user.set(null);
             loadingUser.set(false);
-            isUserAvatarAvailable.set(false);
+            userLogo.set(null);
             Error error = RxErrorFactory.fromThrowable(t);
             userError.set(error.message);
 
@@ -180,7 +180,7 @@ public class SettingsViewModel
         } else
         {
             settings.user.set(null);
-            isUserAvatarAvailable.set(false);
+            userLogo.set(null);
             userError.set("user name must not be empty");
         }
     }
@@ -213,7 +213,7 @@ public class SettingsViewModel
         }
 
         settings.user.set(null);
-        isUserAvatarAvailable.set(false);
+        userLogo.set(null);
         userError.set(null);
     }
 }
