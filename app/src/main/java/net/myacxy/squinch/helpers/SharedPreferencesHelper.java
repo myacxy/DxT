@@ -58,15 +58,11 @@ public class SharedPreferencesHelper
 
     public SettingsModel getSettings()
     {
-        return new SettingsModel()
-        {
-            {
-                // TODO: 16.05.2016
-                user.set(getUser(null));
-                updateInterval.set(getUpdateInterval(15));
-                hideEmptyExtension.set(getHideEmptyExtension(true));
-            }
-        };
+        SettingsModel settings = new SettingsModel();
+        settings.setUser(getUser(null));
+        settings.setUpdateInterval(getUpdateInterval(15));
+        settings.setHideEmptyExtension(getHideEmptyExtension(true));
+        return settings;
     }
 
     enum Setting implements SharedPreferencesKey

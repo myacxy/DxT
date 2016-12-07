@@ -37,7 +37,7 @@ public class ChannelSelectionFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        User user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.user.get();
+        User user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.getUser();
         ChannelSelectionViewModel viewModel = SimpleViewModelLocator.getInstance().getChannelSelectionViewModel(user.name);
         mBinding.setViewModel(viewModel);
         mBinding.rvCsChannels.setAdapter(viewModel.getAdapter());

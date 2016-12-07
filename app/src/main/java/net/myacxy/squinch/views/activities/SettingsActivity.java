@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.common.eventbus.EventBus;
+
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.views.fragments.SettingsFragment;
 

@@ -16,22 +16,18 @@ import net.myacxy.retrotwitch.models.UserFollowsContainer;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChannelSelectionViewModel
 {
-    public ObservableArrayList<UserFollow> userFollows = new ObservableArrayList<>();
     private String mUserName;
     private SelectableUserFollowsAdapter mAdapter;
-    private Disposable mSubscription;
-    private Observer<UserFollowsContainer> mObserver = new Observer<UserFollowsContainer>()
-    {
-        @Override
-        public void onSubscribe(Disposable disposable)
-        {
-            mSubscription = disposable;
-        }
 
+    private ObservableArrayList<UserFollow> userFollows = new ObservableArrayList<>();
+    private Disposable mSubscription;
+    private DisposableObserver<UserFollowsContainer> mObserver = new DisposableObserver<UserFollowsContainer>()
+    {
         @Override
         public void onNext(UserFollowsContainer userFollowsContainer)
         {
@@ -57,8 +53,6 @@ public class ChannelSelectionViewModel
 
     public ChannelSelectionViewModel(String userName) {
         mUserName = userName;
-
-
         mAdapter = new SelectableUserFollowsAdapter(userFollows);
 
         getUserFollows();
@@ -66,11 +60,11 @@ public class ChannelSelectionViewModel
 
     private void getUserFollows()
     {
-        RxCaller.getInstance()
+        mSubscription = RxCaller.getInstance()
                 .getUserFollows(mUserName, 100, 0, Direction.DEFAULT, SortBy.CREATED_AT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mObserver);
+                .subscribeWith(mObserver);
     }
 
     public SelectableUserFollowsAdapter getAdapter() {

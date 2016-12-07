@@ -3,15 +3,11 @@ package net.myacxy.squinch.views.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
-
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.RoundingParams;
 
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
@@ -55,17 +51,7 @@ public class SettingsFragment extends Fragment
 
         mBinding.rlStHideExtension.setOnClickListener(v -> mBinding.swStHideExtension.performClick());
         mBinding.rlStUserName.setOnClickListener(v -> mBinding.metStUserName.requestFocus());
-        mBinding.rlStChannelSelection.setOnClickListener(v -> {
-            Fragment fragment = getFragmentManager().findFragmentByTag(ChannelSelectionFragment.TAG);
-            if (fragment == null)
-            {
-                fragment = new ChannelSelectionFragment();
-            }
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fl_st_container, fragment, ChannelSelectionFragment.TAG)
-                    .commit();
-        });
+        mBinding.rlStChannelSelection.setOnClickListener(v -> goToChannelSelection());
     }
 
     @Override
@@ -73,5 +59,17 @@ public class SettingsFragment extends Fragment
     {
         mBinding.unbind();
         super.onDestroy();
+    }
+
+    private void goToChannelSelection() {
+        Fragment fragment = getFragmentManager().findFragmentByTag(ChannelSelectionFragment.TAG);
+        if (fragment == null)
+        {
+            fragment = new ChannelSelectionFragment();
+        }
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fl_st_container, fragment, ChannelSelectionFragment.TAG)
+                .commit();
     }
 }

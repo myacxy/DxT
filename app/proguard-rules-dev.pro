@@ -19,7 +19,7 @@
 -dontobfuscate
 
 # Keep the BuildConfig
--keep class net.myacxy.ditch.BuildConfig { *; }
+-keep class net.myacxy.squinch.BuildConfig { *; }
 
 # Keep the support library
 -keep class android.support.v4.** { *; }

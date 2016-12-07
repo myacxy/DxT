@@ -1,22 +1,13 @@
 package net.myacxy.squinch.views.adapters;
 
 import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
-import android.graphics.Color;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.generic.RoundingParams;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
-
 import net.myacxy.retrotwitch.models.UserFollow;
-import net.myacxy.retrotwitch.utils.StringUtil;
 import net.myacxy.squinch.databinding.SimpleChannelItemBinding;
+import net.myacxy.squinch.helpers.CustomBindings;
 
 public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<SelectableUserFollowsAdapter.SelectableUserFollowViewHolder>
 {
@@ -25,38 +16,6 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
     public SelectableUserFollowsAdapter(ObservableArrayList<UserFollow> userFollows)
     {
         mUserFollows = userFollows;
-        mUserFollows.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<UserFollow>>()
-        {
-            @Override
-            public void onChanged(ObservableList<UserFollow> userFollows)
-            {
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onItemRangeChanged(ObservableList<UserFollow> userFollows, int i, int i1)
-            {
-
-            }
-
-            @Override
-            public void onItemRangeInserted(ObservableList<UserFollow> userFollows, int i, int i1)
-            {
-
-            }
-
-            @Override
-            public void onItemRangeMoved(ObservableList<UserFollow> userFollows, int i, int i1, int i2)
-            {
-
-            }
-
-            @Override
-            public void onItemRangeRemoved(ObservableList<UserFollow> userFollows, int i, int i1)
-            {
-
-            }
-        });
     }
 
     @Override
@@ -93,27 +52,8 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
         {
             mBinding.setUserFollow(userFollow);
             mBinding.executePendingBindings();
-
-            if (!StringUtil.isBlank(userFollow.channel.logo))
-            {
-                Uri uri = Uri.parse(userFollow.channel.logo);
-                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                        .setProgressiveRenderingEnabled(true)
-                        .build();
-                DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(request)
-                        .setOldController(mBinding.sdvChAvatar.getController())
-                        .build();
-                mBinding.sdvChAvatar.setController(controller);
-                mBinding.sdvChAvatar.getHierarchy()
-                        .setRoundingParams(
-                                RoundingParams.asCircle()
-                                        .setBorder(Color.parseColor("#ffffff"), 1.0f)
-                        );
-            } else
-            {
-                mBinding.sdvChAvatar.setImageURI(Uri.EMPTY);
-            }
+            mBinding.getRoot().setOnClickListener(v -> mBinding.accbChSelected.setChecked(!mBinding.accbChSelected.isChecked()));
+            CustomBindings.loadImage(mBinding.sdvChAvatar, userFollow.channel.logo);
         }
     }
 }
