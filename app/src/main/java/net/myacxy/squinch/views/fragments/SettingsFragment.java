@@ -22,15 +22,15 @@ import com.orhanobut.logger.Logger;
 
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
-import net.myacxy.squinch.databinding.FragmentSettingsBinding;
 import net.myacxy.retrotwitch.models.User;
 import net.myacxy.retrotwitch.utils.StringUtil;
+import net.myacxy.squinch.databinding.SettingsFragmentBinding;
 
 public class SettingsFragment extends Fragment
 {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    private FragmentSettingsBinding mBinding;
+    private SettingsFragmentBinding mBinding;
 
     private Observable.OnPropertyChangedCallback mCallback = new Observable.OnPropertyChangedCallback()
     {
@@ -75,7 +75,7 @@ public class SettingsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        mBinding = FragmentSettingsBinding.inflate(inflater, container, false);
+        mBinding = SettingsFragmentBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 

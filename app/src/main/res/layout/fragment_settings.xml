@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <data>
+    <data class="SettingsFragmentBinding">
 
         <import type="net.myacxy.squinch.viewmodels.SettingsViewModel"/>
         <import type="android.view.View" />

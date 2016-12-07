@@ -14,9 +14,9 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import net.myacxy.squinch.databinding.ItemSimpleChannelBinding;
 import net.myacxy.retrotwitch.models.UserFollow;
 import net.myacxy.retrotwitch.utils.StringUtil;
+import net.myacxy.squinch.databinding.SimpleChannelItemBinding;
 
 public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<SelectableUserFollowsAdapter.SelectableUserFollowViewHolder>
 {
@@ -62,7 +62,7 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
     @Override
     public SelectableUserFollowViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        ItemSimpleChannelBinding binding = ItemSimpleChannelBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        SimpleChannelItemBinding binding = SimpleChannelItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new SelectableUserFollowViewHolder(binding);
     }
 
@@ -81,9 +81,9 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
     protected static class SelectableUserFollowViewHolder extends RecyclerView.ViewHolder
     {
 
-        private ItemSimpleChannelBinding mBinding;
+        private SimpleChannelItemBinding mBinding;
 
-        public SelectableUserFollowViewHolder(ItemSimpleChannelBinding binding)
+        public SelectableUserFollowViewHolder(SimpleChannelItemBinding binding)
         {
             super(binding.getRoot());
             mBinding = binding;

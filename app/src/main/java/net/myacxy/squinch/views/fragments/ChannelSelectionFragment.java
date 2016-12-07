@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.myacxy.squinch.SimpleViewModelLocator;
-import net.myacxy.squinch.databinding.FragmentChannelSelectionBinding;
+import net.myacxy.squinch.databinding.ChannelSelectionFragmentBinding;
 import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
 import net.myacxy.retrotwitch.models.User;
 
@@ -16,7 +16,7 @@ public class ChannelSelectionFragment extends Fragment
 {
     public static final String TAG = ChannelSelectionFragment.class.getSimpleName();
 
-    private FragmentChannelSelectionBinding mBinding;
+    private ChannelSelectionFragmentBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -28,7 +28,7 @@ public class ChannelSelectionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        mBinding = FragmentChannelSelectionBinding.inflate(inflater, container, false);
+        mBinding = ChannelSelectionFragmentBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 

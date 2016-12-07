@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-    <data>
+    <data class="ChannelSelectionFragmentBinding">
 
         <import type="net.myacxy.squinch.viewmodels.ChannelSelectionViewModel"/>
         <import type="android.view.View" />
