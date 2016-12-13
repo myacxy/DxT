@@ -37,6 +37,7 @@ ext {
             recyclerView            : "com.android.support:recyclerview-v7:$supportLibraryVersion",
             support                 : "com.android.support:support-v4:$supportLibraryVersion",
             supportAnnotations      : "com.android.support:support-annotations:$supportLibraryVersion",
+            palette                 : "com.android.support:palette-v7:$supportLibraryVersion",
             materialEditText        : 'com.rengwuxian.materialedittext:library:2.1.4',
             // android-rxjava
             rxAndroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
@@ -45,6 +46,7 @@ ext {
             rxBindingDesign         : "com.jakewharton.rxbinding:rxbinding-design:$rxBindingVersion",
             rxBindingRecyclerView   : "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rxBindingVersion",
             // misc
+            eventBus                : 'org.greenrobot:eventbus:3.0.0',
             logger                  : 'com.github.orhanobut:logger:1.12',
             dashclock               : 'com.google.android.apps.dashclock:dashclock-api:2.0.0',
     ]

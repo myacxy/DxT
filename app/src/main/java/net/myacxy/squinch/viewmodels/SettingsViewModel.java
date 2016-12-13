@@ -3,17 +3,17 @@ package net.myacxy.squinch.viewmodels;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
-import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.retrotwitch.RxCaller;
 import net.myacxy.retrotwitch.helpers.RxErrorFactory;
 import net.myacxy.retrotwitch.models.Error;
 import net.myacxy.retrotwitch.models.User;
 import net.myacxy.retrotwitch.models.UserFollowsContainer;
 import net.myacxy.retrotwitch.utils.StringUtil;
+import net.myacxy.squinch.helpers.SharedPreferencesHelper;
+import net.myacxy.squinch.models.SettingsModel;
 
 import java.util.Locale;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
@@ -22,6 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 public class SettingsViewModel
 {
     public SettingsModel settings;
+    private SharedPreferencesHelper sharedPreferencesHelper;
 
     public ObservableBoolean loadingUser = new ObservableBoolean();
 
@@ -38,6 +39,7 @@ public class SettingsViewModel
         public void onNext(User user)
         {
             settings.setUser(user);
+            sharedPreferencesHelper.setUser(user);
             if (user != null)
             {
                 userLogo.set(user.logo);
@@ -67,6 +69,7 @@ public class SettingsViewModel
         @Override
         public void onError(Throwable t)
         {
+            sharedPreferencesHelper.setUser(null);
             settings.setUser(null);
             loadingUser.set(false);
             userLogo.set(null);
@@ -111,12 +114,13 @@ public class SettingsViewModel
         }
     };
 
-    public SettingsViewModel(SettingsModel settings)
+    public SettingsViewModel(SharedPreferencesHelper sharedPreferencesHelper)
     {
-        this.settings = settings;
+        this.sharedPreferencesHelper = sharedPreferencesHelper;
+        settings = sharedPreferencesHelper.createDefaultSettings();
     }
 
-    public void onChangeUserName(String userName)
+    public void onUserNameChanged(String userName)
     {
         if (userName != null && (userName = userName.trim()).length() != 0)
         {
@@ -162,8 +166,15 @@ public class SettingsViewModel
             userFollowsSubscription = null;
         }
 
+        sharedPreferencesHelper.setUser(null);
         settings.setUser(null);
         userLogo.set(null);
         userError.set(null);
+    }
+
+    public void onHideExtensionChanged(boolean hide)
+    {
+        settings.setHideEmptyExtension(hide);
+        sharedPreferencesHelper.setHideEmptyExtension(hide);
     }
 }

@@ -115,6 +115,7 @@ dependencies {
     Map<String, String> dependencies = rootProject.ext.dependencies;
 
     compile dependencies.dashclock
+    compile dependencies.eventBus
     compile dependencies.logger
     compile(dependencies.rxAndroid) {
         exclude module: 'rxjava'
@@ -123,6 +124,7 @@ dependencies {
     compile dependencies.appCompat
     compile dependencies.design
     compile dependencies.recyclerView
+    compile dependencies.palette
 
     compile dependencies.materialEditText
 //    compile dependencies.rxBindingRecyclerView

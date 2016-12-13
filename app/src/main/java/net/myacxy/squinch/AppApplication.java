@@ -32,11 +32,11 @@ public class AppApplication extends Application
         RxCaller.getInstance().setLoggingLevel(HttpLoggingInterceptor.Level.BODY);
         RxCaller.getInstance().setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr");
 
-        Logger.init()                       // default PRETTYLOGGER or use just init()
-                .methodCount(2)                 // default 2
-                .logLevel(LogLevel.FULL)        // default LogLevel.FULL
-                .methodOffset(0)                // default 0
-                .logTool(new AndroidLogTool()); // custom log tool, optional
+        Logger.init()
+                .methodCount(2)
+                .logLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
+                .methodOffset(0)
+                .logTool(new AndroidLogTool());
 
         Fresco.initialize(getApplicationContext());
 

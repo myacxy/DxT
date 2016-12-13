@@ -3,6 +3,48 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">@color/base87</item>
+        <item name="android:textColorSecondary">@color/base54</item>
+    </style>
+
+    <style name="Subheader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginLeft">@dimen/keyline_horizontal1</item>
+        <item name="android:layout_marginRight">@dimen/keyline_horizontal1</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAppearance">@style/Subheader.TextAppearance</item>
+    </style>
+
+    <style name="Subheader.TextAppearance">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFeatureSettings">smcp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Subheader.Inset">
+        <item name="android:layout_marginLeft">@dimen/keyline_horizontal2</item>
+    </style>
+
+    <style name="List" />
+
+    <style name="List.ThreeLine">
+        <item name="android:height">88dp</item>
+    </style>
+
+    <style name="List.TextAppearance">
+
+    </style>
+
+    <style name="List.TextAppearance.Primary">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="List.TextAppearance.Secondary">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

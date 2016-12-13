@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
-import android.support.v4.content.SharedPreferencesCompat;
 
 import net.myacxy.retrotwitch.models.User;
 import net.myacxy.squinch.models.SettingsModel;
@@ -21,6 +20,7 @@ public class SharedPreferencesHelper
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
+    @Nullable
     public User getUser(@Nullable User defValue)
     {
         String user = mSharedPreferences.getString(Setting.STRING_USER_NAME.getKey(), null);
@@ -31,9 +31,9 @@ public class SharedPreferencesHelper
         return null;
     }
 
-    public void setUser(User user)
+    public void setUser(@Nullable User user)
     {
-        mSharedPreferences.edit().putString(Setting.STRING_USER_NAME.getKey(), user.toString()).apply();
+        mSharedPreferences.edit().putString(Setting.STRING_USER_NAME.getKey(), user != null ? user.toString() : null).apply();
     }
 
     public int getUpdateInterval(int defValue)
@@ -56,7 +56,7 @@ public class SharedPreferencesHelper
         mSharedPreferences.edit().putBoolean(Setting.BOOL_CUSTOM_VISIBILITY.getKey(), hideEmptyExtension).apply();
     }
 
-    public SettingsModel getSettings()
+    public SettingsModel createDefaultSettings()
     {
         SettingsModel settings = new SettingsModel();
         settings.setUser(getUser(null));

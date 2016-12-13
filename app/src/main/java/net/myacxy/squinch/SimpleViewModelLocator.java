@@ -3,7 +3,6 @@ package net.myacxy.squinch;
 import android.content.Context;
 
 import net.myacxy.squinch.helpers.SharedPreferencesHelper;
-import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
 import net.myacxy.squinch.viewmodels.MainViewModel;
 import net.myacxy.squinch.viewmodels.SettingsViewModel;
@@ -36,10 +35,9 @@ public class SimpleViewModelLocator
     private SimpleViewModelLocator(Context context)
     {
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(context);
-        SettingsModel settings = sharedPreferencesHelper.getSettings();
 
         mMainViewModel = new MainViewModel();
-        mSettingsViewModel = new SettingsViewModel(settings);
+        mSettingsViewModel = new SettingsViewModel(sharedPreferencesHelper);
         mChannelSelectionViewModels = new HashMap<>();
     }
 

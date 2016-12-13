@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/keyline_screen_edge"
+            android:layout_marginLeft="@dimen/keyline_horizontal1"
             >
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -61,9 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{ userFollow.channel.displayName }"
-                android:textColor="@color/base87"
-                android:textSize="16sp"
                 tools:text="nl_kripp"
+                style="@style/List.TextAppearance.Primary"
                 />
 
             <!--Game-->
@@ -72,8 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{ userFollow.channel.game }"
-                android:textColor="@color/base54"
-                android:textSize="14sp"
+                style="@style/List.TextAppearance.Secondary"
                 tools:text="Hearthstone: Heroes of Warcraft"
                 />
 
@@ -85,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/keyline_screen_edge"
-            android:layout_marginRight="@dimen/keyline_screen_edge"
+            android:layout_marginLeft="@dimen/keyline_horizontal1"
+            android:layout_marginRight="@dimen/keyline_horizontal1"
             />
 
     </RelativeLayout>

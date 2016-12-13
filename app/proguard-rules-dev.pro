@@ -142,3 +142,10 @@
 -keepattributes SourceFile,LineNumberTable
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
+
+# GreenRobot.EventBus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }

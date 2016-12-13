@@ -29,14 +29,8 @@
 
             <!--General-->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/keyline_screen_edge"
-                android:layout_marginTop="@dimen/keyline_screen_edge"
-                android:fontFamily="sans-serif-medium"
-                android:fontFeatureSettings="smcp"
                 android:text="@string/title_settings_general"
-                android:textSize="14sp"
+                style="@style/Subheader"
                 />
 
             <!--Hide empty extension-->
@@ -54,7 +48,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
                     android:alpha="0.60"
                     android:src="@{ viewModel.settings.hideEmptyExtension ? @drawable/ic_visibility_off_black_24dp : @drawable/ic_visibility_black_24dp }"
                     />
@@ -72,8 +66,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/title_settings_hide_extension"
-                        android:textSize="16sp"
+                        android:text="@string/title_settings_hide_extension"
+                        style="@style/List.TextAppearance.Primary"
                         />
 
                     <!--Description-->
@@ -81,9 +75,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:alpha="0.54"
                         android:text="@string/descr_settings_hide_extension"
-                        android:textSize="14sp"
+                        style="@style/List.TextAppearance.Secondary"
                         />
 
                 </LinearLayout>
@@ -94,9 +87,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
-                    android:layout_marginRight="@dimen/keyline_screen_edge"
-                    android:checked="@={ viewModel.settings.hideEmptyExtension }"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
+                    android:layout_marginRight="@dimen/keyline_horizontal1"
+                    android:checked="@{ viewModel.settings.hideEmptyExtension }"
                     />
 
             </RelativeLayout>
@@ -110,14 +103,8 @@
 
             <!--User-->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/keyline_screen_edge"
-                android:layout_marginTop="@dimen/keyline_screen_edge"
-                android:fontFamily="sans-serif-medium"
-                android:fontFeatureSettings="smcp"
                 android:text="@string/title_settings_user"
-                android:textSize="14sp"
+                style="@style/Subheader"
                 />
 
             <!--User Name-->
@@ -136,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
                     >
 
                     <com.facebook.drawee.view.SimpleDraweeView
@@ -177,7 +164,7 @@
                         android:imeOptions="actionDone"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textSize="16sp"
+                        android:textAppearance="@style/List.TextAppearance.Primary"
                         app:error="@{ viewModel.userError }"
                         />
 
@@ -185,9 +172,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:alpha="0.54"
                         android:text="@string/descr_settings_user_name"
-                        android:textSize="14sp"
+                        style="@style/List.TextAppearance.Secondary"
                         />
 
                 </LinearLayout>
@@ -198,8 +184,8 @@
                     android:layout_height="24dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
-                    android:layout_marginRight="@dimen/keyline_screen_edge"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
+                    android:layout_marginRight="@dimen/keyline_horizontal1"
                     android:indeterminate="true"
                     android:visibility="@{ viewModel.loadingUser ? View.VISIBLE : View.INVISIBLE }"
                     />
@@ -224,7 +210,7 @@
                     android:layout_width="@dimen/icon_small"
                     android:layout_height="@dimen/icon_small"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
                     android:alpha="0.60"
                     android:src="@drawable/ic_videocam_black_24dp"
                     />
@@ -243,8 +229,8 @@
                         android:id="@+id/tv_st_channel_selection"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/title_settings_channel_selection"
-                        android:textSize="16sp"
+                        android:text="@string/title_settings_channel_selection"
+                        style="@style/List.TextAppearance.Primary"
                         />
 
                     <!--Description-->
@@ -252,9 +238,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:alpha="0.54"
                         android:text="@string/desc_settings_channel_selection"
-                        android:textSize="14sp"
+                        android:textAppearance="@style/List.TextAppearance.Secondary"
                         />
 
                 </LinearLayout>
@@ -265,10 +250,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/keyline_screen_edge"
-                    android:layout_marginRight="@dimen/keyline_screen_edge"
-                    android:alpha="0.54"
+                    android:layout_marginLeft="@dimen/keyline_horizontal1"
+                    android:layout_marginRight="@dimen/keyline_horizontal1"
                     android:text="@{ viewModel.selectedChannelsText }"
+                    android:textAppearance="@style/List.TextAppearance.Secondary"
                     android:textSize="12sp"
                     android:visibility="@{ viewModel.settings.user != null ? View.VISIBLE : View.INVISIBLE }"
                     tools:text="0\u2009/\u200916"
