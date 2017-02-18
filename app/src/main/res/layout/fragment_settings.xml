@@ -2,6 +2,7 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
@@ -95,11 +96,7 @@
             </RelativeLayout>
 
             <!--Divider-->
-            <include
-                layout="@layout/include_divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                />
+            <include layout="@layout/include_divider" />
 
             <!--User-->
             <TextView
@@ -131,10 +128,10 @@
                         android:layout_width="@dimen/icon_large"
                         android:layout_height="@dimen/icon_large"
                         android:visibility="@{ viewModel.userLogo != null ? View.VISIBLE : View.GONE }"
-                        app:imageUrl="@{ viewModel.userLogo }"
                         app:roundAsCircle="true"
                         app:fadeDuration="215"
                         app:actualImageScaleType="focusCrop"
+                        bind:imageUrl="@{ viewModel.userLogo }"
                         />
 
                     <ImageView
@@ -165,7 +162,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textAppearance="@style/List.TextAppearance.Primary"
-                        app:error="@{ viewModel.userError }"
+                        bind:error="@{ viewModel.userError }"
                         />
 
                     <!--Description-->
@@ -187,6 +184,7 @@
                     android:layout_marginLeft="@dimen/keyline_horizontal1"
                     android:layout_marginRight="@dimen/keyline_horizontal1"
                     android:indeterminate="true"
+                    android:progressTint="?colorPrimary"
                     android:visibility="@{ viewModel.loadingUser ? View.VISIBLE : View.INVISIBLE }"
                     />
 
@@ -203,7 +201,7 @@
                 android:minHeight="88dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="16dp"
-                app:enabled="@{ viewModel.settings.user != null ? true : false }"
+                bind:enabled="@{ viewModel.settings.user != null ? true : false }"
                 >
 
                 <ImageView

@@ -4,50 +4,72 @@ import android.databinding.ObservableArrayList;
 
 import com.orhanobut.logger.Logger;
 
+import net.myacxy.retrotwitch.v5.RxRetroTwitch;
+import net.myacxy.retrotwitch.v5.api.common.Direction;
+import net.myacxy.retrotwitch.v5.api.common.Error;
+import net.myacxy.retrotwitch.v5.api.common.SortBy;
+import net.myacxy.retrotwitch.v5.api.users.SimpleUsersResponse;
+import net.myacxy.retrotwitch.v5.api.users.UserFollow;
+import net.myacxy.retrotwitch.v5.api.users.UserFollowsResponse;
+import net.myacxy.retrotwitch.v5.helpers.RxErrorFactory;
 import net.myacxy.squinch.views.adapters.SelectableUserFollowsAdapter;
-import net.myacxy.retrotwitch.RxCaller;
-import net.myacxy.retrotwitch.api.Direction;
-import net.myacxy.retrotwitch.api.SortBy;
-import net.myacxy.retrotwitch.helpers.RxErrorFactory;
-import net.myacxy.retrotwitch.models.Error;
-import net.myacxy.retrotwitch.models.UserFollow;
-import net.myacxy.retrotwitch.models.UserFollowsContainer;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
-public class ChannelSelectionViewModel
-{
+public class ChannelSelectionViewModel {
+
     private String mUserName;
     private SelectableUserFollowsAdapter mAdapter;
 
     private ObservableArrayList<UserFollow> userFollows = new ObservableArrayList<>();
-    private Disposable mSubscription;
-    private DisposableObserver<UserFollowsContainer> mObserver = new DisposableObserver<UserFollowsContainer>()
-    {
+    private Disposable mUserFollowsSubscription;
+    private DisposableObserver<Response<UserFollowsResponse>> mUserFollowsObserver = new DisposableObserver<Response<UserFollowsResponse>>() {
         @Override
-        public void onNext(UserFollowsContainer userFollowsContainer)
-        {
-            userFollows.addAll(userFollowsContainer.userFollows);
+        public void onNext(Response<UserFollowsResponse> response) {
+            userFollows.addAll(response.body().getUserFollows());
         }
 
         @Override
-        public void onComplete()
-        {
+        public void onComplete() {
             mAdapter.notifyDataSetChanged();
-            mSubscription.dispose();
-            mSubscription = null;
+            mUserFollowsSubscription.dispose();
+            mUserFollowsSubscription = null;
             Logger.t(1).d(mUserName + " " + String.valueOf(userFollows.size()));
         }
 
         @Override
-        public void onError(Throwable e)
-        {
+        public void onError(Throwable e) {
             Error error = RxErrorFactory.fromThrowable(e);
-            Logger.t(1).d(error.message);
+            Logger.t(1).d(error.getMessage());
+        }
+    };
+
+    private Disposable mUserSubscription;
+    private DisposableObserver<Response<SimpleUsersResponse>> mUserObserver = new DisposableObserver<Response<SimpleUsersResponse>>() {
+        @Override
+        public void onNext(Response<SimpleUsersResponse> response) {
+            mUserFollowsSubscription = RxRetroTwitch.getInstance()
+                    .users()
+                    .getUserFollows(response.body().getUsers().get(0).getId(), 100, 0, Direction.DEFAULT, SortBy.CREATED_AT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(mUserFollowsObserver);
+        }
+
+        @Override
+        public void onComplete() {
+            mUserSubscription.dispose();
+            mUserSubscription = null;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Error error = RxErrorFactory.fromThrowable(e);
+            Logger.t(1).d(error.getMessage());
         }
     };
 
@@ -58,13 +80,13 @@ public class ChannelSelectionViewModel
         getUserFollows();
     }
 
-    private void getUserFollows()
-    {
-        mSubscription = RxCaller.getInstance()
-                .getUserFollows(mUserName, 100, 0, Direction.DEFAULT, SortBy.CREATED_AT)
+    private void getUserFollows() {
+        mUserSubscription = RxRetroTwitch.getInstance()
+                .users()
+                .translateUserNameToUserId(mUserName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(mObserver);
+                .subscribeWith(mUserObserver);
     }
 
     public SelectableUserFollowsAdapter getAdapter() {

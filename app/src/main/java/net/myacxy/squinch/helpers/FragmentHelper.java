@@ -7,30 +7,26 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.io.Serializable;
 
-public class FragmentHelper<A extends AppCompatActivity, FI extends FragmentHelper.FragmentInitializer>
-{
+public class FragmentHelper<A extends AppCompatActivity, FI extends FragmentHelper.FragmentInitializer> {
+
     private static final String EXTRA_CURRENT_FRAGMENT = "current.fragment";
 
     private final int fragmentContainer;
     private FI currentFragment;
 
-    public FragmentHelper(@IdRes int fragmentContainer)
-    {
+    public FragmentHelper(@IdRes int fragmentContainer) {
         this.fragmentContainer = fragmentContainer;
     }
 
-    public void changeFragment(A activity, FI fragment, boolean tryToReuse)
-    {
+    public void changeFragment(A activity, FI fragment, boolean tryToReuse) {
         Fragment newFragment = null;
         String tag = fragment.getTag();
 
-        if (tryToReuse)
-        {
+        if (tryToReuse) {
             newFragment = activity.getSupportFragmentManager().findFragmentByTag(tag);
         }
 
-        if (newFragment == null)
-        {
+        if (newFragment == null) {
             newFragment = fragment.newInstance();
         }
 
@@ -56,8 +52,7 @@ public class FragmentHelper<A extends AppCompatActivity, FI extends FragmentHelp
         return currentFragment;
     }
 
-    public interface FragmentInitializer extends Serializable
-    {
+    public interface FragmentInitializer extends Serializable {
         Fragment newInstance();
 
         String getTag();

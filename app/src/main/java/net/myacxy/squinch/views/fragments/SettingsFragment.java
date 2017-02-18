@@ -16,44 +16,40 @@ import net.myacxy.squinch.views.activities.SettingsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class SettingsFragment extends Fragment
-{
+public class SettingsFragment extends Fragment {
+
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
     private SettingsFragmentBinding mBinding;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     } // onCreate
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = SettingsFragmentBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mBinding.setViewModel(SimpleViewModelLocator.getInstance().getSettingsViewModel());
 
         mBinding.metStUserName.setOnKeyListener((v, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER)
-            {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
                 Toast.makeText(getContext(), mBinding.metStUserName.getText(), Toast.LENGTH_SHORT).show();
                 mBinding.getViewModel().onUserNameChanged(mBinding.metStUserName.getText().toString());
                 return true;
             }
             return false;
         });
+
         mBinding.metStUserName.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE)
-            {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Toast.makeText(getContext(), v.getText(), Toast.LENGTH_SHORT).show();
                 mBinding.getViewModel().onUserNameChanged(v.getText().toString());
                 return true;
@@ -68,8 +64,7 @@ public class SettingsFragment extends Fragment
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         mBinding.unbind();
         super.onDestroy();
     }

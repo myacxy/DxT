@@ -15,21 +15,19 @@ import net.myacxy.squinch.views.fragments.SettingsFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class SettingsActivity extends AppCompatActivity
-{
+public class SettingsActivity extends AppCompatActivity {
+
     private SettingsActivityBinding binding;
     private FragmentHelper<SettingsActivity, SettingsScreen> fragmentHelper;
 
     @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
@@ -42,36 +40,31 @@ public class SettingsActivity extends AppCompatActivity
     } // onCreate
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         binding.unbind();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         fragmentHelper.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         fragmentHelper.onRestoreInstanceState(this, savedInstanceState);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -81,10 +74,8 @@ public class SettingsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
-        switch (fragmentHelper.getCurrentFragment())
-        {
+    public void onBackPressed() {
+        switch (fragmentHelper.getCurrentFragment()) {
             case SETTINGS:
                 finish();
                 break;
@@ -98,48 +89,39 @@ public class SettingsActivity extends AppCompatActivity
         fragmentHelper.changeFragment(this, event.getSettingsScreen(), false);
     }
 
-    public enum SettingsScreen implements FragmentHelper.FragmentInitializer
-    {
-        SETTINGS
-                {
-                    @Override
-                    public SettingsFragment newInstance()
-                    {
-                        return new SettingsFragment();
-                    }
+    public enum SettingsScreen implements FragmentHelper.FragmentInitializer {
+        SETTINGS {
+            @Override
+            public SettingsFragment newInstance() {
+                return new SettingsFragment();
+            }
 
-                    @Override
-                    public String getTag()
-                    {
-                        return SettingsFragment.TAG;
-                    }
-                },
-        CHANNEL_SELECTION
-                {
-                    @Override
-                    public ChannelSelectionFragment newInstance()
-                    {
-                        return new ChannelSelectionFragment();
-                    }
+            @Override
+            public String getTag() {
+                return SettingsFragment.TAG;
+            }
+        },
+        CHANNEL_SELECTION {
+            @Override
+            public ChannelSelectionFragment newInstance() {
+                return new ChannelSelectionFragment();
+            }
 
-                    @Override
-                    public String getTag()
-                    {
-                        return ChannelSelectionFragment.TAG;
-                    }
-                };
+            @Override
+            public String getTag() {
+                return ChannelSelectionFragment.TAG;
+            }
+        };
     }
 
     public static class NavigationEvent {
         private SettingsScreen settingsScreen;
 
-        public NavigationEvent(SettingsScreen settingsScreen)
-        {
+        public NavigationEvent(SettingsScreen settingsScreen) {
             this.settingsScreen = settingsScreen;
         }
 
-        public SettingsScreen getSettingsScreen()
-        {
+        public SettingsScreen getSettingsScreen() {
             return settingsScreen;
         }
     }

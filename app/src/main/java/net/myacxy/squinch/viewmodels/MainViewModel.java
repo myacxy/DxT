@@ -1,5 +1,4 @@
 package net.myacxy.squinch.viewmodels;
 
-public class MainViewModel
-{
+public class MainViewModel {
 }

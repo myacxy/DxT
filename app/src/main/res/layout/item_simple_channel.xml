@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data class="SimpleChannelItemBinding">
+
         <import type="android.view.View" />
+
         <variable
             name="userFollow"
-            type="net.myacxy.retrotwitch.models.UserFollow"
-            />
+            type="net.myacxy.retrotwitch.v5.api.users.UserFollow" />
     </data>
 
     <RelativeLayout
@@ -17,30 +16,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
-        android:minHeight="72dp"
-        >
+        android:minHeight="72dp">
 
         <FrameLayout
             android:id="@+id/fl_ch_avatar_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/keyline_horizontal1"
-            >
+            android:layout_marginLeft="@dimen/keyline_horizontal1">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/sdv_ch_avatar"
                 android:layout_width="@dimen/icon_large"
                 android:layout_height="@dimen/icon_large"
-                android:visibility="@{ userFollow.channel.logo != null ? View.VISIBLE : View.GONE, default=gone }"
-                />
+                android:visibility="@{ userFollow.getChannel().getLogo() != null ? View.VISIBLE : View.GONE, default=gone }" />
 
             <ImageView
                 android:layout_width="@dimen/icon_small"
                 android:layout_height="@dimen/icon_small"
                 android:src="@drawable/ic_glitch_purple_24dp"
-                android:visibility="@{ userFollow.channel.logo != null ? View.GONE : View.VISIBLE }"
-                />
+                android:visibility="@{ userFollow.getChannel().getLogo() != null ? View.GONE : View.VISIBLE }" />
 
         </FrameLayout>
 
@@ -52,31 +47,28 @@
             android:layout_toLeftOf="@+id/accb_ch_selected"
             android:orientation="vertical"
             android:paddingBottom="20dp"
-            android:paddingTop="16dp"
-            >
+            android:paddingTop="16dp">
 
             <!--Display name-->
             <TextView
                 android:id="@+id/tv_ch_name"
+                style="@style/List.TextAppearance.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{ userFollow.channel.displayName }"
-                tools:text="nl_kripp"
-                style="@style/List.TextAppearance.Primary"
-                />
+                android:text="@{ userFollow.getChannel().getDisplayName() }"
+                tools:text="nl_kripp" />
 
             <!--Game-->
             <TextView
                 android:id="@+id/tv_ch_game"
+                style="@style/List.TextAppearance.Secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{ userFollow.channel.game }"
-                style="@style/List.TextAppearance.Secondary"
-                tools:text="Hearthstone: Heroes of Warcraft"
-                />
+                android:text="@{ userFollow.getChannel().getGame() }"
+                tools:text="Hearthstone: Heroes of Warcraft" />
 
         </LinearLayout>
-        
+
         <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/accb_ch_selected"
             android:layout_width="wrap_content"
@@ -84,8 +76,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/keyline_horizontal1"
-            android:layout_marginRight="@dimen/keyline_horizontal1"
-            />
+            android:layout_marginRight="@dimen/keyline_horizontal1" />
 
     </RelativeLayout>
 

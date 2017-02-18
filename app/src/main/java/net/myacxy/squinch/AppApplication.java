@@ -8,29 +8,26 @@ import com.orhanobut.logger.AndroidLogTool;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 
-import net.myacxy.retrotwitch.RetroTwitch;
-import net.myacxy.retrotwitch.RxCaller;
+import net.myacxy.retrotwitch.Configuration;
+import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 
 import io.fabric.sdk.android.Fabric;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-public class AppApplication extends Application
-{
+public class AppApplication extends Application {
+
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
 
         Fabric.with(this, new Crashlytics());
 
-        RetroTwitch.getInstance()
-                .configure()
-                .setLogLevel(HttpLoggingInterceptor.Level.BODY)
-                .setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr")
-                .apply();
-
-        RxCaller.getInstance().setLoggingLevel(HttpLoggingInterceptor.Level.BODY);
-        RxCaller.getInstance().setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr");
+        RxRetroTwitch.getInstance()
+                .configure(new Configuration.ConfigurationBuilder()
+                        .setLogLevel(HttpLoggingInterceptor.Level.BODY)
+                        .setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr")
+                        .build()
+                );
 
         Logger.init()
                 .methodCount(2)
