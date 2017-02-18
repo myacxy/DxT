@@ -20,14 +20,16 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class SettingsViewModel {
+public class SettingsViewModel implements ViewModel {
+
     public SettingsModel settings;
     public ObservableBoolean loadingUser = new ObservableBoolean();
     public ObservableField<String> userLogo = new ObservableField<>();
     public ObservableField<String> userError = new ObservableField<>();
     public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
+
     private SharedPreferencesHelper sharedPreferencesHelper;
-    private UserFollowsResponse mUserFollowsResponse;
+    private UserFollowsResponse userFollowsResponse;
 
     private DisposableObserver disposale;
 
@@ -61,8 +63,8 @@ public class SettingsViewModel {
     }
 
     private void updateSelectedChannelsText() {
-        if (mUserFollowsResponse != null) {
-            int followsCount = mUserFollowsResponse.getUserFollows().size();
+        if (userFollowsResponse != null) {
+            int followsCount = userFollowsResponse.getUserFollows().size();
             String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", followsCount, followsCount);
             selectedChannelsText.set(text);
             return;
@@ -81,11 +83,31 @@ public class SettingsViewModel {
         userError.set(null);
     }
 
+    private void onUserError(Error error) {
+        sharedPreferencesHelper.setUser(null);
+        settings.setUser(null);
+        loadingUser.set(false);
+        userLogo.set(null);
+        userError.set(error.getMessage());
+    }
+
+    private void onUserFollowsError(Error error) {
+        loadingUser.set(false);
+        userError.set(error.getMessage());
+        updateSelectedChannelsText();
+    }
+
     private DisposableObserver<Response<SimpleUsersResponse>> getUserObserver() {
         return new DisposableObserver<Response<SimpleUsersResponse>>() {
 
             @Override
             public void onNext(Response<SimpleUsersResponse> response) {
+                Error error = RxErrorFactory.fromResponse(response);
+                if (error != null) {
+                    onUserError(error);
+                    return;
+                }
+
                 SimpleUser user = response.body().getUsers().get(0);
                 settings.setUser(user);
                 sharedPreferencesHelper.setUser(user);
@@ -111,13 +133,7 @@ public class SettingsViewModel {
 
             @Override
             public void onError(Throwable t) {
-                Error error = RxErrorFactory.fromThrowable(t);
-
-                sharedPreferencesHelper.setUser(null);
-                settings.setUser(null);
-                loadingUser.set(false);
-                userLogo.set(null);
-                userError.set(error.getMessage());
+                onUserError(RxErrorFactory.fromThrowable(t));
             }
         };
     }
@@ -127,7 +143,12 @@ public class SettingsViewModel {
 
             @Override
             public void onNext(Response<UserFollowsResponse> response) {
-                mUserFollowsResponse = response.body();
+                Error error = RxErrorFactory.fromResponse(response);
+                if (error != null) {
+                    onUserFollowsError(error);
+                    return;
+                }
+                userFollowsResponse = response.body();
             }
 
             @Override
@@ -138,11 +159,7 @@ public class SettingsViewModel {
 
             @Override
             public void onError(Throwable t) {
-                Error error = RxErrorFactory.fromThrowable(t);
-
-                loadingUser.set(false);
-                userError.set(error.getMessage());
-                updateSelectedChannelsText();
+                onUserFollowsError(RxErrorFactory.fromThrowable(t));
             }
         };
     }

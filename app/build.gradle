@@ -40,7 +40,7 @@ project.ext {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.1'
 
     defaultConfig {
         minSdkVersion 21
@@ -120,6 +120,8 @@ dependencies {
     compile(dependencies.rxAndroid) {
         exclude module: 'rxjava'
     }
+    compile dependencies.butterknife
+    annotationProcessor dependencies.butterknifeApt
 
     compile dependencies.appCompat
     compile dependencies.design

@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data class="SettingsActivityBinding" />
+    <data class="SettingsActivityBinding">
+
+        <variable
+            name="viewModel"
+            type="net.myacxy.squinch.viewmodels.SettingsViewModel" />
+    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fl_st_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?actionBarSize" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tb_st_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="?attr/colorPrimary"
+            android:elevation="4dp"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="@string/title_settings"
-            app:elevation="4dp"
-            />
-
-        <FrameLayout
-            android:id="@+id/fl_st_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?actionBarSize"
-            />
+            app:title="@string/title_settings" />
 
     </FrameLayout>
 

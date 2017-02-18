@@ -2,74 +2,86 @@ package net.myacxy.squinch.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
+import android.widget.EditText;
 
+import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
-import net.myacxy.squinch.databinding.SettingsFragmentBinding;
+import net.myacxy.squinch.viewmodels.SettingsViewModel;
 import net.myacxy.squinch.views.activities.SettingsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class SettingsFragment extends Fragment {
+import butterknife.BindView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
+
+public class SettingsFragment extends MvvmFragment {
 
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
-    private SettingsFragmentBinding mBinding;
+    @BindView(R.id.sw_st_hide_extension)
+    protected SwitchCompat hideExtensionSwitch;
+    @BindView(R.id.met_st_user_name)
+    protected EditText userNameText;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    } // onCreate
+    protected int getLayoutId() {
+        return R.layout.fragment_settings;
+    }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = SettingsFragmentBinding.inflate(inflater, container, false);
-        return mBinding.getRoot();
+    protected SettingsViewModel getViewModel() {
+        return SimpleViewModelLocator.getInstance().getSettingsViewModel();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.setViewModel(SimpleViewModelLocator.getInstance().getSettingsViewModel());
 
-        mBinding.metStUserName.setOnKeyListener((v, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
-                Toast.makeText(getContext(), mBinding.metStUserName.getText(), Toast.LENGTH_SHORT).show();
-                mBinding.getViewModel().onUserNameChanged(mBinding.metStUserName.getText().toString());
+        userNameText.setOnKeyListener((v, i, e) -> {
+            if (e.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
+                getViewModel().onUserNameChanged(userNameText.toString());
                 return true;
             }
             return false;
         });
-
-        mBinding.metStUserName.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                Toast.makeText(getContext(), v.getText(), Toast.LENGTH_SHORT).show();
-                mBinding.getViewModel().onUserNameChanged(v.getText().toString());
-                return true;
-            }
-            return false;
-        });
-
-        mBinding.rlStHideExtension.setOnClickListener(v -> mBinding.swStHideExtension.performClick());
-        mBinding.swStHideExtension.setOnCheckedChangeListener((compoundButton, checked) -> mBinding.getViewModel().onHideExtensionChanged(checked));
-        mBinding.rlStUserName.setOnClickListener(v -> mBinding.metStUserName.requestFocus());
-        mBinding.rlStChannelSelection.setOnClickListener(v -> goToChannelSelection());
     }
 
-    @Override
-    public void onDestroy() {
-        mBinding.unbind();
-        super.onDestroy();
+    @OnEditorAction(R.id.met_st_user_name)
+    protected boolean onEditorAction(EditText view, int actionId, KeyEvent keyEvent) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            getViewModel().onUserNameChanged(view.getText().toString());
+            return true;
+        }
+        return false;
     }
 
-    private void goToChannelSelection() {
-        EventBus.getDefault().post(new SettingsActivity.NavigationEvent(SettingsActivity.SettingsScreen.CHANNEL_SELECTION));
+    @OnCheckedChanged(R.id.sw_st_hide_extension)
+    protected void onHideExtensionCheckedChanged(boolean checked) {
+        getViewModel().onHideExtensionChanged(checked);
+    }
+
+    @OnClick(R.id.rl_st_hide_extension)
+    protected void onHideExtensionGroupClicked() {
+        hideExtensionSwitch.performClick();
+    }
+
+    @OnClick(R.id.rl_st_user_name)
+    protected void onUserNameGroupClicked() {
+        if (!userNameText.hasFocus()) {
+            userNameText.requestFocus();
+            userNameText.setSelection(userNameText.getText().length());
+        }
+    }
+
+    @OnClick(R.id.rl_st_channel_selection)
+    protected void onChannelSelectionGroupClicked() {
+        EventBus.getDefault()
+                .post(new SettingsActivity.NavigationEvent(SettingsActivity.SettingsScreen.CHANNEL_SELECTION));
     }
 }

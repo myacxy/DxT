@@ -30,7 +30,8 @@ ext {
             rxjava                  : 'io.reactivex.rxjava2:rxjava:2.0.1',
             retrofitAdapterRxJava   : "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion",
             // android
-            butterKnife             : 'com.jakewharton:butterknife:8.0.4',
+            butterknife             : 'com.jakewharton:butterknife:8.5.1',
+            butterknifeApt          : 'com.jakewharton:butterknife-compiler:8.5.1',
             appCompat               : "com.android.support:appcompat-v7:$supportLibraryVersion",
             cardView                : "com.android.support:cardview-v7:$supportLibraryVersion",
             design                  : "com.android.support:design:$supportLibraryVersion",

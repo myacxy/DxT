@@ -20,7 +20,7 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class ChannelSelectionViewModel {
+public class ChannelSelectionViewModel implements ViewModel {
 
     private String mUserName;
     private SelectableUserFollowsAdapter mAdapter;

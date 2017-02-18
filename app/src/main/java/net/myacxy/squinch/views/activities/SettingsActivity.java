@@ -1,24 +1,40 @@
 package net.myacxy.squinch.views.activities;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import net.myacxy.squinch.R;
-import net.myacxy.squinch.databinding.SettingsActivityBinding;
+import net.myacxy.squinch.SimpleViewModelLocator;
 import net.myacxy.squinch.helpers.FragmentHelper;
+import net.myacxy.squinch.viewmodels.ViewModel;
 import net.myacxy.squinch.views.fragments.ChannelSelectionFragment;
 import net.myacxy.squinch.views.fragments.SettingsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class SettingsActivity extends AppCompatActivity {
+import butterknife.BindView;
 
-    private SettingsActivityBinding binding;
+public class SettingsActivity extends MvvmActivity {
+
+    @BindView(R.id.tb_st_toolbar)
+    protected Toolbar toolbar;
+
     private FragmentHelper<SettingsActivity, SettingsScreen> fragmentHelper;
+
+    @NonNull
+    @Override
+    protected ViewModel getViewModel() {
+        return SimpleViewModelLocator.getInstance().getSettingsViewModel();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_settings;
+    }
 
     @Override
     protected void onStart() {
@@ -30,25 +46,16 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
-
-        setSupportActionBar(binding.tbStToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar);
 
         fragmentHelper = new FragmentHelper<>(R.id.fl_st_container);
         fragmentHelper.changeFragment(this, SettingsScreen.SETTINGS, true);
-    } // onCreate
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding.unbind();
     }
 
     @Override
