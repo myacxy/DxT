@@ -2,8 +2,11 @@ package net.myacxy.squinch.helpers;
 
 import android.databinding.BindingAdapter;
 import android.net.Uri;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -14,9 +17,12 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.myacxy.retrotwitch.utils.StringUtil;
 
-public class CustomBindings {
+import io.reactivex.functions.Consumer;
 
-    private CustomBindings() {
+public class BindingAdapters {
+
+    private BindingAdapters() {
+        throw new IllegalAccessError();
     }
 
     @BindingAdapter("android:layout_width")
@@ -33,8 +39,10 @@ public class CustomBindings {
         view.setLayoutParams(layoutParams);
     }
 
-    @BindingAdapter({"enabled"})
+    @BindingAdapter("enabled")
     public static void setEnabled(ViewGroup viewGroup, boolean enabled) {
+        viewGroup.setAlpha(enabled ? 1f : 0.38f);
+
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             View child = viewGroup.getChildAt(i);
             child.setEnabled(enabled);
@@ -44,12 +52,12 @@ public class CustomBindings {
         }
     }
 
-    @BindingAdapter({"error"})
+    @BindingAdapter("met_error")
     public static void setError(MaterialEditText view, String error) {
         view.setError(error);
     }
 
-    @BindingAdapter({"imageUrl"})
+    @BindingAdapter("imageUrl")
     public static void loadImage(SimpleDraweeView view, String url) {
         if (!StringUtil.isEmpty(url)) {
             Uri uri = Uri.parse(url);
@@ -64,5 +72,35 @@ public class CustomBindings {
         } else {
             view.setImageURI(Uri.EMPTY);
         }
+    }
+
+    @BindingAdapter(value = {"onActionDone"}, requireAll = false)
+    public static void onEditorAction(EditText view, final Consumer<String> done) {
+        view.setOnEditorActionListener((v, i, e) -> {
+            try {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    done.accept(v.getText().toString());
+                    return true;
+                }
+            } catch (Exception e1) {
+                return false;
+            }
+            return false;
+        });
+    }
+
+    @BindingAdapter(value = {"onEnterUp"}, requireAll = false)
+    public static void onKey(EditText view, final Consumer<String> enterUp) {
+        view.setOnKeyListener((v, i, e) -> {
+            try {
+                if (e.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
+                    enterUp.accept(view.getText().toString());
+                    return true;
+                }
+            } catch (Exception e1) {
+                return false;
+            }
+            return false;
+        });
     }
 }

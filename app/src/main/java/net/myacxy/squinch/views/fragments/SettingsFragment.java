@@ -3,9 +3,7 @@ package net.myacxy.squinch.views.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import net.myacxy.squinch.R;
@@ -18,7 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 
 public class SettingsFragment extends MvvmFragment {
 
@@ -43,26 +40,9 @@ public class SettingsFragment extends MvvmFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        userNameText.setOnKeyListener((v, i, e) -> {
-            if (e.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
-                getViewModel().onUserNameChanged(userNameText.getText().toString());
-                return true;
-            }
-            return false;
-        });
-
         if (savedInstanceState == null && getViewModel().settings.getUser() != null) {
             userNameText.setText(getViewModel().settings.getUser().getName());
         }
-    }
-
-    @OnEditorAction(R.id.met_st_user_name)
-    protected boolean onEditorAction(EditText view, int actionId, KeyEvent keyEvent) {
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            getViewModel().onUserNameChanged(view.getText().toString());
-            return true;
-        }
-        return false;
     }
 
     @OnCheckedChanged(R.id.sw_st_hide_extension)

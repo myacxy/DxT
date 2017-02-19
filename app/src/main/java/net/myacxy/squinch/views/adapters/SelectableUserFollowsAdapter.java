@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.databinding.SimpleChannelItemBinding;
-import net.myacxy.squinch.helpers.CustomBindings;
+import net.myacxy.squinch.helpers.BindingAdapters;
 
 public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<SelectableUserFollowsAdapter.SelectableUserFollowViewHolder> {
 
@@ -46,7 +46,7 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
             mBinding.setUserFollow(userFollow);
             mBinding.executePendingBindings();
             mBinding.getRoot().setOnClickListener(v -> mBinding.accbChSelected.setChecked(!mBinding.accbChSelected.isChecked()));
-            CustomBindings.loadImage(mBinding.sdvChAvatar, userFollow.getChannel().getLogo());
+            BindingAdapters.loadImage(mBinding.sdvChAvatar, userFollow.getChannel().getLogo());
         }
     }
 }
