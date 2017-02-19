@@ -12,8 +12,8 @@ import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.squinch.utils.JsonUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class DataHelper {
@@ -68,9 +68,9 @@ public class DataHelper {
     public List<UserFollow> getUserFollows() {
         String json = Setting.USER_FOLLOWS.load(sp, null);
         if (json == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
-        return Arrays.asList(JsonUtil.fromJson(json, UserFollow[].class));
+        return new ArrayList<>(Arrays.asList(JsonUtil.fromJson(json, UserFollow[].class)));
     }
 
     public void setUserFollows(@Nullable List<UserFollow> userFollows) {
@@ -80,13 +80,13 @@ public class DataHelper {
     public List<UserFollow> getDeselectedFollows() {
         String json = Setting.USER_FOLLOWS_DESELECTED.load(sp, null);
         if (json == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
-        return Arrays.asList(JsonUtil.fromJson(json, UserFollow[].class));
+        return new ArrayList<>(Arrays.asList(JsonUtil.fromJson(json, UserFollow[].class)));
     }
 
     public void setDeselectedFollows(List<UserFollow> userFollows) {
-        Setting.USER_FOLLOWS.save(sp, userFollows != null ? JsonUtil.toJson(userFollows) : null);
+        Setting.USER_FOLLOWS_DESELECTED.save(sp, userFollows != null ? JsonUtil.toJson(userFollows) : null);
     }
 
     private interface SharedPreference<T> {

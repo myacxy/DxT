@@ -16,9 +16,10 @@ public class SimpleViewModelLocator {
     private final MainViewModel mMainViewModel;
     private final SettingsViewModel mSettingsViewModel;
     private final Map<String, ChannelSelectionViewModel> mChannelSelectionViewModels;
+    private final DataHelper dataHelper;
 
     private SimpleViewModelLocator(Context context) {
-        DataHelper dataHelper = new DataHelper(context);
+        dataHelper = new DataHelper(context);
 
         mMainViewModel = new MainViewModel();
         mSettingsViewModel = new SettingsViewModel(dataHelper);
@@ -48,7 +49,8 @@ public class SimpleViewModelLocator {
         if (mChannelSelectionViewModels.containsKey(userName)) {
             return mChannelSelectionViewModels.get(userName);
         }
-        ChannelSelectionViewModel viewModel = new ChannelSelectionViewModel(userName);
+        mChannelSelectionViewModels.clear();
+        ChannelSelectionViewModel viewModel = new ChannelSelectionViewModel(dataHelper);
         mChannelSelectionViewModels.put(userName, viewModel);
         return viewModel;
     }

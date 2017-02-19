@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/keyline_horizontal1">
+            android:layout_marginStart="@dimen/keyline_horizontal1">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/sdv_ch_avatar"
@@ -43,8 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="72dp"
-            android:layout_toLeftOf="@+id/accb_ch_selected"
+            android:layout_marginStart="@dimen/keyline_horizontal2"
+            android:layout_toStartOf="@+id/accb_ch_selected"
             android:orientation="vertical"
             android:paddingBottom="20dp"
             android:paddingTop="16dp">
@@ -52,20 +52,20 @@
             <!--Display name-->
             <TextView
                 android:id="@+id/tv_ch_name"
-                style="@style/List.TextAppearance.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{ userFollow.getChannel().getDisplayName() }"
-                tools:text="nl_kripp" />
+                tools:text="nl_kripp"
+                style="@style/List.TextAppearance.Primary" />
 
             <!--Game-->
             <TextView
                 android:id="@+id/tv_ch_game"
-                style="@style/List.TextAppearance.Secondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{ userFollow.getChannel().getGame() }"
-                tools:text="Hearthstone: Heroes of Warcraft" />
+                tools:text="Hearthstone: Heroes of Warcraft"
+                style="@style/List.TextAppearance.Secondary" />
 
         </LinearLayout>
 
@@ -73,7 +73,7 @@
             android:id="@+id/accb_ch_selected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/keyline_horizontal1"
             android:layout_marginRight="@dimen/keyline_horizontal1" />

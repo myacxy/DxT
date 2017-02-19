@@ -48,6 +48,10 @@ public class SettingsViewModel implements ViewModel {
         updateSelectedChannelsText(settings.getUserFollows());
     }
 
+    public void refresh() {
+        updateSelectedChannelsText(dataHelper.getUserFollows());
+    }
+
     public Consumer<String> getUser() {
         return userName -> {
             compositeDisposable.clear();
@@ -78,7 +82,7 @@ public class SettingsViewModel implements ViewModel {
         if (!userFollows.isEmpty()) {
             int followsCount = userFollows.size();
             int deselectedChannels = 0;
-            for (UserFollow deselected : settings.getDeselectedFollows()) {
+            for (UserFollow deselected : dataHelper.getDeselectedFollows()) {
                 if (userFollows.contains(deselected)) {
                     deselectedChannels += 1;
                 }
@@ -160,5 +164,4 @@ public class SettingsViewModel implements ViewModel {
             }
         };
     }
-
 }

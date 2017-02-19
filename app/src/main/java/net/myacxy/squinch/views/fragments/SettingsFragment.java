@@ -43,6 +43,7 @@ public class SettingsFragment extends MvvmFragment {
         if (savedInstanceState == null && getViewModel().settings.getUser() != null) {
             userNameText.setText(getViewModel().settings.getUser().getName());
         }
+        getViewModel().refresh();
     }
 
     @OnCheckedChanged(R.id.sw_st_hide_extension)
