@@ -6,14 +6,18 @@ import android.databinding.Bindable;
 import com.android.databinding.library.baseAdapters.BR;
 
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
+import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 
-import java.io.Serializable;
+import java.util.List;
 
-public class SettingsModel extends BaseObservable implements Serializable {
+public class SettingsModel extends BaseObservable {
 
     private SimpleUser user;
-    private boolean hideEmptyExtension;
+    private List<UserFollow> userFollows;
+    private List<UserFollow> deselectedFollows;
     private int updateInterval;
+    private int totalFollows;
+    private boolean hideEmptyExtension;
 
     @Bindable
     public SimpleUser getUser() {
@@ -43,5 +47,35 @@ public class SettingsModel extends BaseObservable implements Serializable {
     public void setUpdateInterval(int updateInterval) {
         this.updateInterval = updateInterval;
         notifyPropertyChanged(BR.updateInterval);
+    }
+
+    @Bindable
+    public List<UserFollow> getUserFollows() {
+        return userFollows;
+    }
+
+    public void setUserFollows(List<UserFollow> userFollows) {
+        this.userFollows = userFollows;
+        notifyPropertyChanged(BR.userFollows);
+    }
+
+    @Bindable
+    public int getTotalFollows() {
+        return totalFollows;
+    }
+
+    public void setTotalFollows(int totalFollows) {
+        this.totalFollows = totalFollows;
+        notifyPropertyChanged(BR.totalFollows);
+    }
+
+    @Bindable
+    public List<UserFollow> getDeselectedFollows() {
+        return deselectedFollows;
+    }
+
+    public void setDeselectedFollows(List<UserFollow> deselectedFollows) {
+        this.deselectedFollows = deselectedFollows;
+        notifyPropertyChanged(BR.deselectedFollows);
     }
 }

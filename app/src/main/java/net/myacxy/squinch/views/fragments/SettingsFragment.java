@@ -45,11 +45,15 @@ public class SettingsFragment extends MvvmFragment {
 
         userNameText.setOnKeyListener((v, i, e) -> {
             if (e.getAction() == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_ENTER) {
-                getViewModel().onUserNameChanged(userNameText.toString());
+                getViewModel().onUserNameChanged(userNameText.getText().toString());
                 return true;
             }
             return false;
         });
+
+        if (savedInstanceState == null && getViewModel().settings.getUser() != null) {
+            userNameText.setText(getViewModel().settings.getUser().getName());
+        }
     }
 
     @OnEditorAction(R.id.met_st_user_name)

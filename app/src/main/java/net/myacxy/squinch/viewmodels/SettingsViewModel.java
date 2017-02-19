@@ -3,24 +3,37 @@ package net.myacxy.squinch.viewmodels;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
+
 import net.myacxy.retrotwitch.utils.StringUtil;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
+import net.myacxy.retrotwitch.v5.api.common.Direction;
 import net.myacxy.retrotwitch.v5.api.common.Error;
+import net.myacxy.retrotwitch.v5.api.common.SortBy;
+import net.myacxy.retrotwitch.v5.api.common.TwitchConstants;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUsersResponse;
-import net.myacxy.retrotwitch.v5.api.users.UserFollowsResponse;
+import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.retrotwitch.v5.helpers.RxErrorFactory;
-import net.myacxy.squinch.helpers.SharedPreferencesHelper;
+import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.models.SettingsModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Observable;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 public class SettingsViewModel implements ViewModel {
+
+    private final DataHelper dataHelper;
 
     public SettingsModel settings;
     public ObservableBoolean loadingUser = new ObservableBoolean();
@@ -28,28 +41,28 @@ public class SettingsViewModel implements ViewModel {
     public ObservableField<String> userError = new ObservableField<>();
     public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
 
-    private SharedPreferencesHelper sharedPreferencesHelper;
-    private UserFollowsResponse userFollowsResponse;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private DisposableObserver disposale;
-
-    public SettingsViewModel(SharedPreferencesHelper sharedPreferencesHelper) {
-        this.sharedPreferencesHelper = sharedPreferencesHelper;
-        settings = sharedPreferencesHelper.createDefaultSettings();
+    public SettingsViewModel(DataHelper dataHelper) {
+        this.dataHelper = dataHelper;
+        settings = dataHelper.recoverSettings();
+        updateSelectedChannelsText();
     }
 
     public void onUserNameChanged(String userName) {
+        compositeDisposable.clear();
         if (userName != null && (userName = userName.trim()).length() != 0) {
-            reset();
-
             loadingUser.set(true);
 
-            RxRetroTwitch.getInstance()
+            Disposable disposable = RxRetroTwitch.getInstance()
                     .users()
                     .translateUserNameToUserId(userName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(disposale = getUserObserver());
+                    .subscribeWith(getUserObserver());
+
+            compositeDisposable.add(disposable);
+
         } else {
             settings.setUser(null);
             userLogo.set(null);
@@ -59,32 +72,28 @@ public class SettingsViewModel implements ViewModel {
 
     public void onHideExtensionChanged(boolean hide) {
         settings.setHideEmptyExtension(hide);
-        sharedPreferencesHelper.setHideEmptyExtension(hide);
+        dataHelper.setHideEmptyExtension(hide);
     }
 
     private void updateSelectedChannelsText() {
-        if (userFollowsResponse != null) {
-            int followsCount = userFollowsResponse.getUserFollows().size();
-            String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", followsCount, followsCount);
+        List<UserFollow> userFollows = settings.getUserFollows();
+        if (!userFollows.isEmpty()) {
+            int followsCount = userFollows.size();
+            int deselectedChannels = 0;
+            for (UserFollow deselected : settings.getDeselectedFollows()) {
+                if (userFollows.contains(deselected)) {
+                    deselectedChannels += 1;
+                }
+            }
+            String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", followsCount - deselectedChannels, followsCount);
             selectedChannelsText.set(text);
             return;
         }
         selectedChannelsText.set("0\u2009/\u20090");
     }
 
-    private void reset() {
-        if (disposale != null) {
-            disposale.dispose();
-        }
-
-        sharedPreferencesHelper.setUser(null);
-        settings.setUser(null);
-        userLogo.set(null);
-        userError.set(null);
-    }
-
     private void onUserError(Error error) {
-        sharedPreferencesHelper.setUser(null);
+        dataHelper.setUser(null);
         settings.setUser(null);
         loadingUser.set(false);
         userLogo.set(null);
@@ -110,7 +119,7 @@ public class SettingsViewModel implements ViewModel {
 
                 SimpleUser user = response.body().getUsers().get(0);
                 settings.setUser(user);
-                sharedPreferencesHelper.setUser(user);
+                dataHelper.setUser(user);
                 if (user != null) {
                     userLogo.set(user.getLogo());
                 }
@@ -120,12 +129,46 @@ public class SettingsViewModel implements ViewModel {
             public void onComplete() {
                 SimpleUser user = settings.getUser();
                 if (user != null && !StringUtil.isEmpty(user.getName())) {
-                    RxRetroTwitch.getInstance()
-                            .users()
-                            .getUserFollows(user.getId(), null, null, null, null)
+                    Observable.range(0, Integer.MAX_VALUE)
+                            .concatMap(page ->
+                                    RxRetroTwitch.getInstance()
+                                            .users()
+                                            .getUserFollows(
+                                                    user.getId(),
+                                                    TwitchConstants.MAX_LIMIT,
+                                                    page * TwitchConstants.MAX_LIMIT,
+                                                    Direction.DEFAULT,
+                                                    SortBy.DEFAULT
+                                            )
+                            )
+                            .takeUntil(response -> response.code() != 200 || response.body().getUserFollows().size() == 0)
+                            .reduceWith(() -> new ArrayList<UserFollow>(), (userFollows, response) -> {
+                                if (response.code() != 200) {
+                                    throw new HttpException(response);
+                                }
+                                userFollows.addAll(response.body().getUserFollows());
+                                return userFollows;
+                            })
                             .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(disposale = getUserFollowsObserver());
+                            .subscribeWith(new SingleObserver<List<UserFollow>>() {
+                                @Override
+                                public void onSubscribe(Disposable disposable) {
+                                    compositeDisposable.add(disposable);
+                                }
+
+                                @Override
+                                public void onSuccess(List<UserFollow> userFollows) {
+                                    loadingUser.set(false);
+                                    settings.setUserFollows(userFollows);
+                                    dataHelper.setUserFollows(userFollows);
+                                    updateSelectedChannelsText();
+                                }
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    onUserFollowsError(RxErrorFactory.fromThrowable(throwable));
+                                }
+                            });
                 } else {
                     loadingUser.set(false);
                 }
@@ -134,32 +177,6 @@ public class SettingsViewModel implements ViewModel {
             @Override
             public void onError(Throwable t) {
                 onUserError(RxErrorFactory.fromThrowable(t));
-            }
-        };
-    }
-
-    private DisposableObserver<Response<UserFollowsResponse>> getUserFollowsObserver() {
-        return new DisposableObserver<Response<UserFollowsResponse>>() {
-
-            @Override
-            public void onNext(Response<UserFollowsResponse> response) {
-                Error error = RxErrorFactory.fromResponse(response);
-                if (error != null) {
-                    onUserFollowsError(error);
-                    return;
-                }
-                userFollowsResponse = response.body();
-            }
-
-            @Override
-            public void onComplete() {
-                loadingUser.set(false);
-                updateSelectedChannelsText();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                onUserFollowsError(RxErrorFactory.fromThrowable(t));
             }
         };
     }

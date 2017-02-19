@@ -2,7 +2,7 @@ package net.myacxy.squinch;
 
 import android.content.Context;
 
-import net.myacxy.squinch.helpers.SharedPreferencesHelper;
+import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
 import net.myacxy.squinch.viewmodels.MainViewModel;
 import net.myacxy.squinch.viewmodels.SettingsViewModel;
@@ -18,10 +18,10 @@ public class SimpleViewModelLocator {
     private final Map<String, ChannelSelectionViewModel> mChannelSelectionViewModels;
 
     private SimpleViewModelLocator(Context context) {
-        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(context);
+        DataHelper dataHelper = new DataHelper(context);
 
         mMainViewModel = new MainViewModel();
-        mSettingsViewModel = new SettingsViewModel(sharedPreferencesHelper);
+        mSettingsViewModel = new SettingsViewModel(dataHelper);
         mChannelSelectionViewModels = new HashMap<>();
     }
 

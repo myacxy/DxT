@@ -24,7 +24,7 @@ public class AppApplication extends Application {
 
         RxRetroTwitch.getInstance()
                 .configure(new Configuration.ConfigurationBuilder()
-                        .setLogLevel(HttpLoggingInterceptor.Level.BODY)
+                        .setLogLevel(HttpLoggingInterceptor.Level.HEADERS)
                         .setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr")
                         .build()
                 );
