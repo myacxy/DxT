@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.databinding.SimpleChannelItemBinding;
@@ -22,12 +24,12 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
 
     private final DataHelper dataHelper;
     private final List<UserFollow> userFollows;
-    private final List<UserFollow> deselectedUserFollows;
+    private final List<Long> deselectedChannelIds;
 
     public SelectableUserFollowsAdapter(DataHelper dataHelper) {
         this.dataHelper = dataHelper;
         userFollows = dataHelper.getUserFollows();
-        deselectedUserFollows = dataHelper.getDeselectedFollows();
+        deselectedChannelIds = dataHelper.getDeselectedChannelIds();
     }
 
     @Override
@@ -51,12 +53,16 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
         @BindView(R.id.accb_ch_selected)
         protected AppCompatCheckBox selected;
 
+        @BindView(R.id.sdv_ch_avatar)
+        protected SimpleDraweeView avatar;
+
         private SimpleChannelItemBinding mBinding;
 
         public SelectableUserFollowViewHolder(SimpleChannelItemBinding binding) {
             super(binding.getRoot());
             ButterKnife.bind(this, itemView);
             mBinding = binding;
+
         }
 
         public void bind(UserFollow userFollow) {
@@ -64,7 +70,7 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
             mBinding.executePendingBindings();
             BindingAdapters.loadImage(mBinding.sdvChAvatar, userFollow.getChannel().getLogo());
 
-            selected.setChecked(!deselectedUserFollows.contains(userFollow));
+            selected.setChecked(!deselectedChannelIds.contains(userFollow.getChannel().getId()));
         }
 
         @OnClick(R.id.rl_ch_item)
@@ -74,16 +80,16 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
 
         @OnCheckedChanged(R.id.accb_ch_selected)
         protected void onSelectionChanged(boolean checked) {
-            UserFollow userFollow = mBinding.getUserFollow();
+            long id = mBinding.getUserFollow().getChannel().getId();
             if (checked) {
-                if (deselectedUserFollows.contains(userFollow)) {
-                    deselectedUserFollows.remove(userFollow);
-                    dataHelper.setDeselectedFollows(deselectedUserFollows);
+                if (deselectedChannelIds.contains(id)) {
+                    deselectedChannelIds.remove(id);
+                    dataHelper.setDeselectedChannelIds(deselectedChannelIds);
                 }
             } else {
-                if (!deselectedUserFollows.contains(userFollow)) {
-                    deselectedUserFollows.add(userFollow);
-                    dataHelper.setDeselectedFollows(deselectedUserFollows);
+                if (!deselectedChannelIds.contains(id)) {
+                    deselectedChannelIds.add(id);
+                    dataHelper.setDeselectedChannelIds(deselectedChannelIds);
                 }
             }
         }

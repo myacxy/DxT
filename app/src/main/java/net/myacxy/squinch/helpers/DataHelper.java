@@ -57,8 +57,6 @@ public class DataHelper {
         SettingsModel settings = new SettingsModel();
         settings.setUser(getUser());
         settings.setUserFollows(getUserFollows());
-        settings.setTotalFollows(settings.getUserFollows().size());
-        settings.setDeselectedFollows(getDeselectedFollows());
         settings.setUpdateInterval(getUpdateInterval(60));
         settings.setHideEmptyExtension(getHideEmptyExtension(true));
         return settings;
@@ -77,16 +75,16 @@ public class DataHelper {
         Setting.USER_FOLLOWS.save(sp, userFollows != null ? JsonUtil.toJson(userFollows) : null);
     }
 
-    public List<UserFollow> getDeselectedFollows() {
-        String json = Setting.USER_FOLLOWS_DESELECTED.load(sp, null);
+    public List<Long> getDeselectedChannelIds() {
+        String json = Setting.DESELECTED_CHANNEL_IDS.load(sp, null);
         if (json == null) {
             return new ArrayList<>();
         }
-        return new ArrayList<>(Arrays.asList(JsonUtil.fromJson(json, UserFollow[].class)));
+        return new ArrayList<>(Arrays.asList(JsonUtil.fromJson(json, Long[].class)));
     }
 
-    public void setDeselectedFollows(List<UserFollow> userFollows) {
-        Setting.USER_FOLLOWS_DESELECTED.save(sp, userFollows != null ? JsonUtil.toJson(userFollows) : null);
+    public void setDeselectedChannelIds(List<Long> channelIds) {
+        Setting.DESELECTED_CHANNEL_IDS.save(sp, JsonUtil.toJson(channelIds));
     }
 
     private interface SharedPreference<T> {
@@ -172,11 +170,11 @@ public class DataHelper {
             }
         };
 
-        static final SharedPreference<String> USER_FOLLOWS_DESELECTED = new SharedPreference<String>() {
+        static final SharedPreference<String> DESELECTED_CHANNEL_IDS = new SharedPreference<String>() {
 
             @Override
             public String getKey() {
-                return "pref.user.follows.deselected";
+                return "pref.channels.deselected.id";
             }
 
             @Override

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Observable;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -40,16 +41,19 @@ public class SettingsViewModel implements ViewModel {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private SimpleUser tmpUser;
+    private List<Long> deselectedChannelIds;
 
     public SettingsViewModel(DataHelper dataHelper) {
         this.dataHelper = dataHelper;
         settings = dataHelper.recoverSettings();
-        userLogo.set(settings.getUser() != null ? settings.getUser().getLogo() : null);
-        updateSelectedChannelsText(settings.getUserFollows());
+        refresh();
     }
 
     public void refresh() {
-        updateSelectedChannelsText(dataHelper.getUserFollows());
+        userError.set(null);
+        userLogo.set(settings.getUser() != null ? settings.getUser().getLogo() : null);
+        deselectedChannelIds = dataHelper.getDeselectedChannelIds();
+        updateSelectedChannelsText(dataHelper.getUserFollows(), deselectedChannelIds);
     }
 
     public Consumer<String> getUser() {
@@ -78,17 +82,16 @@ public class SettingsViewModel implements ViewModel {
         dataHelper.setHideEmptyExtension(hide);
     }
 
-    private void updateSelectedChannelsText(List<UserFollow> userFollows) {
+    private void updateSelectedChannelsText(final List<UserFollow> userFollows, List<Long> deselectedChannelIds) {
         if (!userFollows.isEmpty()) {
-            int followsCount = userFollows.size();
-            int deselectedChannels = 0;
-            for (UserFollow deselected : dataHelper.getDeselectedFollows()) {
-                if (userFollows.contains(deselected)) {
-                    deselectedChannels += 1;
-                }
-            }
-            String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", followsCount - deselectedChannels, followsCount);
-            selectedChannelsText.set(text);
+            Observable.fromIterable(userFollows)
+                    .filter(userFollow -> deselectedChannelIds.contains(userFollow.getChannel().getId()))
+                    .count()
+                    .subscribeOn(Schedulers.computation())
+                    .subscribe((deselected, t) -> {
+                        String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", userFollows.size() - deselected, userFollows.size());
+                        selectedChannelsText.set(text);
+                    });
             return;
         }
         selectedChannelsText.set("0\u2009/\u20090");
@@ -103,7 +106,7 @@ public class SettingsViewModel implements ViewModel {
         userLogo.set(null);
         isLoadingUser.set(false);
         userError.set(error.getMessage());
-        updateSelectedChannelsText(Collections.emptyList());
+        updateSelectedChannelsText(Collections.emptyList(), deselectedChannelIds);
     }
 
     private void onUserFollowsError(Error error) {
@@ -127,7 +130,7 @@ public class SettingsViewModel implements ViewModel {
             @Override
             public void onComplete() {
                 if (tmpUser != null && !StringUtil.isEmpty(tmpUser.getName())) {
-                    RetroTwitchUtil.getAllUserFollows(tmpUser.getId(), progress -> updateSelectedChannelsText(progress))
+                    RetroTwitchUtil.getAllUserFollows(tmpUser.getId(), progress -> updateSelectedChannelsText(progress, deselectedChannelIds))
                             .subscribeOn(Schedulers.io())
                             .subscribeWith(new SingleObserver<List<UserFollow>>() {
                                 @Override
@@ -143,7 +146,7 @@ public class SettingsViewModel implements ViewModel {
                                     dataHelper.setUser(user);
                                     dataHelper.setUserFollows(userFollows);
 
-                                    updateSelectedChannelsText(userFollows);
+                                    updateSelectedChannelsText(userFollows, deselectedChannelIds);
                                     userLogo.set(user.getLogo());
                                     isLoadingUser.set(false);
                                 }
