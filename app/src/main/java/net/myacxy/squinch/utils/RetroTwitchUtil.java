@@ -5,12 +5,15 @@ import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.retrotwitch.v5.api.common.Direction;
 import net.myacxy.retrotwitch.v5.api.common.SortBy;
+import net.myacxy.retrotwitch.v5.api.common.StreamType;
 import net.myacxy.retrotwitch.v5.api.common.TwitchConstants;
+import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Notification;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
@@ -22,7 +25,7 @@ public class RetroTwitchUtil {
         throw new IllegalAccessError();
     }
 
-    public static Single<ArrayList<UserFollow>> getAllUserFollows(long userId, Consumer<List<UserFollow>> progress) {
+    public static Single<List<UserFollow>> getAllUserFollows(long userId, Consumer<List<UserFollow>> progress) {
         return Observable.range(0, Integer.MAX_VALUE)
                 .concatMap(page ->
                         RxRetroTwitch.getInstance()
@@ -36,7 +39,7 @@ public class RetroTwitchUtil {
                                 )
                 )
                 .takeUntil(response -> response.code() != 200 || response.body().getUserFollows().size() == 0)
-                .reduceWith(() -> new ArrayList<UserFollow>(), (userFollows, response) -> {
+                .reduceWith(ArrayList::new, (userFollows, response) -> {
                     if (response.code() != 200) {
                         throw new HttpException(response);
                     }
@@ -44,5 +47,34 @@ public class RetroTwitchUtil {
                     progress.accept(userFollows);
                     return userFollows;
                 });
+    }
+
+    public static Single<List<Stream>> getAllLiveStreams(List<UserFollow> userFollows, Consumer<Notification<Stream>> progress) {
+        return Observable.fromIterable(userFollows)
+                .map(UserFollow::getChannel)
+                .toList()
+                .toObservable()
+                .concatMap(channels -> Observable.range(0, Integer.MAX_VALUE)
+                        .concatMap(page -> RxRetroTwitch.getInstance()
+                                .streams()
+                                .getStreams(channels,
+                                        null,
+                                        null,
+                                        StreamType.ALL,
+                                        TwitchConstants.MAX_LIMIT,
+                                        page * TwitchConstants.MAX_LIMIT
+                                )
+                        )
+                        .takeUntil(response -> {
+                            if (response.code() != 200) {
+                                throw new HttpException(response);
+                            }
+                            return response.body().getStreams().size() == 0;
+                        })
+                        .concatMap(response -> Observable.fromIterable(response.body().getStreams())
+                                .doOnEach(progress)
+                                .filter(stream -> stream != null)
+                        )
+                ).toList();
     }
 }
