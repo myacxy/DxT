@@ -16,7 +16,7 @@
 
         <service
             android:name="net.myacxy.squinch.TwitchExtension"
-            android:icon="@android:drawable/sym_def_app_icon"
+            android:icon="@drawable/ic_android_black_24dp"
             android:label="@string/app_name"
             android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA"
             >
@@ -42,10 +42,15 @@
 
             <meta-data
                 android:name="settingsActivity"
-                android:value=".views.activities.SettingsActivity"
+                android:value="net.myacxy.squinch.views.activities.SettingsActivity"
                 />
 
         </service>
+
+        <service
+            android:name="net.myacxy.squinch.RetroTwitchJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
 
         <!--MainActivity-->
         <activity

@@ -1,6 +1,8 @@
 package net.myacxy.squinch;
 
 import android.app.Application;
+import android.app.job.JobScheduler;
+import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -12,9 +14,11 @@ import net.myacxy.retrotwitch.Configuration;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 
 import io.fabric.sdk.android.Fabric;
-import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 
 public class AppApplication extends Application {
+
+    private static final String CLIENT_ID_TESTING = "75gzbgqhk0tg6dhjbqtsphmy8sdayrr";
 
     @Override
     public void onCreate() {
@@ -24,8 +28,8 @@ public class AppApplication extends Application {
 
         RxRetroTwitch.getInstance()
                 .configure(new Configuration.ConfigurationBuilder()
-                        .setLogLevel(HttpLoggingInterceptor.Level.BODY)
-                        .setClientId("75gzbgqhk0tg6dhjbqtsphmy8sdayrr")
+                        .setLogLevel(BuildConfig.DEBUG ? Level.BODY : Level.NONE)
+                        .setClientId(CLIENT_ID_TESTING)
                         .build()
                 );
 
@@ -38,5 +42,9 @@ public class AppApplication extends Application {
         Fresco.initialize(getApplicationContext());
 
         SimpleViewModelLocator.initialize(getApplicationContext());
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancelAll();
+        jobScheduler.schedule(RetroTwitchJobService.newJob(this));
     } // onCreate
 } // AppApplication

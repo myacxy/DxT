@@ -7,6 +7,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.models.SettingsModel;
@@ -85,6 +86,19 @@ public class DataHelper {
 
     public void setDeselectedChannelIds(List<Long> channelIds) {
         Setting.DESELECTED_CHANNEL_IDS.save(sp, JsonUtil.toJson(channelIds));
+    }
+
+    @NonNull
+    public List<Stream> getLiveStreams() {
+        String json = Setting.LIVE_STREAMS.load(sp, null);
+        if (json == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(Arrays.asList(JsonUtil.fromJson(json, Stream[].class)));
+    }
+
+    public void setLiveStreams(@Nullable List<Stream> streams) {
+        Setting.LIVE_STREAMS.save(sp, streams != null ? JsonUtil.toJson(streams) : null);
     }
 
     private interface SharedPreference<T> {
@@ -175,6 +189,24 @@ public class DataHelper {
             @Override
             public String getKey() {
                 return "pref.channels.deselected.id";
+            }
+
+            @Override
+            public void save(SharedPreferences sp, String value) {
+                sp.edit().putString(getKey(), value).apply();
+            }
+
+            @Override
+            public String load(SharedPreferences sp, String defValue) {
+                return sp.getString(getKey(), defValue);
+            }
+        };
+
+        static final SharedPreference<String> LIVE_STREAMS = new SharedPreference<String>() {
+
+            @Override
+            public String getKey() {
+                return "pref.streams.live";
             }
 
             @Override
