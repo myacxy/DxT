@@ -1,75 +1,112 @@
 package net.myacxy.squinch;
 
 import android.content.Intent;
-import android.widget.Toast;
+import android.support.annotation.IntDef;
+import android.support.annotation.Keep;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
+import com.orhanobut.logger.Logger;
 
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
+import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.utils.RetroTwitchUtil;
+import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.views.activities.SettingsActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-public class TwitchExtension extends DashClockExtension
-{
+public class TwitchExtension extends DashClockExtension {
     private DataHelper dataHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
         dataHelper = new DataHelper(getApplicationContext());
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    public void onUpdateData(int reason) {
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
-        List<UserFollow> userFollows = dataHelper.getUserFollows();
+    @Override
+    public void onUpdateData(@UpdateReason int reason) {
 
-        if (userFollows.size() > 0) {
-            RetroTwitchUtil.getAllLiveStreams(dataHelper.getUserFollows(),
-                    progress -> {
-                        if (!progress.isOnComplete()) {
-                            System.out.println(progress.getValue());
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleObserver<List<Stream>>() {
-                        @Override
-                        public void onSubscribe(Disposable disposable) {
+        String status;
+        String title;
+        StringBuilder body = new StringBuilder();
 
-                        }
+        SimpleUser user = dataHelper.getUser();
+        if (user != null) {
+            List<UserFollow> follows = dataHelper.getUserFollows();
+            List<Long> channels = dataHelper.getDeselectedChannelIds();
+            List<Stream> streams = dataHelper.getLiveStreams();
 
-                        @Override
-                        public void onSuccess(List<Stream> streams) {
-                            Toast.makeText(TwitchExtension.this, String.format(Locale.getDefault(), "%d online", streams.size()), Toast.LENGTH_SHORT).show();
-                        }
+            int allFollows = follows.size();
+            int filteredFollows = follows.size();
+            for (UserFollow follow : follows) {
+                if (channels.contains(follow.getChannel().getId())) {
+                    filteredFollows -= 1;
+                }
+            }
+            List<Stream> filteredStreams = new ArrayList<>(streams.size());
+            for (Stream stream : streams) {
+                if (!channels.contains(stream.getId())) {
+                    filteredStreams.add(stream);
+                }
+            }
 
-                        @Override
-                        public void onError(Throwable throwable) {
+            for (int i = 0; i < filteredStreams.size(); i++) {
+                Stream stream = filteredStreams.get(i);
+                String line = String.format("%s (%s): %s", stream.getChannel().getDisplayName(), stream.getGame(), stream.getChannel().getStatus());
+                body.append(line);
+                body.append(i == filteredStreams.size() - 1 ? "\n" : "");
+            }
 
-                        }
-                    });
+            status = String.valueOf(filteredStreams.size());
+            title = String.format(Locale.getDefault(), "F%d/%d | S%d/%d", filteredFollows, allFollows, filteredStreams.size(), streams.size());
+        } else {
+            status = "―";
+            title = "User is null";
         }
 
         // publish data
         publishUpdate(new ExtensionData()
                 .visible(true)
                 .icon(R.drawable.ic_glitch_white_24dp)
-                .status("Status")
-                .expandedTitle("Expanded Title")
-                .expandedBody("Expanded Body")
+                .status(status)
+                .expandedTitle(title)
+                .expandedBody(body.toString())
                 .clickIntent(new Intent(this, SettingsActivity.class)));
     } // onUpdateData
+
+    @Keep
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEvent(DashclockUpdateEvent event) {
+        Logger.d("updateEvent=", event.getUpdateReason());
+        onUpdateData(event.getUpdateReason());
+    }
+
+    @IntDef({
+            UPDATE_REASON_UNKNOWN,
+            UPDATE_REASON_INITIAL,
+            UPDATE_REASON_PERIODIC,
+            UPDATE_REASON_SETTINGS_CHANGED,
+            UPDATE_REASON_CONTENT_CHANGED,
+            UPDATE_REASON_SCREEN_ON,
+            UPDATE_REASON_MANUAL
+    })
+    public @interface UpdateReason {
+    }
 
 } // TwitchExtension

@@ -3,6 +3,9 @@ package net.myacxy.squinch.viewmodels;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.android.apps.dashclock.api.DashClockExtension;
+
 import net.myacxy.retrotwitch.utils.StringUtil;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.retrotwitch.v5.api.common.Error;
@@ -12,7 +15,10 @@ import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.retrotwitch.v5.helpers.RxErrorFactory;
 import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.models.SettingsModel;
+import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Collections;
 import java.util.List;
@@ -149,6 +155,15 @@ public class SettingsViewModel implements ViewModel {
                                     updateSelectedChannelsText(userFollows, deselectedChannelIds);
                                     userLogo.set(user.getLogo());
                                     isLoadingUser.set(false);
+
+                                    RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> {
+                                    })
+                                            .doOnError(Crashlytics::logException)
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe(streams -> {
+                                                dataHelper.setLiveStreams(streams);
+                                                EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
+                                            });
                                 }
 
                                 @Override

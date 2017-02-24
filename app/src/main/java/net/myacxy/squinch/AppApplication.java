@@ -28,7 +28,7 @@ public class AppApplication extends Application {
 
         RxRetroTwitch.getInstance()
                 .configure(new Configuration.ConfigurationBuilder()
-                        .setLogLevel(BuildConfig.DEBUG ? Level.BODY : Level.NONE)
+                        .setLogLevel(BuildConfig.DEBUG ? Level.NONE : Level.NONE)
                         .setClientId(CLIENT_ID_TESTING)
                         .build()
                 );
@@ -38,6 +38,8 @@ public class AppApplication extends Application {
                 .logLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
                 .methodOffset(0)
                 .logTool(new AndroidLogTool());
+
+        Logger.d("App created");
 
         Fresco.initialize(getApplicationContext());
 

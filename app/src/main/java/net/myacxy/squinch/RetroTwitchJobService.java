@@ -7,12 +7,16 @@ import android.content.ComponentName;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.orhanobut.logger.Logger;
 
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.squinch.helpers.DataHelper;
+import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,9 +34,9 @@ public class RetroTwitchJobService extends JobService {
 
     public static JobInfo newJob(Context context) {
         return new JobInfo.Builder(JOB_ID++, new ComponentName(context, RetroTwitchJobService.class))
-                .setPeriodic(TimeUnit.MINUTES.toMillis(5))
-//                .setMinimumLatency(TimeUnit.MINUTES.toMillis(5))
-//                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(25))
+//                .setPeriodic(TimeUnit.MINUTES.toMillis(45))
+                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
+                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(120))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                 .setBackoffCriteria(TimeUnit.SECONDS.toMillis(30), JobInfo.BACKOFF_POLICY_EXPONENTIAL)
                 .setRequiresDeviceIdle(false)
@@ -72,6 +76,7 @@ public class RetroTwitchJobService extends JobService {
                     public void onSuccess(List<Stream> streams) {
                         Logger.d("streams=%s", streams);
                         dataHelper.setLiveStreams(streams);
+                        EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                         jobFinished(params, false);
                     }
 
