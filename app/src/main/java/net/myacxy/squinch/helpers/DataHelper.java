@@ -56,10 +56,11 @@ public class DataHelper {
 
     public SettingsModel recoverSettings() {
         SettingsModel settings = new SettingsModel();
-        settings.setUser(getUser());
-        settings.setUserFollows(getUserFollows());
-        settings.setUpdateInterval(getUpdateInterval(60));
-        settings.setHideEmptyExtension(getHideEmptyExtension(true));
+        settings.user.set(getUser());
+        settings.userFollows.set(getUserFollows());
+        settings.liveStreams.set(getLiveStreams());
+        settings.updateInterval.set(getUpdateInterval(60));
+        settings.isEmptyExtensionHidden.set(getHideEmptyExtension(true));
         return settings;
     }
 

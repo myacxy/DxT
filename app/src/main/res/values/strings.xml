@@ -10,6 +10,12 @@
     <string name="title_settings_user">User</string>
     <string name="hint_settings_user_name">Twitch user name</string>
     <string name="title_settings_channel_selection">Custom channel selection</string>
-    <string name="desc_settings_channel_selection">Select which of your followed channels you actually want to be displayed</string>
+    <string name="descr_settings_channel_selection">Select which of your followed channels you actually want to be displayed</string>
+
+    <string name="lorem_ipsum_2" translatable="false">Lorem ipsum</string>
+    <string name="lorem_ipsum_4" translatable="false">Lorem ipsum dolor sit</string>
+    <string name="lorem_ipsum_8" translatable="false">Lorem ipsum dolor sit amet, consetetur sadipscing elitr</string>
+    <string name="lorem_ipsum_16" translatable="false">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore</string>
+    <string name="lorem_ipsum_32" translatable="false">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo</string>
 
 </resources>

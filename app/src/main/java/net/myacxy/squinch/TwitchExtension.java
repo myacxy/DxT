@@ -2,7 +2,6 @@ package net.myacxy.squinch;
 
 import android.content.Intent;
 import android.support.annotation.IntDef;
-import android.support.annotation.Keep;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
@@ -89,11 +88,9 @@ public class TwitchExtension extends DashClockExtension {
                 .clickIntent(new Intent(this, SettingsActivity.class)));
     } // onUpdateData
 
-    @Keep
-    @SuppressWarnings("unused")
     @Subscribe
     public void onEvent(DashclockUpdateEvent event) {
-        Logger.d("updateEvent=", event.getUpdateReason());
+        Logger.d("updateEvent=%d", event.getUpdateReason());
         onUpdateData(event.getUpdateReason());
     }
 

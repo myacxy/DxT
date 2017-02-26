@@ -1,8 +1,5 @@
 package net.myacxy.squinch.viewmodels;
 
-import android.databinding.ObservableBoolean;
-import android.databinding.ObservableField;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.apps.dashclock.api.DashClockExtension;
 
@@ -40,14 +37,7 @@ public class SettingsViewModel implements ViewModel {
 
     public SettingsModel settings;
 
-    public ObservableBoolean isLoadingUser = new ObservableBoolean();
-    public ObservableField<String> userLogo = new ObservableField<>();
-    public ObservableField<String> userError = new ObservableField<>();
-    public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
-
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private SimpleUser tmpUser;
-    private List<Long> deselectedChannelIds;
 
     public SettingsViewModel(DataHelper dataHelper) {
         this.dataHelper = dataHelper;
@@ -56,20 +46,22 @@ public class SettingsViewModel implements ViewModel {
     }
 
     public void refresh() {
-        userError.set(null);
-        userLogo.set(settings.getUser() != null ? settings.getUser().getLogo() : null);
-        deselectedChannelIds = dataHelper.getDeselectedChannelIds();
-        updateSelectedChannelsText(dataHelper.getUserFollows(), deselectedChannelIds);
+        settings.userError.set(null);
+        settings.userLogo.set(settings.user.get() != null ? settings.user.get().getLogo() : null);
+        settings.deselectedChannelIds.set(dataHelper.getDeselectedChannelIds());
+        updateSelectedChannelsText(dataHelper.getUserFollows(), settings.deselectedChannelIds.get());
     }
 
     public Consumer<String> getUser() {
         return userName -> {
+
             compositeDisposable.clear();
-            userError.set(null);
-            tmpUser = null;
+            settings.userError.set(null);
+            settings.tmpUser.set(null);
 
             if (userName != null && (userName = userName.trim()).length() != 0) {
-                isLoadingUser.set(true);
+                updateSelectedChannelsText(Collections.emptyList(), Collections.emptyList());
+                settings.isLoadingUser.set(true);
 
                 Disposable disposable = RxRetroTwitch.getInstance()
                         .users()
@@ -84,7 +76,7 @@ public class SettingsViewModel implements ViewModel {
     }
 
     public void onHideExtensionChanged(boolean hide) {
-        settings.setHideEmptyExtension(hide);
+        settings.isEmptyExtensionHidden.set(hide);
         dataHelper.setHideEmptyExtension(hide);
     }
 
@@ -96,23 +88,23 @@ public class SettingsViewModel implements ViewModel {
                     .subscribeOn(Schedulers.computation())
                     .subscribe((deselected, t) -> {
                         String text = String.format(Locale.getDefault(), "%d\u2009/\u2009%d", userFollows.size() - deselected, userFollows.size());
-                        selectedChannelsText.set(text);
+                        settings.selectedChannelsText.set(text);
                     });
             return;
         }
-        selectedChannelsText.set("0\u2009/\u20090");
+        settings.selectedChannelsText.set("0\u2009/\u20090");
     }
 
     private void onUserError(Error error) {
-        settings.setUser(null);
-        settings.setUserFollows(null);
+        settings.user.set(null);
+        settings.userFollows.get().clear();
         dataHelper.setUser(null);
         dataHelper.setUserFollows(null);
 
-        userLogo.set(null);
-        isLoadingUser.set(false);
-        userError.set(error.getMessage());
-        updateSelectedChannelsText(Collections.emptyList(), deselectedChannelIds);
+        settings.userLogo.set(null);
+        settings.isLoadingUser.set(false);
+        settings.userError.set(error.getMessage());
+        updateSelectedChannelsText(Collections.emptyList(), settings.deselectedChannelIds.get());
     }
 
     private void onUserFollowsError(Error error) {
@@ -130,13 +122,13 @@ public class SettingsViewModel implements ViewModel {
                     return;
                 }
 
-                tmpUser = response.body().getUsers().get(0);
+                settings.tmpUser.set(response.body().getUsers().get(0));
             }
 
             @Override
             public void onComplete() {
-                if (tmpUser != null && !StringUtil.isEmpty(tmpUser.getName())) {
-                    RetroTwitchUtil.getAllUserFollows(tmpUser.getId(), progress -> updateSelectedChannelsText(progress, deselectedChannelIds))
+                if (settings.tmpUser.get() != null && !StringUtil.isEmpty(settings.tmpUser.get().getName())) {
+                    RetroTwitchUtil.getAllUserFollows(settings.tmpUser.get().getId(), progress -> updateSelectedChannelsText(progress, settings.deselectedChannelIds.get()))
                             .subscribeOn(Schedulers.io())
                             .subscribeWith(new SingleObserver<List<UserFollow>>() {
                                 @Override
@@ -146,15 +138,15 @@ public class SettingsViewModel implements ViewModel {
 
                                 @Override
                                 public void onSuccess(List<UserFollow> userFollows) {
-                                    SimpleUser user = tmpUser;
-                                    settings.setUser(user);
-                                    settings.setUserFollows(userFollows);
+                                    SimpleUser user = settings.tmpUser.get();
+                                    settings.user.set(user);
+                                    settings.userFollows.set(userFollows);
                                     dataHelper.setUser(user);
                                     dataHelper.setUserFollows(userFollows);
 
-                                    updateSelectedChannelsText(userFollows, deselectedChannelIds);
-                                    userLogo.set(user.getLogo());
-                                    isLoadingUser.set(false);
+                                    updateSelectedChannelsText(userFollows, settings.deselectedChannelIds.get());
+                                    settings.userLogo.set(user.getLogo());
+                                    settings.isLoadingUser.set(false);
 
                                     RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> {
                                     })
@@ -172,7 +164,7 @@ public class SettingsViewModel implements ViewModel {
                                 }
                             });
                 } else {
-                    isLoadingUser.set(false);
+                    settings.isLoadingUser.set(false);
                 }
             }
 

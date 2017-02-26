@@ -1,59 +1,30 @@
 package net.myacxy.squinch.models;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
+import android.databinding.ObservableBoolean;
+import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 
-import com.android.databinding.library.baseAdapters.BR;
-
+import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsModel extends BaseObservable {
+public class SettingsModel {
 
-    private SimpleUser user;
-    private List<UserFollow> userFollows;
-    private int updateInterval;
-    private boolean hideEmptyExtension;
+    public ObservableField<SimpleUser> user = new ObservableField<>();
+    public ObservableField<SimpleUser> tmpUser = new ObservableField<>();
 
-    @Bindable
-    public SimpleUser getUser() {
-        return user;
-    }
+    public ObservableField<List<UserFollow>> userFollows = new ObservableField<>(new ArrayList<>());
+    public ObservableField<List<Stream>> liveStreams = new ObservableField<>(new ArrayList<>());
+    public ObservableInt updateInterval = new ObservableInt();
+    public ObservableBoolean isEmptyExtensionHidden = new ObservableBoolean();
+    public ObservableBoolean isLoadingUser = new ObservableBoolean();
 
-    public void setUser(SimpleUser user) {
-        this.user = user;
-        notifyPropertyChanged(BR.user);
-    }
+    public ObservableField<String> userLogo = new ObservableField<>();
+    public ObservableField<String> userError = new ObservableField<>();
+    public ObservableField<String> selectedChannelsText = new ObservableField<>("0\u2009/\u20090");
 
-    @Bindable
-    public boolean isHideEmptyExtension() {
-        return hideEmptyExtension;
-    }
-
-    public void setHideEmptyExtension(boolean hideEmptyExtension) {
-        this.hideEmptyExtension = hideEmptyExtension;
-        notifyPropertyChanged(BR.hideEmptyExtension);
-    }
-
-    @Bindable
-    public int getUpdateInterval() {
-        return updateInterval;
-    }
-
-    public void setUpdateInterval(int updateInterval) {
-        this.updateInterval = updateInterval;
-        notifyPropertyChanged(BR.updateInterval);
-    }
-
-    @Bindable
-    public List<UserFollow> getUserFollows() {
-        return userFollows;
-    }
-
-    public void setUserFollows(List<UserFollow> userFollows) {
-        this.userFollows = userFollows;
-        notifyPropertyChanged(BR.userFollows);
-    }
+    public ObservableField<List<Long>> deselectedChannelIds = new ObservableField<>(new ArrayList<>());
 }

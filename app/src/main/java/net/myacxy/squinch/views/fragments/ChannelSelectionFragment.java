@@ -26,7 +26,7 @@ public class ChannelSelectionFragment extends MvvmFragment {
 
     @Override
     protected ChannelSelectionViewModel getViewModel() {
-        SimpleUser user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.getUser();
+        SimpleUser user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.user.get();
         return SimpleViewModelLocator.getInstance().getChannelSelectionViewModel(user.getName());
     }
 

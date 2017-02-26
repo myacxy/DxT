@@ -1,12 +1,16 @@
 package net.myacxy.squinch.helpers;
 
+import android.animation.ObjectAnimator;
+import android.animation.TypeEvaluator;
 import android.databinding.BindingAdapter;
 import android.net.Uri;
+import android.util.Property;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -17,9 +21,59 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.myacxy.retrotwitch.utils.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.reactivex.functions.Consumer;
 
 public class BindingAdapters {
+
+    private static final TypeEvaluator<String> EVALUATOR_STRING_ANIMATED_NUMBERS = new TypeEvaluator<String>() {
+
+        private Pattern pattern = Pattern.compile("\\d+");
+
+        @Override
+        public String evaluate(float fraction, String startValue, String endValue) {
+
+            Matcher matcher = pattern.matcher(startValue);
+            List<Integer> startInts = new ArrayList<>();
+            while (matcher.find()) {
+                startInts.add(Integer.valueOf(matcher.group()));
+            }
+
+            matcher = pattern.matcher(endValue);
+            List<Integer> endInts = new ArrayList<>();
+            while (matcher.find()) {
+                endInts.add(Integer.valueOf(matcher.group()));
+            }
+
+            if (startInts.size() == endInts.size()) {
+                Object[] targetInts = new Integer[startInts.size()];
+                for (int i = 0; i < startInts.size(); i++) {
+                    Integer start = startInts.get(i);
+                    Integer end = endInts.get(i);
+                    targetInts[i] = (int) (start + (end - start) * fraction);
+                }
+                return String.format(startValue.replaceAll("\\d+", "%d"), targetInts);
+            } else {
+                return endValue;
+            }
+        }
+    };
+
+    private static final Property<TextView, String> PROPERTY_STRING_ANIMATED_NUMBERS = new Property<TextView, String>(String.class, "string_animated_numbers") {
+        @Override
+        public String get(TextView object) {
+            return object.getText().toString();
+        }
+
+        @Override
+        public void set(TextView object, String value) {
+            object.setText(value);
+        }
+    };
 
     private BindingAdapters() {
         throw new IllegalAccessError();
@@ -102,5 +156,12 @@ public class BindingAdapters {
             }
             return false;
         });
+    }
+
+    @BindingAdapter("animatedNumbersText")
+    public static void setText(TextView view, String text) {
+        ObjectAnimator.ofObject(view, PROPERTY_STRING_ANIMATED_NUMBERS, EVALUATOR_STRING_ANIMATED_NUMBERS, text)
+                .setDuration(600)
+                .start();
     }
 }

@@ -24,6 +24,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
             <!--General-->
             <TextView
                 style="@style/Subheader"
@@ -46,7 +52,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/keyline_horizontal1"
                     android:alpha="0.60"
-                    android:src="@{ viewModel.settings.hideEmptyExtension ? @drawable/ic_visibility_off_black_24dp : @drawable/ic_visibility_black_24dp }"
+                    android:src="@{ viewModel.settings.isEmptyExtensionHidden ? @drawable/ic_visibility_off_black_24dp : @drawable/ic_visibility_black_24dp }"
                     tools:src="@drawable/ic_visibility_black_24dp" />
 
                 <LinearLayout
@@ -82,7 +88,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/keyline_horizontal1"
                     android:layout_marginRight="@dimen/keyline_horizontal1"
-                    android:checked="@{ viewModel.settings.hideEmptyExtension }" />
+                    android:checked="@{ viewModel.settings.isEmptyExtensionHidden }" />
 
             </RelativeLayout>
 
@@ -101,8 +107,8 @@
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
                 android:minHeight="56dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
                 <FrameLayout
                     android:id="@+id/fl_st_avatar_icon"
@@ -115,11 +121,11 @@
                         android:id="@+id/sdv_st_avatar"
                         android:layout_width="@dimen/icon_large"
                         android:layout_height="@dimen/icon_large"
-                        android:visibility="@{ viewModel.userLogo != null ? View.VISIBLE : View.GONE }"
+                        android:visibility="@{ viewModel.settings.userLogo != null ? View.VISIBLE : View.GONE }"
                         app:actualImageScaleType="focusCrop"
                         app:fadeDuration="215"
                         app:roundAsCircle="true"
-                        bind:imageUrl="@{ viewModel.userLogo }"
+                        bind:imageUrl="@{ viewModel.settings.userLogo }"
                         tools:visibility="gone" />
 
                     <ImageView
@@ -127,7 +133,7 @@
                         android:layout_width="@dimen/icon_small"
                         android:layout_height="@dimen/icon_small"
                         android:src="@drawable/ic_glitch_purple_24dp"
-                        android:visibility="@{ viewModel.userLogo != null ? View.GONE : View.VISIBLE }" />
+                        android:visibility="@{ viewModel.settings.userLogo != null ? View.GONE : View.VISIBLE }" />
 
                 </FrameLayout>
 
@@ -146,8 +152,8 @@
                     android:textAppearance="@style/List.TextAppearance.Primary"
                     app:met_floatingLabel="normal"
                     app:met_underlineColor="@color/base38"
-                    bind:enabled="@{ viewModel.isLoadingUser ? false : true }"
-                    bind:met_error="@{ viewModel.userError }"
+                    bind:enabled="@{ viewModel.settings.isLoadingUser ? false : true }"
+                    bind:met_error="@{ viewModel.settings.userError }"
                     bind:onActionDone="@{ viewModel.getUser() }"
                     bind:onEnterUp="@{ viewModel.getUser() }" />
 
@@ -161,7 +167,7 @@
                     android:layout_marginRight="@dimen/keyline_horizontal1"
                     android:indeterminate="true"
                     android:progressTint="?colorPrimary"
-                    android:visibility="@{ viewModel.isLoadingUser ? View.VISIBLE : View.INVISIBLE }" />
+                    android:visibility="@{ viewModel.settings.isLoadingUser ? View.VISIBLE : View.INVISIBLE }" />
 
             </RelativeLayout>
 
@@ -175,7 +181,7 @@
                 android:minHeight="88dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="16dp"
-                bind:enabled="@{ viewModel.settings.user != null &amp;&amp; !viewModel.isLoadingUser ? true : false }">
+                bind:enabled="@{ viewModel.settings.user != null &amp;&amp; !viewModel.settings.isLoadingUser ? true : false }">
 
                 <ImageView
                     android:layout_width="@dimen/icon_small"
@@ -206,7 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="@string/desc_settings_channel_selection"
+                        android:text="@string/descr_settings_channel_selection"
                         android:textAppearance="@style/List.TextAppearance.Secondary" />
 
                 </LinearLayout>
@@ -219,9 +225,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/keyline_horizontal1"
                     android:layout_marginRight="@dimen/keyline_horizontal1"
-                    android:text="@{ viewModel.selectedChannelsText }"
                     android:textAppearance="@style/List.TextAppearance.Secondary"
                     android:textSize="12sp"
+                    bind:animatedNumbersText="@{ viewModel.settings.selectedChannelsText }"
                     tools:text="11\u2009/\u200916" />
 
             </RelativeLayout>

@@ -40,8 +40,8 @@ public class SettingsFragment extends MvvmFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState == null && getViewModel().settings.getUser() != null) {
-            userNameText.setText(getViewModel().settings.getUser().getName());
+        if (savedInstanceState == null && getViewModel().settings.user.get() != null) {
+            userNameText.setText(getViewModel().settings.user.get().getName());
         }
         getViewModel().refresh();
     }
