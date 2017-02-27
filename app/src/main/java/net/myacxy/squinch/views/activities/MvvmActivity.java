@@ -30,6 +30,7 @@ public abstract class MvvmActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         dataBinding.executePendingBindings();
+        dataBinding.unbind();
         unbinder.unbind();
         super.onDestroy();
     }

@@ -38,6 +38,7 @@ public abstract class MvvmFragment extends Fragment {
     @Override
     public void onDestroyView() {
         dataBinding.executePendingBindings();
+        dataBinding.unbind();
         unbinder.unbind();
         super.onDestroyView();
     }

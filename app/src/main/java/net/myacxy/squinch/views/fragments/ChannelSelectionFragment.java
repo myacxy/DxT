@@ -34,6 +34,6 @@ public class ChannelSelectionFragment extends MvvmFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        channels.setAdapter(getViewModel().getAdapter());
+        channels.setAdapter(getViewModel().createAdapter());
     }
 }

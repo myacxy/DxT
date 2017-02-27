@@ -181,7 +181,7 @@
                 android:minHeight="88dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="16dp"
-                bind:enabled="@{ viewModel.settings.user != null &amp;&amp; !viewModel.settings.isLoadingUser ? true : false }">
+                bind:enabled="@{ viewModel.settings.user != null &amp;&amp; !viewModel.settings.isLoadingUser }">
 
                 <ImageView
                     android:layout_width="@dimen/icon_small"

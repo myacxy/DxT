@@ -34,9 +34,9 @@ public class RetroTwitchJobService extends JobService {
 
     public static JobInfo newJob(Context context) {
         return new JobInfo.Builder(JOB_ID++, new ComponentName(context, RetroTwitchJobService.class))
-//                .setPeriodic(TimeUnit.MINUTES.toMillis(45))
-                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
-                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(120))
+                .setPeriodic(TimeUnit.MINUTES.toMillis(60))
+//                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
+//                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(120))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
                 .setBackoffCriteria(TimeUnit.SECONDS.toMillis(30), JobInfo.BACKOFF_POLICY_EXPONENTIAL)
                 .setRequiresDeviceIdle(false)

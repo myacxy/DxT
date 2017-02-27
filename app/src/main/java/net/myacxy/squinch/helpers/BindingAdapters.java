@@ -63,7 +63,33 @@ public class BindingAdapters {
         }
     };
 
-    private static final Property<TextView, String> PROPERTY_STRING_ANIMATED_NUMBERS = new Property<TextView, String>(String.class, "string_animated_numbers") {
+    private static final TypeEvaluator<String> EVALUATOR_STRING_ANIMATED_CHARS = new TypeEvaluator<String>() {
+
+        @Override
+        public String evaluate(float fraction, String startValue, String endValue) {
+
+            char[] startChars = startValue.toCharArray();
+            char[] endChars = endValue.toCharArray();
+            int length = Math.max(startChars.length, endChars.length);
+
+            char[] data = new char[length];
+
+            for (int i = 0; i < length; i++) {
+                int start = startChars.length <= i ? ' ' : startChars[i];
+                int end = endChars.length <= i ? ' ' : endChars[i];
+                float j = length * fraction;
+                if (j > i) {
+                    data[i] = (char) end;
+                } else {
+                    data[i] = (char) (start + fraction * (end - start));
+                }
+            }
+
+            return new String(data).trim();
+        }
+    };
+
+    private static final Property<TextView, String> PROPERTY_TEXT = new Property<TextView, String>(String.class, "property_text") {
         @Override
         public String get(TextView object) {
             return object.getText().toString();
@@ -96,14 +122,8 @@ public class BindingAdapters {
     @BindingAdapter("enabled")
     public static void setEnabled(ViewGroup viewGroup, boolean enabled) {
         viewGroup.setAlpha(enabled ? 1f : 0.38f);
-
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-            child.setEnabled(enabled);
-            if (child instanceof ViewGroup) {
-                setEnabled((ViewGroup) child, enabled);
-            }
-        }
+        viewGroup.setEnabled(enabled);
+        setDeepEnabled(viewGroup, enabled);
     }
 
     @BindingAdapter("met_error")
@@ -159,9 +179,28 @@ public class BindingAdapters {
     }
 
     @BindingAdapter("animatedNumbersText")
-    public static void setText(TextView view, String text) {
-        ObjectAnimator.ofObject(view, PROPERTY_STRING_ANIMATED_NUMBERS, EVALUATOR_STRING_ANIMATED_NUMBERS, text)
+    public static void setAnimatedNumbersText(TextView view, String text) {
+        ObjectAnimator.ofObject(view, PROPERTY_TEXT, EVALUATOR_STRING_ANIMATED_NUMBERS, text)
                 .setDuration(600)
                 .start();
+    }
+
+    @BindingAdapter(value = {"fromAnimatedText", "toAnimatedText"}, requireAll = false)
+    public static void setAnimatedText(TextView view, String from, String to) {
+        from = StringUtil.isEmpty(from) ? "" : from;
+        to = StringUtil.isEmpty(to) ? "" : to;
+        ObjectAnimator.ofObject(view, PROPERTY_TEXT, EVALUATOR_STRING_ANIMATED_CHARS, from, to)
+                .setDuration(600)
+                .start();
+    }
+
+    private static void setDeepEnabled(ViewGroup viewGroup, boolean enabled) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            child.setEnabled(enabled);
+            if (child instanceof ViewGroup) {
+                setDeepEnabled((ViewGroup) child, enabled);
+            }
+        }
     }
 }

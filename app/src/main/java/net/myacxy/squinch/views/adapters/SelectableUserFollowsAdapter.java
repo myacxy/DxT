@@ -5,12 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.databinding.SimpleChannelItemBinding;
-import net.myacxy.squinch.helpers.BindingAdapters;
 import net.myacxy.squinch.helpers.DataHelper;
 
 import java.util.List;
@@ -53,22 +50,17 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
         @BindView(R.id.accb_ch_selected)
         protected AppCompatCheckBox selected;
 
-        @BindView(R.id.sdv_ch_avatar)
-        protected SimpleDraweeView avatar;
-
         private SimpleChannelItemBinding mBinding;
 
         public SelectableUserFollowViewHolder(SimpleChannelItemBinding binding) {
             super(binding.getRoot());
             ButterKnife.bind(this, itemView);
             mBinding = binding;
-
         }
 
         public void bind(UserFollow userFollow) {
             mBinding.setUserFollow(userFollow);
             mBinding.executePendingBindings();
-            BindingAdapters.loadImage(mBinding.sdvChAvatar, userFollow.getChannel().getLogo());
 
             selected.setChecked(!deselectedChannelIds.contains(userFollow.getChannel().getId()));
         }
