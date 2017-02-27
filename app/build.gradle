@@ -122,4 +122,7 @@ dependencies {
     compile dependencies.materialEditText
 //    compile dependencies.rxBindingRecyclerView
     compile 'com.facebook.fresco:fresco:0.14.1'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
