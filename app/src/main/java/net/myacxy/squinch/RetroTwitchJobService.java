@@ -32,8 +32,9 @@ public class RetroTwitchJobService extends JobService {
     private Disposable disposable;
 
     public static JobInfo newJob(Context context) {
+        Th.l(RetroTwitchJobService.class, "newJob=%d", JOB_ID);
         return new JobInfo.Builder(JOB_ID++, new ComponentName(context, RetroTwitchJobService.class))
-                .setPeriodic(TimeUnit.MINUTES.toMillis(5))
+                .setPeriodic(TimeUnit.MINUTES.toMillis(60))
 //                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
 //                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(120))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
@@ -42,6 +43,18 @@ public class RetroTwitchJobService extends JobService {
                 .setRequiresCharging(false)
 //                .setPersisted(true) // Manifest.permission.RECEIVE_BOOT_COMPLETED
                 .build();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Th.l(this, "onCreate");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Th.l(this, "onDestroy");
     }
 
     @Override
@@ -58,11 +71,11 @@ public class RetroTwitchJobService extends JobService {
 
         Th.l(this, "user=%s", user);
 
-        RetroTwitchUtil.getAllUserFollows(user.getId(), progress -> Th.l(RetroTwitchJobService.this, "follows=%s", progress))
+        RetroTwitchUtil.getAllUserFollows(user.getId(), progress -> Th.l(this, "userFollows.progress=%d", progress.size()))
+                .subscribeOn(Schedulers.io())
                 .doOnSuccess(dataHelper::setUserFollows)
                 .doOnError(Th::ex)
-                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Th.l(RetroTwitchJobService.this, "stream=%s", progress)))
-                .subscribeOn(Schedulers.io())
+                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Th.l(this, "streams.progress=%d", progress.size())))
                 .subscribe(new SingleObserver<List<Stream>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
@@ -71,7 +84,7 @@ public class RetroTwitchJobService extends JobService {
 
                     @Override
                     public void onSuccess(List<Stream> streams) {
-                        Th.l(RetroTwitchJobService.this, "streams=%s", streams);
+                        Th.l(RetroTwitchJobService.this, "streams=%d", streams.size());
                         dataHelper.setLiveStreams(streams);
                         EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                         jobFinished(params, false);

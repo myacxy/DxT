@@ -25,19 +25,23 @@ public class RetroTwitchUtil {
     }
 
     public static Single<List<UserFollow>> getAllUserFollows(long userId, Consumer<List<UserFollow>> progress) {
+        RequestMeta requestMeta = new RequestMeta();
         return Observable.range(0, Integer.MAX_VALUE)
                 .concatMap(page ->
                         RxRetroTwitch.getInstance()
                                 .users()
                                 .getUserFollows(
                                         userId,
-                                        TwitchConstants.MAX_LIMIT,
-                                        page * TwitchConstants.MAX_LIMIT,
+                                        requestMeta.limit,
+                                        requestMeta.offset,
                                         Direction.DEFAULT,
                                         SortBy.DEFAULT
                                 )
                 )
-                .takeUntil(response -> response.code() != 200 || response.body().getUserFollows().size() == 0)
+                .takeUntil(response -> response.code() != 200
+                        || response.body().getUserFollows().size() == 0
+                        || !requestMeta.hasNext(response.body().getTotal())
+                )
                 .reduceWith(ArrayList::new, (userFollows, response) -> {
                     if (response.code() != 200) {
                         throw new HttpException(response);
@@ -49,6 +53,7 @@ public class RetroTwitchUtil {
     }
 
     public static Single<List<Stream>> getAllLiveStreams(List<UserFollow> userFollows, Consumer<List<Stream>> progress) {
+        RequestMeta requestMeta = new RequestMeta();
         return Observable.fromIterable(userFollows)
                 .map(UserFollow::getChannel)
                 .toList()
@@ -61,18 +66,19 @@ public class RetroTwitchUtil {
                                                 null,
                                                 null,
                                                 StreamType.ALL,
-                                                TwitchConstants.MAX_LIMIT,
-                                                page * TwitchConstants.MAX_LIMIT
+                                                requestMeta.limit,
+                                                requestMeta.offset
                                         )
                                 )
-                                .takeUntil(response -> {
-                                    if (response.code() != 200) {
-                                        throw new HttpException(response);
-                                    }
-                                    return response.body().getStreams().size() == 0;
-                                })
+                                .takeUntil(response -> response.code() != 200
+                                        || response.body().getStreams().size() == 0
+                                        || !requestMeta.hasNext(response.body().getTotal())
+                                )
                 )
                 .reduceWith(ArrayList::new, (streams, response) -> {
+                    if (response.code() != 200) {
+                        throw new HttpException(response);
+                    }
                     for (Stream stream : response.body().getStreams()) {
                         if (stream != null) {
                             streams.add(stream);
@@ -81,5 +87,15 @@ public class RetroTwitchUtil {
                     progress.accept(streams);
                     return streams;
                 });
+    }
+
+    private static class RequestMeta {
+        int offset = 0;
+        int limit = TwitchConstants.MAX_LIMIT;
+
+        boolean hasNext(int total) {
+            offset += limit;
+            return offset < total;
+        }
     }
 }

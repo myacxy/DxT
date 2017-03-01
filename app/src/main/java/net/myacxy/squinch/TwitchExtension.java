@@ -26,6 +26,7 @@ public class TwitchExtension extends DashClockExtension {
 
     @Override
     public void onCreate() {
+        Th.l(this, "onCreate");
         super.onCreate();
         dataHelper = new DataHelper(getApplicationContext());
         EventBus.getDefault().register(this);
@@ -33,6 +34,7 @@ public class TwitchExtension extends DashClockExtension {
 
     @Override
     public void onDestroy() {
+        Th.l(this, "onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }

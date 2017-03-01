@@ -134,7 +134,7 @@ public class SettingsViewModel implements ViewModel {
                     Disposable disposable = RetroTwitchUtil.getAllUserFollows(settings.tmpUser.get().getId(),
                             progress -> {
                                 updateSelectedChannelsText(progress, settings.deselectedChannelIds.get());
-                                Th.l(SettingsViewModel.this, "userFollows.progress=%s", progress.toString());
+                                Th.l(SettingsViewModel.this, "userFollows.progress=%d", progress.size());
                             })
                             .subscribeOn(Schedulers.io())
                             .doOnError(throwable -> onUserFollowsError(throwable))
@@ -152,10 +152,10 @@ public class SettingsViewModel implements ViewModel {
                             })
                             .flatMap(
                                     userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows,
-                                            progress -> Th.l(SettingsViewModel.this, progress.toString()))
+                                            progress -> Th.l(SettingsViewModel.this, "streams.progress=%d", progress.size()))
                             ).subscribe(
                                     streams -> {
-                                        Th.l(SettingsViewModel.this, "#onComplete.streams=%s", streams);
+                                        Th.l(SettingsViewModel.this, "#onComplete.streams=%d", streams.size());
                                         dataHelper.setLiveStreams(streams);
                                         EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                                     },

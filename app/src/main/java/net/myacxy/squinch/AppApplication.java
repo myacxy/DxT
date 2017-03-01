@@ -33,12 +33,12 @@ public class AppApplication extends Application {
 
         RxRetroTwitch.getInstance()
                 .configure(new Configuration.ConfigurationBuilder()
-                        .setLogLevel(BuildConfig.DEBUG ? Level.NONE : Level.NONE)
+                        .setLogLevel(BuildConfig.DEBUG ? Level.BASIC : Level.NONE)
                         .setClientId(CLIENT_ID_TESTING)
                         .build()
                 );
 
-        Th.l(AppApplication.class, "created");
+        Th.l(this, "onCreate");
 
         Fresco.initialize(getApplicationContext());
 
