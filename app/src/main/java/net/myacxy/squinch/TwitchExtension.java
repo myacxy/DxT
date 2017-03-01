@@ -5,12 +5,12 @@ import android.support.annotation.IntDef;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
-import com.orhanobut.logger.Logger;
 
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.helpers.DataHelper;
+import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.views.activities.SettingsActivity;
 
@@ -85,12 +85,13 @@ public class TwitchExtension extends DashClockExtension {
                 .status(status)
                 .expandedTitle(title)
                 .expandedBody(body.toString())
-                .clickIntent(new Intent(this, SettingsActivity.class)));
+                .clickIntent(new Intent(this, SettingsActivity.class))
+        );
     } // onUpdateData
 
     @Subscribe
     public void onEvent(DashclockUpdateEvent event) {
-        Logger.d("updateEvent=%d", event.getUpdateReason());
+        Th.l(this, "updateEvent=%d", event.getUpdateReason());
         onUpdateData(event.getUpdateReason());
     }
 

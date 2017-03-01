@@ -4,17 +4,14 @@ import android.app.Application;
 import android.app.job.JobScheduler;
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.orhanobut.logger.AndroidLogTool;
-import com.orhanobut.logger.LogLevel;
-import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 
 import net.myacxy.retrotwitch.Configuration;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
+import net.myacxy.squinch.helpers.tracking.Th;
+import net.myacxy.squinch.helpers.tracking.TrackingHelper;
 
-import io.fabric.sdk.android.Fabric;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 
 public class AppApplication extends Application {
@@ -32,7 +29,7 @@ public class AppApplication extends Application {
         }
         LeakCanary.install(this);
 
-        Fabric.with(this, new Crashlytics());
+        TrackingHelper.initialize(this);
 
         RxRetroTwitch.getInstance()
                 .configure(new Configuration.ConfigurationBuilder()
@@ -41,13 +38,7 @@ public class AppApplication extends Application {
                         .build()
                 );
 
-        Logger.init()
-                .methodCount(2)
-                .logLevel(BuildConfig.DEBUG ? LogLevel.FULL : LogLevel.NONE)
-                .methodOffset(0)
-                .logTool(new AndroidLogTool());
-
-        Logger.d("App created");
+        Th.l(AppApplication.class, "created");
 
         Fresco.initialize(getApplicationContext());
 

@@ -6,13 +6,12 @@ import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.apps.dashclock.api.DashClockExtension;
-import com.orhanobut.logger.Logger;
 
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.squinch.helpers.DataHelper;
+import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
 
@@ -34,7 +33,7 @@ public class RetroTwitchJobService extends JobService {
 
     public static JobInfo newJob(Context context) {
         return new JobInfo.Builder(JOB_ID++, new ComponentName(context, RetroTwitchJobService.class))
-                .setPeriodic(TimeUnit.MINUTES.toMillis(60))
+                .setPeriodic(TimeUnit.MINUTES.toMillis(5))
 //                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
 //                .setOverrideDeadline(TimeUnit.MINUTES.toMillis(120))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
@@ -47,24 +46,22 @@ public class RetroTwitchJobService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Logger.d("onStartJob=" + params.getJobId());
-        Crashlytics.log("onStartJob=" + params.getJobId());
+        Th.l(this, "onStartJob=%d", params.getJobId());
 
         DataHelper dataHelper = new DataHelper(getApplicationContext());
         SimpleUser user = dataHelper.getUser();
 
         if (user == null) {
-            Logger.d("user=null");
-            Crashlytics.log("user=null");
+            Th.l(this, "user=%s", "null");
             return false;
         }
 
-        Logger.d("user=%s", user);
+        Th.l(this, "user=%s", user);
 
-        RetroTwitchUtil.getAllUserFollows(user.getId(), progress -> Logger.d("follows=%s", progress))
+        RetroTwitchUtil.getAllUserFollows(user.getId(), progress -> Th.l(RetroTwitchJobService.this, "follows=%s", progress))
                 .doOnSuccess(dataHelper::setUserFollows)
-                .doOnError(Crashlytics::logException)
-                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Logger.d("stream=%s", progress)))
+                .doOnError(Th::ex)
+                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Th.l(RetroTwitchJobService.this, "stream=%s", progress)))
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<List<Stream>>() {
                     @Override
@@ -74,7 +71,7 @@ public class RetroTwitchJobService extends JobService {
 
                     @Override
                     public void onSuccess(List<Stream> streams) {
-                        Logger.d("streams=%s", streams);
+                        Th.l(RetroTwitchJobService.this, "streams=%s", streams);
                         dataHelper.setLiveStreams(streams);
                         EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                         jobFinished(params, false);
@@ -82,8 +79,7 @@ public class RetroTwitchJobService extends JobService {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Logger.d("error=%s", throwable.getMessage());
-                        Crashlytics.logException(throwable);
+                        Th.ex(throwable);
                         jobFinished(params, true);
                     }
                 });
@@ -92,7 +88,7 @@ public class RetroTwitchJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Crashlytics.log("onStopJob=" + params.getJobId());
+        Th.l(this, "onStopJob=%d", params.getJobId());
         if (disposable != null) {
             disposable.dispose();
         }

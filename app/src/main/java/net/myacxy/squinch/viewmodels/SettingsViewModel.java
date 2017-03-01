@@ -1,7 +1,7 @@
 package net.myacxy.squinch.viewmodels;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.apps.dashclock.api.DashClockExtension;
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 
 import net.myacxy.retrotwitch.utils.StringUtil;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
@@ -11,6 +11,7 @@ import net.myacxy.retrotwitch.v5.api.users.SimpleUsersResponse;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.retrotwitch.v5.helpers.RxErrorFactory;
 import net.myacxy.squinch.helpers.DataHelper;
+import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Observable;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -59,6 +59,7 @@ public class SettingsViewModel implements ViewModel {
             settings.userError.set(null);
             settings.tmpUser.set(null);
 
+            Th.l(this, "#getUser=%s", userName);
             if (userName != null && (userName = userName.trim()).length() != 0) {
                 updateSelectedChannelsText(Collections.emptyList(), Collections.emptyList());
                 settings.isLoadingUser.set(true);
@@ -95,7 +96,9 @@ public class SettingsViewModel implements ViewModel {
         settings.selectedChannelsText.set("0\u2009/\u20090");
     }
 
-    private void onUserError(Error error) {
+    private void onUserError(Throwable throwable) {
+        Error error = RxErrorFactory.fromThrowable(throwable);
+        Th.ex(throwable);
         settings.user.set(null);
         settings.userFollows.get().clear();
         dataHelper.setUser(null);
@@ -107,8 +110,8 @@ public class SettingsViewModel implements ViewModel {
         updateSelectedChannelsText(Collections.emptyList(), settings.deselectedChannelIds.get());
     }
 
-    private void onUserFollowsError(Error error) {
-        onUserError(error);
+    private void onUserFollowsError(Throwable throwable) {
+        onUserError(throwable);
     }
 
     private DisposableObserver<Response<SimpleUsersResponse>> getUserObserver() {
@@ -118,7 +121,7 @@ public class SettingsViewModel implements ViewModel {
             public void onNext(Response<SimpleUsersResponse> response) {
                 Error error = RxErrorFactory.fromResponse(response);
                 if (error != null) {
-                    onUserError(error);
+                    onUserError(new HttpException(response));
                     return;
                 }
 
@@ -128,41 +131,37 @@ public class SettingsViewModel implements ViewModel {
             @Override
             public void onComplete() {
                 if (settings.tmpUser.get() != null && !StringUtil.isEmpty(settings.tmpUser.get().getName())) {
-                    RetroTwitchUtil.getAllUserFollows(settings.tmpUser.get().getId(), progress -> updateSelectedChannelsText(progress, settings.deselectedChannelIds.get()))
+                    Disposable disposable = RetroTwitchUtil.getAllUserFollows(settings.tmpUser.get().getId(),
+                            progress -> {
+                                updateSelectedChannelsText(progress, settings.deselectedChannelIds.get());
+                                Th.l(SettingsViewModel.this, "userFollows.progress=%s", progress.toString());
+                            })
                             .subscribeOn(Schedulers.io())
-                            .subscribeWith(new SingleObserver<List<UserFollow>>() {
-                                @Override
-                                public void onSubscribe(Disposable disposable) {
-                                    compositeDisposable.add(disposable);
-                                }
+                            .doOnError(throwable -> onUserFollowsError(throwable))
+                            .doOnSuccess(userFollows -> {
+                                SimpleUser user = settings.tmpUser.get();
+                                settings.user.set(user);
+                                settings.userFollows.set(userFollows);
+                                dataHelper.setUser(user);
+                                dataHelper.setUserFollows(userFollows);
 
-                                @Override
-                                public void onSuccess(List<UserFollow> userFollows) {
-                                    SimpleUser user = settings.tmpUser.get();
-                                    settings.user.set(user);
-                                    settings.userFollows.set(userFollows);
-                                    dataHelper.setUser(user);
-                                    dataHelper.setUserFollows(userFollows);
-
-                                    updateSelectedChannelsText(userFollows, settings.deselectedChannelIds.get());
-                                    settings.userLogo.set(user.getLogo());
-                                    settings.isLoadingUser.set(false);
-
-                                    RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> {
-                                    })
-                                            .doOnError(Crashlytics::logException)
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe(streams -> {
-                                                dataHelper.setLiveStreams(streams);
-                                                EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
-                                            });
-                                }
-
-                                @Override
-                                public void onError(Throwable throwable) {
-                                    onUserFollowsError(RxErrorFactory.fromThrowable(throwable));
-                                }
-                            });
+                                updateSelectedChannelsText(userFollows, settings.deselectedChannelIds.get());
+                                settings.userLogo.set(user.getLogo());
+                                settings.isLoadingUser.set(false);
+                                Th.l(SettingsViewModel.this, "#onComplete.user=%s", user);
+                            })
+                            .flatMap(
+                                    userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows,
+                                            progress -> Th.l(SettingsViewModel.this, progress.toString()))
+                            ).subscribe(
+                                    streams -> {
+                                        Th.l(SettingsViewModel.this, "#onComplete.streams=%s", streams);
+                                        dataHelper.setLiveStreams(streams);
+                                        EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
+                                    },
+                                    throwable -> onUserFollowsError(throwable)
+                            );
+                    compositeDisposable.add(disposable);
                 } else {
                     settings.isLoadingUser.set(false);
                 }
@@ -170,7 +169,7 @@ public class SettingsViewModel implements ViewModel {
 
             @Override
             public void onError(Throwable t) {
-                onUserError(RxErrorFactory.fromThrowable(t));
+                onUserError(t);
             }
         };
     }

@@ -13,7 +13,6 @@ import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Notification;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
@@ -49,32 +48,38 @@ public class RetroTwitchUtil {
                 });
     }
 
-    public static Single<List<Stream>> getAllLiveStreams(List<UserFollow> userFollows, Consumer<Notification<Stream>> progress) {
+    public static Single<List<Stream>> getAllLiveStreams(List<UserFollow> userFollows, Consumer<List<Stream>> progress) {
         return Observable.fromIterable(userFollows)
                 .map(UserFollow::getChannel)
                 .toList()
                 .toObservable()
-                .concatMap(channels -> Observable.range(0, Integer.MAX_VALUE)
-                        .concatMap(page -> RxRetroTwitch.getInstance()
-                                .streams()
-                                .getStreams(channels,
-                                        null,
-                                        null,
-                                        StreamType.ALL,
-                                        TwitchConstants.MAX_LIMIT,
-                                        page * TwitchConstants.MAX_LIMIT
+                .concatMap(channels ->
+                        Observable.range(0, Integer.MAX_VALUE)
+                                .concatMap(page -> RxRetroTwitch.getInstance()
+                                        .streams()
+                                        .getStreams(channels,
+                                                null,
+                                                null,
+                                                StreamType.ALL,
+                                                TwitchConstants.MAX_LIMIT,
+                                                page * TwitchConstants.MAX_LIMIT
+                                        )
                                 )
-                        )
-                        .takeUntil(response -> {
-                            if (response.code() != 200) {
-                                throw new HttpException(response);
-                            }
-                            return response.body().getStreams().size() == 0;
-                        })
-                        .concatMap(response -> Observable.fromIterable(response.body().getStreams())
-                                .doOnEach(progress)
-                                .filter(stream -> stream != null)
-                        )
-                ).toList();
+                                .takeUntil(response -> {
+                                    if (response.code() != 200) {
+                                        throw new HttpException(response);
+                                    }
+                                    return response.body().getStreams().size() == 0;
+                                })
+                )
+                .reduceWith(ArrayList::new, (streams, response) -> {
+                    for (Stream stream : response.body().getStreams()) {
+                        if (stream != null) {
+                            streams.add(stream);
+                        }
+                    }
+                    progress.accept(streams);
+                    return streams;
+                });
     }
 }
