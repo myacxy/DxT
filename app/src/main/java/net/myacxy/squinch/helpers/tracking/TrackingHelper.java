@@ -15,7 +15,7 @@ public class TrackingHelper {
 
     public static void initialize(Context appContext) {
         INSTANCE = new TrackingHelper();
-        for (Tracker tracker : Tracker.values()) {
+        for (ITracker tracker : Tracker.getAll()) {
             tracker.initialize(appContext);
         }
     }
@@ -38,5 +38,4 @@ public class TrackingHelper {
     public UserLogBuilder user() {
         return new UserLogBuilder(this);
     }
-
 }

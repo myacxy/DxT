@@ -232,6 +232,57 @@
 
             </RelativeLayout>
 
+            <!--Debug-->
+            <TextView
+                style="@style/Subheader"
+                android:text="@string/title_settings_debug" />
+
+            <!--Hide empty extension-->
+            <RelativeLayout
+                android:id="@+id/rl_st_debug_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackground"
+                android:clipToPadding="false"
+                android:minHeight="72dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/keyline_horizontal1"
+                    android:alpha="0.60"
+                    android:src="@drawable/ic_live_help_black_24dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/keyline_horizontal2"
+                    android:layout_marginEnd="@dimen/keyline_horizontal1"
+                    android:orientation="vertical">
+
+                    <!--Title-->
+                    <TextView
+                        style="@style/List.TextAppearance.Primary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Log" />
+
+                    <!--Description-->
+                    <TextView
+                        style="@style/List.TextAppearance.Secondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/lorem_ipsum_2" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

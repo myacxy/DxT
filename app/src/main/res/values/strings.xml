@@ -12,6 +12,8 @@
     <string name="title_settings_channel_selection">Custom channel selection</string>
     <string name="descr_settings_channel_selection">Select which of your followed channels you actually want to be displayed</string>
 
+    <string name="title_settings_debug">Debug</string>
+
     <string name="lorem_ipsum_2" translatable="false">Lorem ipsum</string>
     <string name="lorem_ipsum_4" translatable="false">Lorem ipsum dolor sit</string>
     <string name="lorem_ipsum_8" translatable="false">Lorem ipsum dolor sit amet, consetetur sadipscing elitr</string>

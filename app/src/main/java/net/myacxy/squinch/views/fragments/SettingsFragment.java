@@ -69,4 +69,10 @@ public class SettingsFragment extends MvvmFragment {
         EventBus.getDefault()
                 .post(new SettingsActivity.NavigationEvent(SettingsActivity.SettingsScreen.CHANNEL_SELECTION));
     }
+
+    @OnClick(R.id.rl_st_debug_log)
+    protected void onDebugLogGroupClicked() {
+        EventBus.getDefault()
+                .post(new SettingsActivity.NavigationEvent(SettingsActivity.SettingsScreen.DEBUG_LOG));
+    }
 }

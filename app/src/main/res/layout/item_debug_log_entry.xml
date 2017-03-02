@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data class="DebugLogEntryItemBinding">
+
+        <variable
+            name="entry"
+            type="net.myacxy.squinch.models.DebugLogEntry" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_dl_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:minHeight="72dp">
+
+        <TextView
+            android:id="@+id/tv_dl_time"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/keyline_horizontal1"
+            android:paddingBottom="20dp"
+            android:paddingTop="16dp"
+            android:textSize="10sp"
+            bind:animatedTimeToText="@{ entry.time }"
+            tools:text="02.03.17 19:33:22" />
+
+        <LinearLayout
+            android:id="@+id/ll_dl_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/keyline_horizontal1"
+            android:layout_marginStart="@dimen/keyline_horizontal2"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:paddingTop="16dp">
+
+            <!--Display name-->
+            <TextView
+                android:id="@+id/tv_dl_type"
+                style="@style/List.TextAppearance.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                bind:toAnimatedText="@{ entry.type }"
+                tools:text="Exception" />
+
+            <!--Game-->
+            <TextView
+                android:id="@+id/tv_dl_message"
+                style="@style/List.TextAppearance.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                bind:toAnimatedText="@{ entry.message }"
+                tools:text="@string/lorem_ipsum_16" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/ll_dl_content"
+            android:alpha="0.12"
+            android:background="@android:color/black" />
+
+    </RelativeLayout>
+
+</layout>

@@ -3,7 +3,9 @@ package net.myacxy.squinch;
 import android.content.Context;
 
 import net.myacxy.squinch.helpers.DataHelper;
+import net.myacxy.squinch.helpers.tracking.DebugLogTracker;
 import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
+import net.myacxy.squinch.viewmodels.DebugViewModel;
 import net.myacxy.squinch.viewmodels.MainViewModel;
 import net.myacxy.squinch.viewmodels.SettingsViewModel;
 
@@ -13,17 +15,21 @@ import java.util.Map;
 public class SimpleViewModelLocator {
 
     private static SimpleViewModelLocator INSTANCE;
-    private final MainViewModel mMainViewModel;
-    private final SettingsViewModel mSettingsViewModel;
-    private final Map<String, ChannelSelectionViewModel> mChannelSelectionViewModels;
+
+    private final MainViewModel mainViewModel;
+    private final SettingsViewModel settingsViewModel;
+    private final Map<String, ChannelSelectionViewModel> channelSelectionViewModels;
+    private final DebugViewModel debugViewModel;
+
     private final DataHelper dataHelper;
 
-    private SimpleViewModelLocator(Context context) {
+    private SimpleViewModelLocator(Context context, DebugLogTracker debugLogTracker) {
         dataHelper = new DataHelper(context);
 
-        mMainViewModel = new MainViewModel();
-        mSettingsViewModel = new SettingsViewModel(dataHelper);
-        mChannelSelectionViewModels = new HashMap<>();
+        mainViewModel = new MainViewModel();
+        settingsViewModel = new SettingsViewModel(dataHelper);
+        channelSelectionViewModels = new HashMap<>();
+        debugViewModel = new DebugViewModel(dataHelper, debugLogTracker);
     }
 
     public static SimpleViewModelLocator getInstance() {
@@ -33,25 +39,29 @@ public class SimpleViewModelLocator {
         return INSTANCE;
     }
 
-    public static void initialize(Context applicationContext) {
-        INSTANCE = new SimpleViewModelLocator(applicationContext);
+    public static void initialize(Context applicationContext, DebugLogTracker debugLogTracker) {
+        INSTANCE = new SimpleViewModelLocator(applicationContext, debugLogTracker);
     }
 
     public MainViewModel getMainViewModel() {
-        return mMainViewModel;
+        return mainViewModel;
     }
 
     public SettingsViewModel getSettingsViewModel() {
-        return mSettingsViewModel;
+        return settingsViewModel;
     }
 
     public ChannelSelectionViewModel getChannelSelectionViewModel(String userName) {
-        if (mChannelSelectionViewModels.containsKey(userName)) {
-            return mChannelSelectionViewModels.get(userName);
+        if (channelSelectionViewModels.containsKey(userName)) {
+            return channelSelectionViewModels.get(userName);
         }
-        mChannelSelectionViewModels.clear();
+        channelSelectionViewModels.clear();
         ChannelSelectionViewModel viewModel = new ChannelSelectionViewModel(dataHelper);
-        mChannelSelectionViewModels.put(userName, viewModel);
+        channelSelectionViewModels.put(userName, viewModel);
         return viewModel;
+    }
+
+    public DebugViewModel getDebugViewModel() {
+        return debugViewModel;
     }
 }

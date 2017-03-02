@@ -11,6 +11,7 @@ import net.myacxy.squinch.SimpleViewModelLocator;
 import net.myacxy.squinch.helpers.FragmentHelper;
 import net.myacxy.squinch.viewmodels.ViewModel;
 import net.myacxy.squinch.views.fragments.ChannelSelectionFragment;
+import net.myacxy.squinch.views.fragments.DebugLogFragment;
 import net.myacxy.squinch.views.fragments.SettingsFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -117,6 +118,17 @@ public class SettingsActivity extends MvvmActivity {
             @Override
             public String getTag() {
                 return ChannelSelectionFragment.TAG;
+            }
+        },
+        DEBUG_LOG {
+            @Override
+            public DebugLogFragment newInstance() {
+                return new DebugLogFragment();
+            }
+
+            @Override
+            public String getTag() {
+                return DebugLogFragment.TAG;
             }
         };
     }

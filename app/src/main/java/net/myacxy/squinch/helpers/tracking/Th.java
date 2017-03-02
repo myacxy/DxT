@@ -2,9 +2,6 @@ package net.myacxy.squinch.helpers.tracking;
 
 import android.support.annotation.NonNull;
 
-import net.myacxy.squinch.helpers.tracking.builder.ExceptionLogBuilder;
-import net.myacxy.squinch.helpers.tracking.builder.LogBuilder;
-
 public class Th {
 
     private Th() {
@@ -12,15 +9,17 @@ public class Th {
     }
 
     public static void ex(Throwable throwable) {
-        new ExceptionLogBuilder(TrackingHelper.getInstance())
-                .withTrackers(Tracker.LOGGER, Tracker.CRASHLYTICS)
+        TrackingHelper.getInstance()
+                .exception()
+                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
                 .withThrowable(throwable)
                 .post();
     }
 
     public static void l(String tag, String msg, Object... objects) {
-        new LogBuilder(TrackingHelper.getInstance())
-                .withTrackers(Tracker.LOGGER, Tracker.CRASHLYTICS)
+        TrackingHelper.getInstance()
+                .log()
+                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
                 .addProperty(tag, String.format(msg, objects))
                 .post();
     }

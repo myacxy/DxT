@@ -1,6 +1,6 @@
 package net.myacxy.squinch.helpers.tracking.builder;
 
-import net.myacxy.squinch.helpers.tracking.Tracker;
+import net.myacxy.squinch.helpers.tracking.ITracker;
 import net.myacxy.squinch.helpers.tracking.TrackingHelper;
 
 public class UserLogBuilder extends PropertyLogBuilder<UserLogBuilder> {
@@ -30,7 +30,7 @@ public class UserLogBuilder extends PropertyLogBuilder<UserLogBuilder> {
 
     @Override
     public TrackingHelper post() {
-        for (Tracker tracker : trackers) {
+        for (ITracker tracker : trackers) {
             tracker.user(properties);
         }
         return trackingHelper;

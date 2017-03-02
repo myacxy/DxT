@@ -10,6 +10,7 @@ import com.squareup.leakcanary.LeakCanary;
 import net.myacxy.retrotwitch.Configuration;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.squinch.helpers.tracking.Th;
+import net.myacxy.squinch.helpers.tracking.Tracker;
 import net.myacxy.squinch.helpers.tracking.TrackingHelper;
 
 import okhttp3.logging.HttpLoggingInterceptor.Level;
@@ -42,7 +43,7 @@ public class AppApplication extends Application {
 
         Fresco.initialize(getApplicationContext());
 
-        SimpleViewModelLocator.initialize(getApplicationContext());
+        SimpleViewModelLocator.initialize(getApplicationContext(), Tracker.DEBUG_LOGS);
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.cancelAll();

@@ -10,19 +10,23 @@ import android.support.annotation.Nullable;
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
+import net.myacxy.squinch.models.DebugLogEntry;
 import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.squinch.utils.JsonUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class DataHelper {
 
-    private SharedPreferences sp;
+    private final SharedPreferences sp;
+    private final SharedPreferences debugLog;
 
     public DataHelper(Context context) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
+        debugLog = context.getSharedPreferences("log", Context.MODE_APPEND);
     }
 
     @Nullable
@@ -100,6 +104,23 @@ public class DataHelper {
 
     public void setLiveStreams(@Nullable List<Stream> streams) {
         Setting.LIVE_STREAMS.save(sp, streams != null ? JsonUtil.toJson(streams) : null);
+    }
+
+    public List<DebugLogEntry> getDebugLogEntries() {
+        Map<String, ?> all = debugLog.getAll();
+        if (all != null) {
+            List<DebugLogEntry> entries = new ArrayList<>(all.size());
+
+            for (Map.Entry<String, ?> entry : all.entrySet()) {
+                if (entry.getValue() instanceof String) {
+                    DebugLogEntry debugLogEntry = JsonUtil.fromJson((entry.getValue()).toString(), DebugLogEntry.class);
+                    entries.add(debugLogEntry);
+                }
+            }
+            return entries;
+        }
+        return new ArrayList<>();
+
     }
 
     private interface SharedPreference<T> {

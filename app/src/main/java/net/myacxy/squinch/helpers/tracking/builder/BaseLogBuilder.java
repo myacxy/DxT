@@ -1,6 +1,6 @@
 package net.myacxy.squinch.helpers.tracking.builder;
 
-import net.myacxy.squinch.helpers.tracking.Tracker;
+import net.myacxy.squinch.helpers.tracking.ITracker;
 import net.myacxy.squinch.helpers.tracking.TrackingHelper;
 
 import java.util.ArrayList;
@@ -10,24 +10,24 @@ public abstract class BaseLogBuilder<SELF extends BaseLogBuilder> {
 
     protected final TrackingHelper trackingHelper;
 
-    protected List<Tracker> trackers = new ArrayList<>();
+    protected List<ITracker> trackers = new ArrayList<>();
 
     public BaseLogBuilder(TrackingHelper trackingHelper) {
         this.trackingHelper = trackingHelper;
     }
 
-    public SELF withTrackers(Tracker tracker, Tracker... trackers) {
+    public SELF withTrackers(ITracker tracker, ITracker... trackers) {
         this.trackers.clear();
         addTracker(tracker);
         if (trackers != null) {
-            for (Tracker tracker1 : trackers) {
+            for (ITracker tracker1 : trackers) {
                 addTracker(tracker1);
             }
         }
         return (SELF) this;
     }
 
-    public SELF addTracker(Tracker tracker) {
+    public SELF addTracker(ITracker tracker) {
         if (!trackers.contains(tracker)) {
             trackers.add(tracker);
         }
