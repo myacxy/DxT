@@ -2,6 +2,7 @@ package net.myacxy.squinch.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -33,7 +34,11 @@ public class DebugLogFragment extends MvvmFragment {
         super.onViewCreated(view, savedInstanceState);
         getViewModel().attach();
 
+        LinearLayoutManager llm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true);
+        llm.setStackFromEnd(true);
+        entries.setLayoutManager(llm);
         entries.setAdapter(getViewModel().createAdapter());
+        entries.setHasFixedSize(true);
     }
 
     @Override
