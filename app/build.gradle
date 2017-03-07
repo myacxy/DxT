@@ -26,12 +26,12 @@ repositories {
 project.ext {
     buildCode = 6
     buildName = "0.2.0"
-    signingConfig = "..\\..\\..\\.signing\\squinch.properties"
+    signingConfig = "..\\signing.properties"
 }
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.1'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion 21
@@ -41,17 +41,13 @@ android {
 
     signingConfigs {
         release {
-            if (project.hasProperty("signingConfig")
-                    && new File(project.property("signingConfig")).exists()) {
+            Properties props = new Properties()
+            props.load(new FileInputStream(file(project.property("signingConfig"))))
 
-                Properties props = new Properties()
-                props.load(new FileInputStream(file(project.property("signingConfig"))))
-
-                storeFile file(props['storeFile'])
-                storePassword props['storePassword']
-                keyAlias props['keyAlias']
-                keyPassword props['keyPassword']
-            }
+            storeFile file(props['storeFile'])
+            storePassword props['storePassword']
+            keyAlias props['keyAlias']
+            keyPassword props['keyPassword']
         }
     }
 
@@ -59,12 +55,13 @@ android {
         release {
             useProguard true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-dev.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             useProguard true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-dev.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
         }
     }
 
@@ -72,7 +69,6 @@ android {
         prod {
             applicationId "net.myacxy.squinch"
             versionName = project.ext.buildName
-            signingConfig signingConfigs.release
         }
 
         dev {
