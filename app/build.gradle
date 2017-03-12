@@ -41,13 +41,16 @@ android {
 
     signingConfigs {
         release {
-            Properties props = new Properties()
-            props.load(new FileInputStream(file(project.property("signingConfig"))))
+            if (project.hasProperty("signingConfig")
+                    && new File(project.property("signingConfig")).exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(file(project.property("signingConfig"))))
 
-            storeFile file(props['storeFile'])
-            storePassword props['storePassword']
-            keyAlias props['keyAlias']
-            keyPassword props['keyPassword']
+                storeFile file(props['storeFile'])
+                storePassword props['storePassword']
+                keyAlias props['keyAlias']
+                keyPassword props['keyPassword']
+            }
         }
     }
 
