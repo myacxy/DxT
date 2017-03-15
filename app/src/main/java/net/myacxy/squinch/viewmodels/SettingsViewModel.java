@@ -1,15 +1,14 @@
 package net.myacxy.squinch.viewmodels;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
-import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 
 import net.myacxy.retrotwitch.utils.StringUtil;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
-import net.myacxy.retrotwitch.v5.api.common.Error;
+import net.myacxy.retrotwitch.v5.api.common.RetroTwitchError;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUsersResponse;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
-import net.myacxy.retrotwitch.v5.helpers.RxErrorFactory;
+import net.myacxy.retrotwitch.v5.helpers.RxRetroTwitchErrorFactory;
 import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.SettingsModel;
@@ -96,9 +95,8 @@ public class SettingsViewModel implements ViewModel {
         settings.selectedChannelsText.set("0\u2009/\u20090");
     }
 
-    private void onUserError(Throwable throwable) {
-        Error error = RxErrorFactory.fromThrowable(throwable);
-        Th.ex(throwable);
+    private void onUserError(RetroTwitchError error) {
+        Th.err(error);
         settings.user.set(null);
         settings.userFollows.get().clear();
         dataHelper.setUser(null);
@@ -110,18 +108,17 @@ public class SettingsViewModel implements ViewModel {
         updateSelectedChannelsText(Collections.emptyList(), settings.deselectedChannelIds.get());
     }
 
-    private void onUserFollowsError(Throwable throwable) {
-        onUserError(throwable);
-    }
-
     private DisposableObserver<Response<SimpleUsersResponse>> getUserObserver() {
         return new DisposableObserver<Response<SimpleUsersResponse>>() {
 
             @Override
             public void onNext(Response<SimpleUsersResponse> response) {
-                Error error = RxErrorFactory.fromResponse(response);
+                RetroTwitchError error = RxRetroTwitchErrorFactory.fromResponse(response);
                 if (error != null) {
-                    onUserError(new HttpException(response));
+                    onUserError(error);
+                    return;
+                } else if (response.body().getUsers().size() == 0) {
+                    onUserError(new RetroTwitchError("USER_NAME_TO_USER_ID_EMPTY", 200, "User does not exist"));
                     return;
                 }
 
@@ -137,7 +134,7 @@ public class SettingsViewModel implements ViewModel {
                                 Th.l(SettingsViewModel.this, "userFollows.progress=%d", progress.size());
                             })
                             .subscribeOn(Schedulers.io())
-                            .doOnError(throwable -> onUserFollowsError(throwable))
+                            .doOnError(throwable -> onUserError(RxRetroTwitchErrorFactory.fromThrowable(throwable)))
                             .doOnSuccess(userFollows -> {
                                 SimpleUser user = settings.tmpUser.get();
                                 settings.user.set(user);
@@ -159,7 +156,7 @@ public class SettingsViewModel implements ViewModel {
                                         dataHelper.setLiveStreams(streams);
                                         EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                                     },
-                                    throwable -> onUserFollowsError(throwable)
+                                    throwable -> onUserError(RxRetroTwitchErrorFactory.fromThrowable(throwable))
                             );
                     compositeDisposable.add(disposable);
                 } else {
@@ -169,7 +166,7 @@ public class SettingsViewModel implements ViewModel {
 
             @Override
             public void onError(Throwable t) {
-                onUserError(t);
+                onUserError(RxRetroTwitchErrorFactory.fromThrowable(t));
             }
         };
     }

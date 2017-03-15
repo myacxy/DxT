@@ -26,7 +26,6 @@ repositories {
 project.ext {
     buildCode = 6
     buildName = "0.2.0"
-    signingConfig = "..\\signing.properties"
 }
 
 android {
@@ -40,18 +39,7 @@ android {
     }
 
     signingConfigs {
-        release {
-            if (project.hasProperty("signingConfig")
-                    && new File(project.property("signingConfig")).exists()) {
-                Properties props = new Properties()
-                props.load(new FileInputStream(file(project.property("signingConfig"))))
-
-                storeFile file(props['storeFile'])
-                storePassword props['storePassword']
-                keyAlias props['keyAlias']
-                keyPassword props['keyPassword']
-            }
-        }
+        release
     }
 
     buildTypes {
@@ -62,9 +50,10 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            useProguard true
+            useProguard false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -94,6 +83,26 @@ android {
     }
 }
 
+def Properties props = new Properties()
+def propFile = new File('signing.properties')
+if (propFile.canRead()) {
+    props.load(new FileInputStream(propFile))
+
+    if (props != null && props.containsKey('storeFile') && props.containsKey('storePassword') &&
+            props.containsKey('keyAlias') && props.containsKey('keyPassword')) {
+        android.signingConfigs.release.storeFile file(props['storeFile'])
+        android.signingConfigs.release.storePassword props['storePassword']
+        android.signingConfigs.release.keyAlias props['keyAlias']
+        android.signingConfigs.release.keyPassword props['keyPassword']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    println 'signing.properties not found'
+    android.buildTypes.release.signingConfig = null
+}
+
 dependencies {
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
@@ -118,7 +127,6 @@ dependencies {
     compile dependencies.recyclerView
     compile dependencies.palette
 
-    compile dependencies.materialEditText
 //    compile dependencies.rxBindingRecyclerView
     compile 'com.facebook.fresco:fresco:0.14.1'
 

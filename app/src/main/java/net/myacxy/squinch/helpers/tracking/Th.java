@@ -2,6 +2,8 @@ package net.myacxy.squinch.helpers.tracking;
 
 import android.support.annotation.NonNull;
 
+import net.myacxy.retrotwitch.v5.api.common.RetroTwitchError;
+
 public class Th {
 
     private Th() {
@@ -14,6 +16,15 @@ public class Th {
                 .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
                 .withThrowable(throwable)
                 .post();
+    }
+
+    public static void err(RetroTwitchError error) {
+        // noinspection ThrowableResultOfMethodCallIgnored
+        if (error.getCause() != null) {
+            Th.ex(error.getCause());
+        } else {
+            Th.ex(new RuntimeException(error.toString()));
+        }
     }
 
     public static void l(String tag, String msg, Object... objects) {

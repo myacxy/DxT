@@ -2,9 +2,9 @@ package net.myacxy.squinch.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
-import android.widget.EditText;
 
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
@@ -23,8 +23,8 @@ public class SettingsFragment extends MvvmFragment {
 
     @BindView(R.id.sw_st_hide_extension)
     protected SwitchCompat hideExtensionSwitch;
-    @BindView(R.id.met_st_user_name)
-    protected EditText userNameText;
+    @BindView(R.id.til_st_user_name)
+    protected TextInputLayout userNameText;
 
     @Override
     protected int getLayoutId() {
@@ -41,7 +41,7 @@ public class SettingsFragment extends MvvmFragment {
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState == null && getViewModel().settings.user.get() != null) {
-            userNameText.setText(getViewModel().settings.user.get().getName());
+            userNameText.getEditText().setText(getViewModel().settings.user.get().getName());
         }
         getViewModel().refresh();
     }
@@ -60,7 +60,7 @@ public class SettingsFragment extends MvvmFragment {
     protected void onUserNameGroupClicked() {
         if (!userNameText.hasFocus()) {
             userNameText.requestFocus();
-            userNameText.setSelection(userNameText.getText().length());
+            userNameText.getEditText().setSelection(userNameText.getEditText().getText().length());
         }
     }
 

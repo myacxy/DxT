@@ -137,25 +137,29 @@
 
                 </FrameLayout>
 
-                <!--User name-->
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/met_st_user_name"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/til_st_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_horizontal2"
                     android:layout_toStartOf="@+id/pb_st_user_name"
-                    android:animateLayoutChanges="true"
                     android:hint="@string/hint_settings_user_name"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    android:singleLine="true"
                     android:textAppearance="@style/List.TextAppearance.Primary"
-                    app:met_floatingLabel="normal"
-                    app:met_underlineColor="@color/base38"
+                    app:errorEnabled="true"
                     bind:enabled="@{ viewModel.settings.isLoadingUser ? false : true }"
-                    bind:met_error="@{ viewModel.settings.userError }"
-                    bind:onActionDone="@{ viewModel.getUser() }"
-                    bind:onEnterUp="@{ viewModel.getUser() }" />
+                    bind:til_error="@{ viewModel.settings.userError }">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/base38"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        bind:onActionDone="@{ viewModel.getUser() }"
+                        bind:onEnterUp="@{ viewModel.getUser() }" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <ProgressBar
                     android:id="@+id/pb_st_user_name"
@@ -260,8 +264,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/keyline_horizontal2"
                     android:layout_marginEnd="@dimen/keyline_horizontal1"
+                    android:layout_marginStart="@dimen/keyline_horizontal2"
                     android:orientation="vertical">
 
                     <!--Title-->

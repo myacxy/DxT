@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.databinding.BindingAdapter;
 import android.net.Uri;
+import android.support.design.widget.TextInputLayout;
 import android.util.Property;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,7 +18,6 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import net.myacxy.retrotwitch.utils.StringUtil;
 
@@ -130,8 +130,13 @@ public class BindingAdapters {
         setDeepEnabled(viewGroup, enabled);
     }
 
-    @BindingAdapter("met_error")
-    public static void setError(MaterialEditText view, String error) {
+    @BindingAdapter("et_error")
+    public static void setError(EditText view, String error) {
+        view.setError(error);
+    }
+
+    @BindingAdapter("til_error")
+    public static void setError(TextInputLayout view, String error) {
         view.setError(error);
     }
 
