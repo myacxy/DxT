@@ -36,9 +36,9 @@ public class RetroTwitchUtil {
                                         requestMeta.offset,
                                         Direction.DEFAULT,
                                         SortBy.DEFAULT
-                                )
+                                ).toObservable()
                 )
-                .takeUntil(response -> response.code() != 200
+                .takeUntil(response -> !response.isSuccessful()
                         || response.body().getUserFollows().size() == 0
                         || !requestMeta.hasNext(response.body().getTotal())
                 )
@@ -70,7 +70,7 @@ public class RetroTwitchUtil {
                                                 requestMeta.offset
                                         )
                                 )
-                                .takeUntil(response -> response.code() != 200
+                                .takeUntil(response -> !response.isSuccessful()
                                         || response.body().getStreams().size() == 0
                                         || !requestMeta.hasNext(response.body().getTotal())
                                 )

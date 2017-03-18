@@ -33,10 +33,7 @@
                 android:layout_height="@dimen/icon_large"
                 android:visibility="@{ userFollow.getChannel().getLogo() != null ? View.VISIBLE : View.GONE, default=gone }"
                 app:failureImage="@drawable/ic_error_outline_black_24dp"
-                bind:imageUrl="@{ userFollow.getChannel.getLogo() }"
-                tools:layout_marginTop="40dp"
-                tools:src="@drawable/ic_error_outline_black_24dp"
-                tools:visibility="visible" />
+                bind:imageUrl="@{ userFollow.getChannel.getLogo() }" />
 
             <ImageView
                 android:layout_width="@dimen/icon_small"
@@ -73,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:visibility="@{ userFollow.getChannel().getGame() == null ? View.GONE : View.VISIBLE }"
                 bind:toAnimatedText="@{ userFollow.getChannel().getGame() }"
                 tools:text="Hearthstone: Heroes of Warcraft" />
 

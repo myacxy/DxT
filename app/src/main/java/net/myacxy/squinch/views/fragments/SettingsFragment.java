@@ -39,10 +39,6 @@ public class SettingsFragment extends MvvmFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (savedInstanceState == null && getViewModel().settings.user.get() != null) {
-            userNameText.getEditText().setText(getViewModel().settings.user.get().getName());
-        }
         getViewModel().refresh();
     }
 

@@ -47,6 +47,7 @@ public class ChannelSelectionViewModel implements ViewModel, SelectableUserFollo
     @Override
     public void onChannelMoved(int from, int to) {
         Collections.swap(userFollows, from, to);
+        dataHelper.setUserFollows(userFollows);
         // TODO: 17.03.2017 save order persistently
     }
 }

@@ -31,7 +31,7 @@ public class ChannelSelectionFragment extends MvvmFragment implements Selectable
 
     @Override
     protected ChannelSelectionViewModel getViewModel() {
-        SimpleUser user = SimpleViewModelLocator.getInstance().getSettingsViewModel().settings.user.get();
+        SimpleUser user = SimpleViewModelLocator.getInstance().getSettingsViewModel().getSettings().getUser();
         return SimpleViewModelLocator.getInstance().getChannelSelectionViewModel(user.getName());
     }
 
@@ -48,6 +48,7 @@ public class ChannelSelectionFragment extends MvvmFragment implements Selectable
                 this
         );
         itemTouchHelper.attachToRecyclerView(channels);
+        channels.setHasFixedSize(true);
         channels.setAdapter(adapter);
     }
 

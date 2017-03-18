@@ -23,10 +23,16 @@ public class DataHelper {
 
     private final SharedPreferences sp;
     private final SharedPreferences debugLog;
+    private final SettingsModel settings;
 
     public DataHelper(Context context) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
         debugLog = context.getSharedPreferences("log", Context.MODE_APPEND);
+        settings = recoverSettings();
+    }
+
+    public SettingsModel getSettings() {
+        return settings;
     }
 
     @Nullable
@@ -39,6 +45,7 @@ public class DataHelper {
     }
 
     public void setUser(@Nullable SimpleUser user) {
+        settings.setUser(user);
         Setting.USER.save(sp, user != null ? JsonUtil.toJson(user) : null);
     }
 
@@ -47,6 +54,7 @@ public class DataHelper {
     }
 
     public void setUpdateInterval(@IntRange(from = 15) int updateInterval) {
+        settings.setUpdateInterval(updateInterval);
         Setting.UPDATE_INTERVAL.save(sp, updateInterval);
     }
 
@@ -55,17 +63,8 @@ public class DataHelper {
     }
 
     public void setHideEmptyExtension(boolean hideEmptyExtension) {
+        settings.setEmptyExtensionHidden(hideEmptyExtension);
         Setting.HIDE_EMPTY_EXTENSION.save(sp, hideEmptyExtension);
-    }
-
-    public SettingsModel recoverSettings() {
-        SettingsModel settings = new SettingsModel();
-        settings.user.set(getUser());
-        settings.userFollows.set(getUserFollows());
-        settings.liveStreams.set(getLiveStreams());
-        settings.updateInterval.set(getUpdateInterval(60));
-        settings.isEmptyExtensionHidden.set(getHideEmptyExtension(true));
-        return settings;
     }
 
     @NonNull
@@ -78,6 +77,10 @@ public class DataHelper {
     }
 
     public void setUserFollows(@Nullable List<UserFollow> userFollows) {
+        settings.clearUserFollows();
+        if (userFollows != null) {
+            settings.addUserFollows(userFollows);
+        }
         Setting.USER_FOLLOWS.save(sp, userFollows != null ? JsonUtil.toJson(userFollows) : null);
     }
 
@@ -90,6 +93,7 @@ public class DataHelper {
     }
 
     public void setDeselectedChannelIds(List<Long> channelIds) {
+        settings.setDeselectedChannelIds(channelIds);
         Setting.DESELECTED_CHANNEL_IDS.save(sp, JsonUtil.toJson(channelIds));
     }
 
@@ -103,6 +107,10 @@ public class DataHelper {
     }
 
     public void setLiveStreams(@Nullable List<Stream> streams) {
+        settings.clearLiveStreams();
+        if (streams != null) {
+            settings.setLiveStreams(streams);
+        }
         Setting.LIVE_STREAMS.save(sp, streams != null ? JsonUtil.toJson(streams) : null);
     }
 
@@ -121,6 +129,16 @@ public class DataHelper {
         }
         return new ArrayList<>();
 
+    }
+
+    private SettingsModel recoverSettings() {
+        SettingsModel settings = new SettingsModel();
+        settings.setUser(getUser());
+        settings.addUserFollows(getUserFollows());
+        settings.setLiveStreams(getLiveStreams());
+        settings.setUpdateInterval(getUpdateInterval(60));
+        settings.setEmptyExtensionHidden(getHideEmptyExtension(true));
+        return settings;
     }
 
     private interface SharedPreference<T> {
