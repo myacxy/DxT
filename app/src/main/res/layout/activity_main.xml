@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data class="MainActivityBinding">
-        <variable
-            name="viewModel"
-            type="net.myacxy.squinch.viewmodels.MainViewModel"
-            />
-    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:layout_margin="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_main_synchronous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Synchronous" />
+
+        <Button
+            android:id="@+id/btn_main_asynchronous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Asynchronous" />
+
+        <Button
+            android:id="@+id/btn_main_reactive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reactive" />
 
     </LinearLayout>
 

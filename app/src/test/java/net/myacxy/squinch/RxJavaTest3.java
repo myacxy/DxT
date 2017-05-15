@@ -38,6 +38,11 @@ public class RxJavaTest3 {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client);
 
+    public interface TwitchUsersService {
+        @GET("users")
+        Call<SimpleUsersResponse> translateUserNameToUserId(@Query("login") String userName);
+    }
+
     @Test
     public void retrofit() throws Exception {
 
@@ -68,6 +73,11 @@ public class RxJavaTest3 {
         latch.await();
     }
 
+    public interface RxTwitchUsersService {
+        @GET("users")
+        Single<Response<SimpleUsersResponse>> translateUserNameToUserId(@Query("login") String userName);
+    }
+
     @Test
     public void rxRetrofit() {
 
@@ -78,15 +88,5 @@ public class RxJavaTest3 {
 
         Single<Response<SimpleUsersResponse>> twitch = service.translateUserNameToUserId("twitch");
         System.out.println(twitch.blockingGet().body().getUsers().get(0).getId());
-    }
-
-    public interface TwitchUsersService {
-        @GET("users")
-        Call<SimpleUsersResponse> translateUserNameToUserId(@Query("login") String userName);
-    }
-
-    public interface RxTwitchUsersService {
-        @GET("users")
-        Single<Response<SimpleUsersResponse>> translateUserNameToUserId(@Query("login") String userName);
     }
 }

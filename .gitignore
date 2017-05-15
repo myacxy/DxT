@@ -88,7 +88,7 @@ proguard/
 *.log
 
 # Android Studio Navigation editor temp files
-.navigation/
+.navigation/jh
 
 # Android Studio captures folder
 captures/

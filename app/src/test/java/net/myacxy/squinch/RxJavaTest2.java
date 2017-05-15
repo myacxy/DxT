@@ -54,7 +54,7 @@ public class RxJavaTest2 {
                 .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows))
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-                .toObservable().blockingSubscribe(System.out::println, System.out::println);
+                .toObservable().blockingSubscribe(streams -> System.out.println(streams.size()), System.out::println);
 
 //        Observable<Long> getUserId = RxRetroTwitch.getInstance()
 //                .users()
@@ -200,6 +200,7 @@ public class RxJavaTest2 {
 
         @SuppressWarnings("Convert2MethodRef")
         private void bla() {
+
             Single.just("twitch")
                     .flatMap(userName -> translateUserNameToUserId(userName))
                     .flatMap(response -> getAllUserFollows(response.body().getUsers().get(0).getId()))
