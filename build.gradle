@@ -6,32 +6,49 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
+allprojects {
+    repositories {
+        jcenter()
+        mavenLocal()
+        maven { url "https://maven.google.com" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+}
+
 ext {
-    supportLibraryVersion = '25.0.0'
+    minSdkVersion = 21
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = '26.0.0'
+
+    supportLibraryVersion = '25.4.0'
     retrofitVersion = '2.1.0'
-    rxBindingVersion = '0.4.0'
+    rxBindingVersion = '2.0.0'
+    daggerVersion = '2.11'
 
     dependencies = [
             // common
-            gson                    : 'com.google.code.gson:gson:2.5',
+            gson                    : 'com.google.code.gson:gson:2.8.1',
             retrofit                : "com.squareup.retrofit2:retrofit:$retrofitVersion",
             retrofitConverterGson   : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
             okHttpLoggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.0.0',
             hamcrestAll             : 'org.hamcrest:hamcrest-all:1.3',
             junit                   : 'junit:junit:4.12',
             // rxjava
-            rxjava                  : 'io.reactivex.rxjava2:rxjava:2.0.1',
+            rxjava                  : 'io.reactivex.rxjava2:rxjava:2.1.1',
             retrofitAdapterRxJava   : "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion",
             // android
-            butterknife             : 'com.jakewharton:butterknife:8.5.1',
-            butterknifeApt          : 'com.jakewharton:butterknife-compiler:8.5.1',
+            butterknife             : 'com.jakewharton:butterknife:8.7.0',
+            butterknifeApt          : 'com.jakewharton:butterknife-compiler:8.7.0',
             appCompat               : "com.android.support:appcompat-v7:$supportLibraryVersion",
             cardView                : "com.android.support:cardview-v7:$supportLibraryVersion",
             design                  : "com.android.support:design:$supportLibraryVersion",
@@ -40,6 +57,13 @@ ext {
             supportAnnotations      : "com.android.support:support-annotations:$supportLibraryVersion",
             palette                 : "com.android.support:palette-v7:$supportLibraryVersion",
             materialEditText        : 'com.rengwuxian.materialedittext:library:2.1.4',
+            fresco                  : 'com.facebook.fresco:fresco:1.3.0',
+            leakCanary              : 'com.squareup.leakcanary:leakcanary-android:1.5.1',
+            leakCanaryNoOp          : 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1',
+            dagger                  : "com.google.dagger:dagger-android:$daggerVersion",
+            daggerSupport           : "com.google.dagger:dagger-android-support:$daggerVersion", // if you use the support libraries
+            daggerApt               : "com.google.dagger:dagger-android-processor:$daggerVersion",
+            timber                  : 'com.jakewharton.timber:timber:4.5.1',
             // android-rxjava
             rxAndroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
             rxBinding               : "com.jakewharton.rxbinding:rxbinding:$rxBindingVersion",
@@ -47,6 +71,7 @@ ext {
             rxBindingDesign         : "com.jakewharton.rxbinding:rxbinding-design:$rxBindingVersion",
             rxBindingRecyclerView   : "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rxBindingVersion",
             // misc
+            crashlytics             : 'com.crashlytics.sdk.android:crashlytics:2.6.8@aar',
             eventBus                : 'org.greenrobot:eventbus:3.0.0',
             logger                  : 'com.github.orhanobut:logger:1.12',
             dashclock               : 'com.google.android.apps.dashclock:dashclock-api:2.0.0',
