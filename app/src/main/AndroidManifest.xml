@@ -69,6 +69,11 @@
             android:exported="true"
             />
 
+        <activity
+            android:name="net.myacxy.squinch.KotlinActivity"
+            android:exported="true"
+            />
+
         <!--
         <activity android:name=".TwitchActivity"
                   android:label="@string/app_name">

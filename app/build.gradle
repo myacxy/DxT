@@ -13,6 +13,8 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 
@@ -22,13 +24,17 @@ def versionPatch = 0
 def versionBuild = 0
 
 android {
-    compileSdkVersion project.compileSdkVersion
-    buildToolsVersion project.buildToolsVersion
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId 'net.myacxy.squinch'
-        minSdkVersion project.minSdkVersion
-        targetSdkVersion project.targetSdkVersion
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -41,6 +47,7 @@ android {
         release {
             useProguard true
             minifyEnabled true
+            proguardFiles file('../proguard-files').listFiles().toList().toArray()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -48,15 +55,8 @@ android {
         debug {
             useProguard true
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-dev.pro'
-            signingConfig signingConfigs.release
-        }
-    }
-
-    productFlavors {
-        prod {}
-
-        dev {
+            proguardFiles file('../proguard-files').listFiles().toList().toArray()
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.dev'
             versionNameSuffix '#dev'
         }
@@ -99,30 +99,33 @@ if (propFile.canRead()) {
 dependencies {
     compile files('libs/retrotwitch-rxjava.jar')
 
-    Map<String, String> dependencies = rootProject.ext.dependencies;
+    compile deps.support.appCompat
+    compile deps.support.v4
+    compile deps.support.design
+    compile deps.support.recyclerView
+    compile deps.support.palette
+    compile deps.support.constraintLayout
 
-    compile(dependencies.crashlytics) {
-        transitive = true;
-    }
-    compile dependencies.dashclock
-    compile dependencies.eventBus
-    compile dependencies.logger
-    compile(dependencies.rxAndroid) {
+    compile deps.butterknife.runtime
+    annotationProcessor deps.butterknife.compiler
+    compile(deps.rx.android) {
         exclude module: 'rxjava'
     }
-    compile dependencies.butterknife
-    annotationProcessor dependencies.butterknifeApt
+    compile deps.kotlin.stdlib
+    kapt deps.databinding
 
-    compile dependencies.appCompat
-    compile dependencies.design
-    compile dependencies.recyclerView
-    compile dependencies.palette
+    compile deps.dashclock
+    compile deps.fresco
+    compile(deps.crashlytics) {
+        transitive = true
+    }
+    compile deps.eventBus
+    compile deps.logger
 
-//    compile dependencies.rxBindingRecyclerView
-    compile dependencies.fresco
+    debugCompile deps.leakCanary.real
+    releaseCompile deps.leakCanary.noOp
 
-    debugCompile dependencies.leakCanary
-    releaseCompile dependencies.leakCanaryNoOp
-
-    testCompile dependencies.junit
+    testCompile deps.junit
 }
+
+apply plugin: 'kotlin-android-extensions'
