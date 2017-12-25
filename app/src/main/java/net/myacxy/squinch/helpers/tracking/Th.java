@@ -11,11 +11,11 @@ public class Th {
     }
 
     public static void ex(Throwable throwable) {
-        TrackingHelper.getInstance()
-                .exception()
-                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
-                .withThrowable(throwable)
-                .post();
+//        TrackingHelper.getInstance()
+//                .exception()
+//                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
+//                .withThrowable(throwable)
+//                .post();
     }
 
     public static void err(RetroTwitchError error) {
@@ -28,11 +28,11 @@ public class Th {
     }
 
     public static void l(String tag, String msg, Object... objects) {
-        TrackingHelper.getInstance()
-                .log()
-                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
-                .addProperty(tag, String.format(msg, objects))
-                .post();
+//        TrackingHelper.getInstance()
+//                .log()
+//                .withTrackers(Tracker.LOGS, Tracker.CRASHES, Tracker.DEBUG_LOGS)
+//                .addProperty(tag, String.format(msg, objects))
+//                .post();
     }
 
     public static void l(Class<?> clazz, String msg, Object... objects) {

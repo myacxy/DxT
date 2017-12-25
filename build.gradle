@@ -94,7 +94,7 @@ buildscript {
     }
 }
 
-allprojects {
+subprojects {
     repositories {
         jcenter()
         mavenLocal()
@@ -104,3 +104,10 @@ allprojects {
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xmaxerrs" << "500" // or whatever number you want
+    }
+}
+

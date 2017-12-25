@@ -5,7 +5,6 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,9 @@ import net.myacxy.squinch.viewmodels.ViewModel;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.support.DaggerFragment;
 
-public abstract class MvvmFragment extends Fragment {
+public abstract class MvvmFragment extends DaggerFragment {
 
     private ViewDataBinding dataBinding;
     private Unbinder unbinder;

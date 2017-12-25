@@ -107,12 +107,16 @@ dependencies {
     compile deps.support.constraintLayout
 
     compile deps.butterknife.runtime
-    annotationProcessor deps.butterknife.compiler
+    kapt deps.butterknife.compiler
     compile(deps.rx.android) {
         exclude module: 'rxjava'
     }
     compile deps.kotlin.stdlib
     kapt deps.databinding
+
+    compile deps.dagger.runtime
+    compile deps.dagger.support
+    kapt deps.dagger.compiler
 
     compile deps.dashclock
     compile deps.fresco

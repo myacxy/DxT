@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,7 +104,12 @@ public class BindingAdapters {
         }
     };
 
-    private static final SimpleDateFormat FORMAT_DATE_AND_TIME = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+    private static final ThreadLocal<SimpleDateFormat> FORMAT_DATE_AND_TIME = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("dd.MM.yy HH:mm:ss", Locale.getDefault());
+        }
+    };
 
     private BindingAdapters() {
         throw new IllegalAccessError();
@@ -205,12 +211,12 @@ public class BindingAdapters {
 
     @BindingAdapter("timeToText")
     public static void setTimeToText(TextView view, long time) {
-        view.setText(FORMAT_DATE_AND_TIME.format(new Date(time)));
+        view.setText(FORMAT_DATE_AND_TIME.get().format(new Date(time)));
     }
 
     @BindingAdapter("animatedTimeToText")
     public static void setAnimatedTimeToText(TextView view, long time) {
-        ObjectAnimator.ofObject(view, PROPERTY_TEXT, EVALUATOR_STRING_ANIMATED_CHARS, "", FORMAT_DATE_AND_TIME.format(new Date(time)))
+        ObjectAnimator.ofObject(view, PROPERTY_TEXT, EVALUATOR_STRING_ANIMATED_CHARS, "", FORMAT_DATE_AND_TIME.get().format(new Date(time)))
                 .setDuration(600)
                 .start();
     }
