@@ -1,21 +1,19 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext.versions = [
-            'gradle'        : '2.3.3',
-            'kotlin'        : '1.1.61',
+            'gradle'        : '3.0.1',
+            'kotlin'        : '1.2.21',
 
-            'buildTools'    : '26.0.0',
+            'buildTools'    : '27.0.3',
             'minSdk'        : 21,
             'targetSdk'     : 25,
-            'compileSdk'    : 25,
+            'compileSdk'    : 27,
 
-            'supportLibrary': '25.4.0',
-            'butterknife'   : '8.7.0',
+            'supportLibrary': '27.0.2',
+            'butterknife'   : '8.8.1',
             'okhttp'        : '3.8.1',
-            'retrofit'      : '2.1.0',
+            'retrofit'      : '2.3.0',
             'rxbinding'     : '2.0.0',
-            'dagger'        : '2.11',
+            'dagger'        : '2.14.1',
             'leakCanary'    : '1.5.1',
     ]
 
@@ -32,7 +30,7 @@ buildscript {
                     'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
             ],
             'kotlin'          : [
-                    'stdlib': "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
+                    'stdlib': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
             ],
             'rx'              : [
                     'core'   : 'io.reactivex.rxjava2:rxjava:2.1.1',
@@ -58,9 +56,13 @@ buildscript {
                     'rx'  : "com.squareup.retrofit2:adapter-rxjava:${versions.retrofit}",
             ],
             'dagger'          : [
-                    'runtime' : "com.google.dagger:dagger-android:${versions.dagger}",
-                    'compiler': "com.google.dagger:dagger-android-processor:${versions.dagger}",
-                    'support' : "com.google.dagger:dagger-android-support:${versions.dagger}", // if you use the support libraries
+                    'runtime' : "com.google.dagger:dagger:${versions.dagger}",
+                    'compiler': "com.google.dagger:dagger-compiler:${versions.dagger}",
+                    'android' : [
+                            'runtime' : "com.google.dagger:dagger-android:${versions.dagger}",
+                            'compiler': "com.google.dagger:dagger-android-processor:${versions.dagger}",
+                            'support' : "com.google.dagger:dagger-android-support:${versions.dagger}",
+                    ]
             ],
             'leakCanary'      : [
                     'real': "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}",
@@ -79,9 +81,9 @@ buildscript {
     ]
 
     repositories {
+        google()
         mavenCentral()
         jcenter()
-        maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
     }
 
@@ -96,18 +98,11 @@ buildscript {
 
 subprojects {
     repositories {
+        google()
         jcenter()
         mavenLocal()
-        maven { url "https://maven.google.com" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url = "https://jitpack.io" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xmaxerrs" << "500" // or whatever number you want
-    }
-}
-

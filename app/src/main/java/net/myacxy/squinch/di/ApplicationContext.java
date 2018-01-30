@@ -1,4 +1,4 @@
-package net.myacxy.squinch;
+package net.myacxy.squinch.di;
 
 import javax.inject.Qualifier;
 

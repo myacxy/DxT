@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.activities;
+package net.myacxy.squinch.settings;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import net.myacxy.squinch.MvvmActivity;
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
 import net.myacxy.squinch.helpers.FragmentHelper;
+import net.myacxy.squinch.settings.channelselection.ChannelSelectionFragment;
+import net.myacxy.squinch.settings.debuglog.DebugLogFragment;
 import net.myacxy.squinch.viewmodels.ViewModel;
-import net.myacxy.squinch.views.fragments.ChannelSelectionFragment;
-import net.myacxy.squinch.views.fragments.DebugLogFragment;
-import net.myacxy.squinch.views.fragments.SettingsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

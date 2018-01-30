@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.activities;
+package net.myacxy.squinch;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import net.myacxy.squinch.BR;
 import net.myacxy.squinch.viewmodels.ViewModel;
 
 import butterknife.ButterKnife;

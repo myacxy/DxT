@@ -12,7 +12,7 @@ import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
-import net.myacxy.squinch.views.activities.SettingsActivity;
+import net.myacxy.squinch.settings.SettingsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

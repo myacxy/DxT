@@ -1,3 +1,8 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -5,18 +10,9 @@ buildscript {
     }
 
     dependencies {
-        // The Fabric Gradle plugin uses an open ended version to react
-        // quickly to Android tooling updates
         classpath 'io.fabric.tools:gradle:1.23.0'
-        classpath 'me.tatarka:gradle-retrolambda:3.6.1'
     }
 }
-
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'io.fabric'
-apply plugin: 'me.tatarka.retrolambda'
 
 def versionMajor = 0
 def versionMinor = 2
@@ -65,6 +61,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        incremental = false
     }
 
     dataBinding {
@@ -97,39 +94,39 @@ if (propFile.canRead()) {
 }
 
 dependencies {
-    compile files('libs/retrotwitch-rxjava.jar')
+    implementation files('libs/retrotwitch-rxjava.jar')
 
-    compile deps.support.appCompat
-    compile deps.support.v4
-    compile deps.support.design
-    compile deps.support.recyclerView
-    compile deps.support.palette
-    compile deps.support.constraintLayout
+    implementation deps.support.appCompat
+    implementation deps.support.v4
+    implementation deps.support.design
+    implementation deps.support.recyclerView
+    implementation deps.support.palette
+    implementation deps.support.constraintLayout
 
-    compile deps.butterknife.runtime
+    implementation deps.butterknife.runtime
     kapt deps.butterknife.compiler
-    compile(deps.rx.android) {
+    implementation(deps.rx.android) {
         exclude module: 'rxjava'
     }
-    compile deps.kotlin.stdlib
+    implementation deps.kotlin.stdlib
     kapt deps.databinding
 
-    compile deps.dagger.runtime
-    compile deps.dagger.support
+    implementation deps.dagger.runtime
     kapt deps.dagger.compiler
+    implementation deps.dagger.android.runtime
+    implementation deps.dagger.android.support
+    kapt deps.dagger.android.compiler
 
-    compile deps.dashclock
-    compile deps.fresco
-    compile(deps.crashlytics) {
+    implementation deps.dashclock
+    implementation deps.fresco
+    implementation(deps.crashlytics) {
         transitive = true
     }
-    compile deps.eventBus
-    compile deps.logger
+    implementation deps.eventBus
+    implementation deps.logger
 
-    debugCompile deps.leakCanary.real
-    releaseCompile deps.leakCanary.noOp
+    debugImplementation deps.leakCanary.real
+    releaseImplementation deps.leakCanary.noOp
 
-    testCompile deps.junit
+    testImplementation deps.junit
 }
-
-apply plugin: 'kotlin-android-extensions'

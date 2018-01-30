@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="net.myacxy.squinch"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.myacxy.squinch"
     >
-    <!-- Internet Permissions -->
+
+    <!-- Internet permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -42,48 +43,33 @@
 
             <meta-data
                 android:name="settingsActivity"
-                android:value="net.myacxy.squinch.views.activities.SettingsActivity"
+                android:value="net.myacxy.squinch.settings.SettingsActivity"
                 />
 
         </service>
 
         <service
             android:name="net.myacxy.squinch.RetroTwitchJobService"
+            android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
+            />
 
-        <!--MainActivity-->
         <activity
-            android:name="net.myacxy.squinch.views.activities.MainActivity"
-            android:exported="true">
+            android:name="net.myacxy.squinch.settings.SettingsActivity"
+            android:exported="true"
+            >
 
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name="net.myacxy.squinch.views.activities.SettingsActivity"
-            android:exported="true"
-            />
 
         <activity
             android:name="net.myacxy.squinch.KotlinActivity"
             android:exported="true"
             />
-
-        <!--
-        <activity android:name=".TwitchActivity"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
 
     </application>
 

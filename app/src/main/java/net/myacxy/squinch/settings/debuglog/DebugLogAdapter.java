@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.adapters;
+package net.myacxy.squinch.settings.debuglog;
 
 import android.databinding.ObservableList;
 import android.support.v7.widget.RecyclerView;
@@ -32,18 +32,18 @@ public class DebugLogAdapter extends RecyclerView.Adapter<DebugLogAdapter.DebugL
         return entries.size();
     }
 
-    protected class DebugLogEntryViewHolder extends RecyclerView.ViewHolder {
+    protected static class DebugLogEntryViewHolder extends RecyclerView.ViewHolder {
 
-        private DebugLogEntryItemBinding mBinding;
+        private DebugLogEntryItemBinding binding;
 
         public DebugLogEntryViewHolder(DebugLogEntryItemBinding binding) {
             super(binding.getRoot());
-            mBinding = binding;
+            this.binding = binding;
         }
 
         public void bind(DebugLogEntry entry) {
-            mBinding.setEntry(entry);
-            mBinding.executePendingBindings();
+            binding.setEntry(entry);
+            binding.executePendingBindings();
         }
     }
 }

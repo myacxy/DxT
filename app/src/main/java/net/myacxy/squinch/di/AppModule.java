@@ -1,7 +1,8 @@
-package net.myacxy.squinch;
+package net.myacxy.squinch.di;
 
 import android.content.Context;
 
+import net.myacxy.squinch.SquinchApplication;
 import net.myacxy.squinch.helpers.tracking.ITracker;
 import net.myacxy.squinch.helpers.tracking.Tracker;
 import net.myacxy.squinch.helpers.tracking.TrackingHelper;
@@ -10,23 +11,17 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class SquichApplicationModule {
-
-    private final SquinchApplication application;
-
-    public SquichApplicationModule(SquinchApplication application) {
-        this.application = application;
-    }
+public class AppModule {
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     @ApplicationContext
-    public Context appContext() {
+    public Context applicationContext(SquinchApplication application) {
         return application.getApplicationContext();
     }
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     public TrackingHelper trackingHelper(@ApplicationContext Context context) {
         for (ITracker tracker : Tracker.values()) {
             tracker.initialize(context);

@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.fragments;
+package net.myacxy.squinch.settings.channelselection;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,10 +7,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
+import net.myacxy.squinch.MvvmFragment;
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
 import net.myacxy.squinch.viewmodels.ChannelSelectionViewModel;
-import net.myacxy.squinch.views.adapters.SelectableUserFollowsAdapter;
 
 import butterknife.BindView;
 

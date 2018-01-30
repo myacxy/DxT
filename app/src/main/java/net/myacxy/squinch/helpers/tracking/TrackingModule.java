@@ -1,6 +1,6 @@
 package net.myacxy.squinch.helpers.tracking;
 
-import net.myacxy.squinch.ApplicationScope;
+import net.myacxy.squinch.di.PerApplication;
 
 import javax.inject.Named;
 
@@ -11,21 +11,21 @@ import dagger.Provides;
 public class TrackingModule {
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     @Named("crash_tracker")
     public ITracker crashTracker() {
         return new CrashTracker();
     }
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     @Named("log_tracker")
     public ITracker logTracker() {
         return new LogTracker();
     }
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     @Named("debug_log_tracker")
     public ITracker debugLogTracker() {
         return new DebugLogTracker();

@@ -1,7 +1,8 @@
-package net.myacxy.squinch;
+package net.myacxy.squinch.di;
 
 import net.myacxy.retrotwitch.Configuration;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
+import net.myacxy.squinch.BuildConfig;
 
 import javax.inject.Named;
 
@@ -13,13 +14,14 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class NetworkModule {
 
     @Provides
-    @ApplicationScope
-    public RxRetroTwitch retroTwitch(Configuration configuration) {
-        return new RxRetroTwitch().configure(configuration);
+    @PerApplication
+    @Named("twitch_client_id")
+    public String twitchClientId() {
+        return "75gzbgqhk0tg6dhjbqtsphmy8sdayrr";
     }
 
     @Provides
-    @ApplicationScope
+    @PerApplication
     public Configuration configuration(@Named("twitch_client_id") String twitchClientId) {
         return new Configuration.ConfigurationBuilder()
                 .setLogLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BASIC : HttpLoggingInterceptor.Level.NONE)
@@ -28,9 +30,8 @@ public class NetworkModule {
     }
 
     @Provides
-    @ApplicationScope
-    @Named("twitch_client_id")
-    public String twitchClientId() {
-        return "75gzbgqhk0tg6dhjbqtsphmy8sdayrr";
+    @PerApplication
+    public RxRetroTwitch rxRetroTwitch(Configuration configuration) {
+        return new RxRetroTwitch().configure(configuration);
     }
 }

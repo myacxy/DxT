@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.adapters;
+package net.myacxy.squinch.settings.channelselection;
 
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +38,7 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
     @Override
     public SelectableUserFollowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         SimpleChannelItemBinding binding = SimpleChannelItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new SelectableUserFollowViewHolder(binding);
+        return new SelectableUserFollowViewHolder(binding, deselectedChannelIds, viewListener, dataListener);
     }
 
     @Override
@@ -95,18 +95,22 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
         }
     }
 
-    protected class SelectableUserFollowViewHolder extends RecyclerView.ViewHolder {
+    protected static class SelectableUserFollowViewHolder extends RecyclerView.ViewHolder {
+
+        private final SimpleChannelItemBinding binding;
+        private final UserFollowsDataListener dataListener;
+        private final List<Long> deselectedChannelIds;
+        private final GestureDetector gestureDetector;
 
         @BindView(R.id.accb_ch_selected)
         protected AppCompatCheckBox selected;
 
-        private SimpleChannelItemBinding mBinding;
-        private GestureDetector gestureDetector;
-
-        public SelectableUserFollowViewHolder(SimpleChannelItemBinding binding) {
+        public SelectableUserFollowViewHolder(SimpleChannelItemBinding binding, List<Long> deselectedChannelIds, final UserFollowsViewListener viewListener, UserFollowsDataListener dataListener) {
             super(binding.getRoot());
+            this.deselectedChannelIds = deselectedChannelIds;
+            this.dataListener = dataListener;
             ButterKnife.bind(this, itemView);
-            mBinding = binding;
+            this.binding = binding;
             gestureDetector = new GestureDetector(itemView.getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public void onLongPress(MotionEvent e) {
@@ -116,8 +120,8 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
         }
 
         public void bind(UserFollow userFollow) {
-            mBinding.setUserFollow(userFollow);
-            mBinding.executePendingBindings();
+            binding.setUserFollow(userFollow);
+            binding.executePendingBindings();
 
             selected.setChecked(!deselectedChannelIds.contains(userFollow.getChannel().getId()));
         }
@@ -134,7 +138,7 @@ public class SelectableUserFollowsAdapter extends RecyclerView.Adapter<Selectabl
 
         @OnCheckedChanged(R.id.accb_ch_selected)
         protected void onSelectionChanged(boolean checked) {
-            dataListener.onChannelSelectionChanged(mBinding.getUserFollow().getChannel(), checked);
+            dataListener.onChannelSelectionChanged(binding.getUserFollow().getChannel(), checked);
         }
     }
 }

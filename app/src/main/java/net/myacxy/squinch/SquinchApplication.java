@@ -6,6 +6,7 @@ import android.content.Context;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 
+import net.myacxy.squinch.di.DaggerSquinchApplicationComponent;
 import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.helpers.tracking.Tracker;
 

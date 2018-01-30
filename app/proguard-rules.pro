@@ -47,3 +47,5 @@
 -keep class android.support.v7.widget.RoundRectDrawable { *; }
 
 -dontwarn io.reactivex.**
+
+-dontwarn javax.annotation.**

@@ -1,4 +1,4 @@
-package net.myacxy.squinch.views.fragments;
+package net.myacxy.squinch.settings.debuglog;
 
 import android.databinding.ObservableList;
 import android.os.Bundle;
@@ -7,10 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import net.myacxy.squinch.MvvmFragment;
 import net.myacxy.squinch.R;
 import net.myacxy.squinch.SimpleViewModelLocator;
 import net.myacxy.squinch.viewmodels.DebugViewModel;
-import net.myacxy.squinch.views.adapters.DebugLogAdapter;
 
 import butterknife.BindView;
 
