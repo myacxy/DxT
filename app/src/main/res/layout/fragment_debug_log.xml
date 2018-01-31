@@ -4,11 +4,10 @@
 
     <data class="DebugLogFragmentBinding">
 
-        <import type="net.myacxy.squinch.viewmodels.DebugViewModel" />
-
         <variable
             name="viewModel"
-            type="DebugViewModel" />
+            type="net.myacxy.squinch.settings.debuglog.DebugLogViewModel"
+            />
 
     </data>
 

@@ -7,10 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import net.myacxy.squinch.MvvmFragment;
 import net.myacxy.squinch.R;
-import net.myacxy.squinch.SimpleViewModelLocator;
-import net.myacxy.squinch.viewmodels.DebugViewModel;
+import net.myacxy.squinch.base.MvvmFragment;
+import net.myacxy.squinch.base.SimpleViewModelLocator;
 
 import butterknife.BindView;
 
@@ -30,8 +29,8 @@ public class DebugLogFragment extends MvvmFragment {
     }
 
     @Override
-    protected DebugViewModel getViewModel() {
-        return SimpleViewModelLocator.getInstance().getDebugViewModel();
+    protected DebugLogViewModel getViewModel() {
+        return SimpleViewModelLocator.getInstance().getDebugLogViewModel();
     }
 
     @Override

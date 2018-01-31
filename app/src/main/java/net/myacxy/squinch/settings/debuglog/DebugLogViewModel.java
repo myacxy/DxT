@@ -1,19 +1,19 @@
-package net.myacxy.squinch.viewmodels;
+package net.myacxy.squinch.settings.debuglog;
 
 import android.databinding.ObservableArrayList;
 
+import net.myacxy.squinch.base.ViewModel;
 import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.helpers.tracking.DebugLogTracker;
-import net.myacxy.squinch.models.DebugLogEntry;
 
-public class DebugViewModel implements ViewModel, DebugLogTracker.OnDebugLogChangedListener {
+public class DebugLogViewModel implements ViewModel, DebugLogTracker.OnDebugLogChangedListener {
 
     private final DataHelper dataHelper;
     private final DebugLogTracker debugLogTracker;
 
     private ObservableArrayList<DebugLogEntry> debugLogEntries = new ObservableArrayList<>();
 
-    public DebugViewModel(DataHelper dataHelper, DebugLogTracker debugLogTracker) {
+    public DebugLogViewModel(DataHelper dataHelper, DebugLogTracker debugLogTracker) {
         this.dataHelper = dataHelper;
         this.debugLogTracker = debugLogTracker;
 

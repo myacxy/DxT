@@ -1,4 +1,4 @@
-package net.myacxy.squinch.viewmodels;
+package net.myacxy.squinch.settings;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
@@ -11,9 +11,9 @@ import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUsersResponse;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.retrotwitch.v5.helpers.RxRetroTwitchErrorFactory;
+import net.myacxy.squinch.base.ViewModel;
 import net.myacxy.squinch.helpers.DataHelper;
 import net.myacxy.squinch.helpers.tracking.Th;
-import net.myacxy.squinch.models.SettingsModel;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
 

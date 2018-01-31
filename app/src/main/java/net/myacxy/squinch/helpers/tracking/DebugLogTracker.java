@@ -3,7 +3,7 @@ package net.myacxy.squinch.helpers.tracking;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import net.myacxy.squinch.models.DebugLogEntry;
+import net.myacxy.squinch.settings.debuglog.DebugLogEntry;
 import net.myacxy.squinch.utils.JsonUtil;
 import net.myacxy.squinch.utils.StringUtil;
 
@@ -14,9 +14,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-import static net.myacxy.squinch.models.DebugLogEntry.TYPE_EXCEPTION;
-import static net.myacxy.squinch.models.DebugLogEntry.TYPE_LOG;
-import static net.myacxy.squinch.models.DebugLogEntry.TYPE_USER;
+import static net.myacxy.squinch.settings.debuglog.DebugLogEntry.TYPE_EXCEPTION;
+import static net.myacxy.squinch.settings.debuglog.DebugLogEntry.TYPE_LOG;
+import static net.myacxy.squinch.settings.debuglog.DebugLogEntry.TYPE_USER;
 
 public class DebugLogTracker implements ITracker {
 
@@ -25,12 +25,11 @@ public class DebugLogTracker implements ITracker {
 
     @Override
     public void initialize(Context context) {
-        sp = context.getSharedPreferences("log", Context.MODE_APPEND);
+        sp = context.getSharedPreferences("log", Context.MODE_PRIVATE);
     }
 
     @Override
     public void exception(Throwable throwable) {
-
         Single.just(throwable.toString())
                 .map(message -> {
                     DebugLogEntry debugLogEntry = new DebugLogEntry(System.currentTimeMillis(), TYPE_EXCEPTION, message);

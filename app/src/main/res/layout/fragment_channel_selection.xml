@@ -5,13 +5,12 @@
 
     <data class="ChannelSelectionFragmentBinding">
 
-        <import type="net.myacxy.squinch.viewmodels.ChannelSelectionViewModel" />
-
         <import type="android.view.View" />
 
         <variable
             name="viewModel"
-            type="ChannelSelectionViewModel" />
+            type="net.myacxy.squinch.settings.channelselection.ChannelSelectionViewModel"
+            />
     </data>
 
     <android.support.v7.widget.RecyclerView

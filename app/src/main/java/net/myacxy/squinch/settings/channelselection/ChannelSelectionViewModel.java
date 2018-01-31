@@ -1,9 +1,9 @@
-package net.myacxy.squinch.viewmodels;
+package net.myacxy.squinch.settings.channelselection;
 
 import net.myacxy.retrotwitch.v5.api.channels.SimpleChannel;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
+import net.myacxy.squinch.base.ViewModel;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.settings.channelselection.SelectableUserFollowsAdapter;
 
 import java.util.Collections;
 import java.util.List;

@@ -46,6 +46,7 @@ android {
             proguardFiles file('../proguard-files').listFiles().toList().toArray()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            debuggable false
         }
 
         debug {
@@ -55,6 +56,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix '.dev'
             versionNameSuffix '#dev'
+            debuggable true
         }
     }
 

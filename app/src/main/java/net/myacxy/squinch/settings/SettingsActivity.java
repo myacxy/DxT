@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import net.myacxy.squinch.MvvmActivity;
 import net.myacxy.squinch.R;
-import net.myacxy.squinch.SimpleViewModelLocator;
+import net.myacxy.squinch.base.MvvmActivity;
+import net.myacxy.squinch.base.SimpleViewModelLocator;
+import net.myacxy.squinch.base.ViewModel;
 import net.myacxy.squinch.helpers.FragmentHelper;
 import net.myacxy.squinch.settings.channelselection.ChannelSelectionFragment;
 import net.myacxy.squinch.settings.debuglog.DebugLogFragment;
-import net.myacxy.squinch.viewmodels.ViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

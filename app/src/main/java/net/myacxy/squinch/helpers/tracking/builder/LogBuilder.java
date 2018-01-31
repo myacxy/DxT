@@ -1,5 +1,7 @@
 package net.myacxy.squinch.helpers.tracking.builder;
 
+import android.support.annotation.NonNull;
+
 import net.myacxy.squinch.helpers.tracking.ITracker;
 import net.myacxy.squinch.helpers.tracking.TrackingHelper;
 
@@ -15,5 +17,11 @@ public class LogBuilder extends PropertyLogBuilder<LogBuilder> {
             tracker.log(properties);
         }
         return trackingHelper;
+    }
+
+    @NonNull
+    @Override
+    protected LogBuilder self() {
+        return this;
     }
 }

@@ -1,4 +1,4 @@
-package net.myacxy.squinch.models;
+package net.myacxy.squinch.settings;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;

@@ -6,10 +6,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 
-import net.myacxy.squinch.MvvmFragment;
 import net.myacxy.squinch.R;
-import net.myacxy.squinch.SimpleViewModelLocator;
-import net.myacxy.squinch.viewmodels.SettingsViewModel;
+import net.myacxy.squinch.base.MvvmFragment;
+import net.myacxy.squinch.base.SimpleViewModelLocator;
 
 import org.greenrobot.eventbus.EventBus;
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import net.myacxy.squinch.databinding.DebugLogEntryItemBinding;
-import net.myacxy.squinch.models.DebugLogEntry;
 
 public class DebugLogAdapter extends RecyclerView.Adapter<DebugLogAdapter.DebugLogEntryViewHolder> {
 

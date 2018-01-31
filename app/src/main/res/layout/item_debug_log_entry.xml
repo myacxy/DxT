@@ -7,7 +7,8 @@
 
         <variable
             name="entry"
-            type="net.myacxy.squinch.models.DebugLogEntry" />
+            type="net.myacxy.squinch.settings.debuglog.DebugLogEntry"
+            />
 
     </data>
 

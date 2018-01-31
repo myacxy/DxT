@@ -6,13 +6,12 @@
 
     <data class="SettingsFragmentBinding">
 
-        <import type="net.myacxy.squinch.viewmodels.SettingsViewModel" />
-
         <import type="android.view.View" />
 
         <variable
             name="viewModel"
-            type="SettingsViewModel" />
+            type="net.myacxy.squinch.settings.SettingsViewModel"
+            />
     </data>
 
     <android.support.v4.widget.NestedScrollView

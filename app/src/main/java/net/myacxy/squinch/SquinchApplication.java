@@ -2,11 +2,13 @@ package net.myacxy.squinch;
 
 import android.app.job.JobScheduler;
 import android.content.Context;
+import android.os.StrictMode;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 
-import net.myacxy.squinch.di.DaggerSquinchApplicationComponent;
+import net.myacxy.squinch.base.SimpleViewModelLocator;
+import net.myacxy.squinch.di.DaggerSquinchComponent;
 import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.helpers.tracking.Tracker;
 
@@ -35,10 +37,26 @@ public class SquinchApplication extends DaggerApplication {
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.cancelAll();
         jobScheduler.schedule(RetroTwitchJobService.newJob(this));
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(
+                    new StrictMode.ThreadPolicy.Builder()
+                            .detectCustomSlowCalls()
+                            .detectNetwork()
+                            .detectDiskReads()
+                            .detectDiskWrites()
+                            .penaltyLog()
+                            .build());
+            StrictMode.setVmPolicy(
+                    new StrictMode.VmPolicy.Builder()
+                            .detectAll()
+                            .penaltyLog()
+                            .build());
+        }
     } // onCreate
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerSquinchApplicationComponent.builder().create(this);
+        return DaggerSquinchComponent.builder().create(this);
     }
 } // SquinchApplication

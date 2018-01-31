@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
-import net.myacxy.squinch.models.DebugLogEntry;
-import net.myacxy.squinch.models.SettingsModel;
+import net.myacxy.squinch.settings.SettingsModel;
+import net.myacxy.squinch.settings.debuglog.DebugLogEntry;
 import net.myacxy.squinch.utils.JsonUtil;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class DataHelper {
 
     public DataHelper(Context context) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
-        debugLog = context.getSharedPreferences("log", Context.MODE_APPEND);
+        debugLog = context.getSharedPreferences("log", Context.MODE_PRIVATE);
         settings = recoverSettings();
     }
 

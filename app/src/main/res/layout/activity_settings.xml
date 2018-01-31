@@ -6,7 +6,9 @@
 
         <variable
             name="viewModel"
-            type="net.myacxy.squinch.viewmodels.SettingsViewModel" />
+            type="net.myacxy.squinch.settings.SettingsViewModel"
+            />
+
     </data>
 
     <FrameLayout
