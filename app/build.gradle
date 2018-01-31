@@ -98,12 +98,12 @@ if (propFile.canRead()) {
 dependencies {
     implementation files('libs/retrotwitch-rxjava.jar')
 
-    implementation deps.support.appCompat
-    implementation deps.support.v4
-    implementation deps.support.design
-    implementation deps.support.recyclerView
-    implementation deps.support.palette
-    implementation deps.support.constraintLayout
+    implementation deps.android.support.appCompat
+    implementation deps.android.support.v4
+    implementation deps.android.support.design
+    implementation deps.android.support.recyclerView
+    implementation deps.android.support.palette
+    implementation deps.android.support.constraintLayout
 
     implementation deps.butterknife.runtime
     kapt deps.butterknife.compiler
@@ -111,7 +111,7 @@ dependencies {
         exclude module: 'rxjava'
     }
     implementation deps.kotlin.stdlib
-    kapt deps.databinding
+    kapt deps.android.databinding
 
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler

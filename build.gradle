@@ -18,16 +18,29 @@ buildscript {
     ]
 
     ext.deps = [
-            'databinding'     : "com.android.databinding:compiler:${versions.gradle}",
-            'support'         : [
-                    'appCompat'       : "com.android.support:appcompat-v7:${versions.supportLibrary}",
-                    'cardView'        : "com.android.support:cardview-v7:${versions.supportLibrary}",
-                    'design'          : "com.android.support:design:${versions.supportLibrary}",
-                    'recyclerView'    : "com.android.support:recyclerview-v7:${versions.supportLibrary}",
-                    'v4'              : "com.android.support:support-v4:${versions.supportLibrary}",
-                    'annotations'     : "com.android.support:support-annotations:${versions.supportLibrary}",
-                    'palette'         : "com.android.support:palette-v7:${versions.supportLibrary}",
-                    'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
+            'android'         : [
+                    'databinding': "com.android.databinding:compiler:${versions.gradle}",
+                    'support'    : [
+                            'appCompat'       : "com.android.support:appcompat-v7:${versions.supportLibrary}",
+                            'cardView'        : "com.android.support:cardview-v7:${versions.supportLibrary}",
+                            'design'          : "com.android.support:design:${versions.supportLibrary}",
+                            'recyclerView'    : "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+                            'v4'              : "com.android.support:support-v4:${versions.supportLibrary}",
+                            'annotations'     : "com.android.support:support-annotations:${versions.supportLibrary}",
+                            'palette'         : "com.android.support:palette-v7:${versions.supportLibrary}",
+                            'constraintLayout': "com.android.support.constraint:constraint-layout:1.0.2",
+                    ],
+                    'arch'       : [
+                            'lifecycle'  : [
+                                    'extensions': "android.arch.lifecycle:extensions:1.1.0", // ViewModel and LiveData
+                                    'viewmodel' : "android.arch.lifecycle:viewmodel:1.1.0", // alternatively, just ViewModel
+                                    'livedata'  : "android.arch.lifecycle:livedata:1.1.0", // alternatively, just LiveData
+                                    'compiler'  : "android.arch.lifecycle:compiler:1.1.0",
+                                    'java8'     : "android.arch.lifecycle:common-java8:1.1.0", // Java8 support for Lifecycles (instead of compiler)
+                                    'rx'     : "android.arch.lifecycle:reactivestreams:1.1.0" // Java8 support for Lifecycles (instead of compiler)
+                            ],
+                            'coreTesting': "android.arch.core:core-testing:1.1.0",
+                    ]
             ],
             'kotlin'          : [
                     'stdlib': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
