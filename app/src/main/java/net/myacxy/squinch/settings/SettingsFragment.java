@@ -1,6 +1,7 @@
 package net.myacxy.squinch.settings;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.SwitchCompat;
@@ -12,6 +13,8 @@ import net.myacxy.squinch.base.SimpleViewModelLocator;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
@@ -19,6 +22,9 @@ import butterknife.OnClick;
 public class SettingsFragment extends MvvmFragment {
 
     public static final String TAG = SettingsFragment.class.getSimpleName();
+
+    @Inject
+    SimpleViewModelLocator simpleViewModelLocator;
 
     @BindView(R.id.sw_st_hide_extension)
     protected SwitchCompat hideExtensionSwitch;
@@ -32,11 +38,11 @@ public class SettingsFragment extends MvvmFragment {
 
     @Override
     protected SettingsViewModel getViewModel() {
-        return SimpleViewModelLocator.getInstance().getSettingsViewModel();
+        return simpleViewModelLocator.getSettingsViewModel();
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getViewModel().refresh();
     }

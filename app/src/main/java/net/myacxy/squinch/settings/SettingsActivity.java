@@ -17,9 +17,14 @@ import net.myacxy.squinch.settings.debuglog.DebugLogFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 public class SettingsActivity extends MvvmActivity {
+
+    @Inject
+    SimpleViewModelLocator simpleViewModelLocator;
 
     @BindView(R.id.tb_st_toolbar)
     protected Toolbar toolbar;
@@ -29,7 +34,7 @@ public class SettingsActivity extends MvvmActivity {
     @NonNull
     @Override
     protected ViewModel getViewModel() {
-        return SimpleViewModelLocator.getInstance().getSettingsViewModel();
+        return simpleViewModelLocator.getSettingsViewModel();
     }
 
     @Override

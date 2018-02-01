@@ -4,18 +4,29 @@ import android.app.job.JobScheduler;
 import android.content.Context;
 import android.os.StrictMode;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.squareup.leakcanary.LeakCanary;
 
-import net.myacxy.squinch.base.SimpleViewModelLocator;
+import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.squinch.di.DaggerSquinchComponent;
-import net.myacxy.squinch.helpers.tracking.Th;
-import net.myacxy.squinch.helpers.tracking.Tracker;
+import net.myacxy.squinch.helpers.tracking.TrackingHelper;
+
+import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 public class SquinchApplication extends DaggerApplication {
+
+    @Inject
+    TrackingHelper th;
+    @Inject
+    RxRetroTwitch rxRetroTwitch;
+
+    private Crashlytics crashlytics;
 
     @Override
     public void onCreate() {
@@ -24,15 +35,15 @@ public class SquinchApplication extends DaggerApplication {
             // You should not init your app in this process.
             return;
         }
+        crashlytics = new Crashlytics();
+        Fabric.with(getApplicationContext(), crashlytics);
         super.onCreate();
 
         LeakCanary.install(this);
 
-        Th.l(this, "onCreate");
+        Timber.d("onCreate");
 
         Fresco.initialize(getApplicationContext());
-
-        SimpleViewModelLocator.initialize(getApplicationContext(), Tracker.DEBUG_LOGS);
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.cancelAll();
@@ -57,6 +68,6 @@ public class SquinchApplication extends DaggerApplication {
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerSquinchComponent.builder().create(this);
+        return DaggerSquinchComponent.builder().crashlytics(crashlytics).create(this);
     }
 } // SquinchApplication

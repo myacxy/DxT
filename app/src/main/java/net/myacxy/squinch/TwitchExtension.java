@@ -10,7 +10,6 @@ import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.settings.SettingsActivity;
 
@@ -21,12 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+import timber.log.Timber;
+
 public class TwitchExtension extends DashClockExtension {
-    private DataHelper dataHelper;
+
+    @Inject
+    DataHelper dataHelper;
 
     @Override
     public void onCreate() {
-        Th.l(this, "onCreate");
+        AndroidInjection.inject(this);
+        Timber.d("onCreate");
         super.onCreate();
         dataHelper = new DataHelper(getApplicationContext());
         EventBus.getDefault().register(this);
@@ -34,7 +41,7 @@ public class TwitchExtension extends DashClockExtension {
 
     @Override
     public void onDestroy() {
-        Th.l(this, "onDestroy");
+        Timber.d("onDestroy");
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
@@ -93,7 +100,7 @@ public class TwitchExtension extends DashClockExtension {
 
     @Subscribe
     public void onEvent(DashclockUpdateEvent event) {
-        Th.l(this, "updateEvent=%d", event.getUpdateReason());
+        Timber.d("updateEvent=%d", event.getUpdateReason());
         onUpdateData(event.getUpdateReason());
     }
 

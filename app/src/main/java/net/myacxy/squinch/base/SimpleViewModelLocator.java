@@ -1,9 +1,9 @@
 package net.myacxy.squinch.base;
 
-import android.content.Context;
+import android.content.SharedPreferences;
 
+import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.helpers.tracking.DebugLogTracker;
 import net.myacxy.squinch.settings.SettingsViewModel;
 import net.myacxy.squinch.settings.channelselection.ChannelSelectionViewModel;
 import net.myacxy.squinch.settings.debuglog.DebugLogViewModel;
@@ -13,31 +13,17 @@ import java.util.Map;
 
 public class SimpleViewModelLocator {
 
-    private static SimpleViewModelLocator INSTANCE;
-
     private final SettingsViewModel settingsViewModel;
     private final Map<String, ChannelSelectionViewModel> channelSelectionViewModels;
     private final DebugLogViewModel debugLogViewModel;
-
     private final DataHelper dataHelper;
 
-    private SimpleViewModelLocator(Context context, DebugLogTracker debugLogTracker) {
-        dataHelper = new DataHelper(context);
+    public SimpleViewModelLocator(RxRetroTwitch rxRetroTwitch, DataHelper dataHelper, SharedPreferences debugLogSharedPreferences) {
+        this.dataHelper = dataHelper;
 
-        settingsViewModel = new SettingsViewModel(dataHelper);
+        settingsViewModel = new SettingsViewModel(rxRetroTwitch, dataHelper);
         channelSelectionViewModels = new HashMap<>();
-        debugLogViewModel = new DebugLogViewModel(dataHelper, debugLogTracker);
-    }
-
-    public static SimpleViewModelLocator getInstance() {
-        if (INSTANCE == null) {
-            throw new IllegalStateException("initialize not called");
-        }
-        return INSTANCE;
-    }
-
-    public static void initialize(Context applicationContext, DebugLogTracker debugLogTracker) {
-        INSTANCE = new SimpleViewModelLocator(applicationContext, debugLogTracker);
+        debugLogViewModel = new DebugLogViewModel(dataHelper, debugLogSharedPreferences);
     }
 
     public SettingsViewModel getSettingsViewModel() {

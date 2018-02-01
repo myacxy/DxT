@@ -13,7 +13,6 @@ import net.myacxy.retrotwitch.v5.api.users.UserFollow;
 import net.myacxy.retrotwitch.v5.helpers.RxRetroTwitchErrorFactory;
 import net.myacxy.squinch.base.ViewModel;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
 
@@ -26,15 +25,18 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
+import timber.log.Timber;
 
 public class SettingsViewModel extends BaseObservable implements ViewModel {
 
+    private final RxRetroTwitch rxRetroTwitch;
     private final DataHelper dataHelper;
     private final SettingsModel settings;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public SettingsViewModel(DataHelper dataHelper) {
+    public SettingsViewModel(RxRetroTwitch rxRetroTwitch, DataHelper dataHelper) {
+        this.rxRetroTwitch = rxRetroTwitch;
         this.dataHelper = dataHelper;
         settings = dataHelper.getSettings();
         refresh();
@@ -57,12 +59,11 @@ public class SettingsViewModel extends BaseObservable implements ViewModel {
             dataHelper.setLiveStreams(null);
             settings.setUserError(null);
 
-            Th.l(this, "#getUser=%s", userName);
+            Timber.d("#getUser=%s", userName);
             if (userName != null && (userName = userName.trim()).length() != 0) {
                 settings.setLoadingUser(true);
 
-                RxRetroTwitch.getInstance()
-                        .users()
+                rxRetroTwitch.users()
                         .translateUserNameToUserId(userName)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -83,7 +84,7 @@ public class SettingsViewModel extends BaseObservable implements ViewModel {
     }
 
     private void onUserError(RetroTwitchError error) {
-        Th.err(error);
+        Timber.e(error.getCause(), "%s", error.toString());
         dataHelper.setUser(null);
         dataHelper.setUserFollows(null);
 
@@ -102,16 +103,16 @@ public class SettingsViewModel extends BaseObservable implements ViewModel {
         }
 
         SimpleUser user = response.body().getUsers().get(0);
-        Th.l(this, "#onComplete.user=%s", user);
+        Timber.d("#onComplete.user=%s", user);
         dataHelper.setUser(user);
         return true;
     }
 
     private void getUserFollows(SimpleUser user) {
-        RetroTwitchUtil.getAllUserFollows(user.getId(),
+        RetroTwitchUtil.getAllUserFollows(rxRetroTwitch, user.getId(),
                 progress -> {
                     dataHelper.setUserFollows(progress);
-                    Th.l(SettingsViewModel.this, "userFollows.progress=%d", progress.size());
+                    Timber.d("userFollows.progress=%d", progress.size());
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,20 +121,20 @@ public class SettingsViewModel extends BaseObservable implements ViewModel {
                 .doOnSuccess(userFollows -> {
                     dataHelper.setUserFollows(userFollows);
                     settings.setLoadingUser(false);
-                    Th.l(this, "#onComplete.user=%s", user);
+                    Timber.d("#onComplete.user=%s", user);
                     getLiveStreams(userFollows);
                 })
                 .subscribe();
     }
 
     private void getLiveStreams(List<UserFollow> userFollows) {
-        RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Th.l(this, "streams.progress=%d", progress.size()))
+        RetroTwitchUtil.getAllLiveStreams(rxRetroTwitch, userFollows, progress -> Timber.d("streams.progress=%d", progress.size()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)
                 .doOnError(t -> onUserError(RxRetroTwitchErrorFactory.fromThrowable(t)))
                 .doOnSuccess(streams -> {
-                    Th.l(this, "#onComplete.streams=%d", streams.size());
+                    Timber.d("#onComplete.streams=%d", streams.size());
                     dataHelper.setLiveStreams(streams);
                     EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                 })

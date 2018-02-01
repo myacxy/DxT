@@ -11,11 +11,16 @@ import net.myacxy.squinch.R;
 import net.myacxy.squinch.base.MvvmFragment;
 import net.myacxy.squinch.base.SimpleViewModelLocator;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 public class DebugLogFragment extends MvvmFragment {
 
     public static final String TAG = DebugLogFragment.class.getSimpleName();
+
+    @Inject
+    SimpleViewModelLocator simpleViewModelLocator;
 
     @BindView(R.id.rv_dl_entries)
     protected RecyclerView entries;
@@ -30,7 +35,7 @@ public class DebugLogFragment extends MvvmFragment {
 
     @Override
     protected DebugLogViewModel getViewModel() {
-        return SimpleViewModelLocator.getInstance().getDebugLogViewModel();
+        return simpleViewModelLocator.getDebugLogViewModel();
     }
 
     @Override
@@ -47,11 +52,13 @@ public class DebugLogFragment extends MvvmFragment {
 
         callback = new StickyOnListChangedCallback(entries);
         getViewModel().getDebugLogEntries().addOnListChangedCallback(callback);
+        getViewModel().onAttach();
     }
 
     @Override
     public void onDestroyView() {
         getViewModel().getDebugLogEntries().removeOnListChangedCallback(callback);
+        getViewModel().onDetach();
         super.onDestroyView();
     }
 

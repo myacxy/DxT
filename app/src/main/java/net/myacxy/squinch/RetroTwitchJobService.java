@@ -8,10 +8,10 @@ import android.content.Context;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 
+import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.retrotwitch.v5.api.streams.Stream;
 import net.myacxy.retrotwitch.v5.api.users.SimpleUser;
 import net.myacxy.squinch.helpers.DataHelper;
-import net.myacxy.squinch.helpers.tracking.Th;
 import net.myacxy.squinch.models.events.DashclockUpdateEvent;
 import net.myacxy.squinch.utils.RetroTwitchUtil;
 
@@ -20,19 +20,26 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.SingleObserver;
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 
 public class RetroTwitchJobService extends JobService {
 
     private static int JOB_ID = 0;
 
+    @Inject
+    RxRetroTwitch rxRetroTwitch;
+
     private Disposable disposable;
 
     public static JobInfo newJob(Context context) {
-        Th.l(RetroTwitchJobService.class, "newJob=%d", JOB_ID);
+        Timber.d("newJob=%d", JOB_ID);
         return new JobInfo.Builder(JOB_ID++, new ComponentName(context, RetroTwitchJobService.class))
                 .setPeriodic(TimeUnit.MINUTES.toMillis(60))
 //                .setMinimumLatency(TimeUnit.MINUTES.toMillis(45))
@@ -47,44 +54,38 @@ public class RetroTwitchJobService extends JobService {
 
     @Override
     public void onCreate() {
+        AndroidInjection.inject(this);
         super.onCreate();
-        Th.l(this, "onCreate");
+        Timber.d("onCreate");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Th.l(this, "onDestroy");
+        Timber.d("onDestroy");
     }
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        Th.l(this, "onStartJob=%d", params.getJobId());
+        Timber.d("onStartJob=%d", params.getJobId());
 
         DataHelper dataHelper = new DataHelper(getApplicationContext());
         SimpleUser user = dataHelper.getUser();
 
+        Timber.d("user=%s", String.valueOf(user));
         if (user == null) {
-            Th.l(this, "user=%s", "null");
             return false;
         }
 
-        Th.l(this, "user=%s", user);
-
-        RetroTwitchUtil.getAllUserFollows(user.getId(), progress -> Th.l(this, "userFollows.progress=%d", progress.size()))
+        disposable = RetroTwitchUtil.getAllUserFollows(rxRetroTwitch, user.getId(), progress -> Timber.d("userFollows.progress=%d", progress.size()))
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(dataHelper::setUserFollows)
-                .doOnError(Th::ex)
-                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(userFollows, progress -> Th.l(this, "streams.progress=%d", progress.size())))
-                .subscribe(new SingleObserver<List<Stream>>() {
-                    @Override
-                    public void onSubscribe(Disposable disposable) {
-                        RetroTwitchJobService.this.disposable = disposable;
-                    }
-
+                .doOnError(Timber::e)
+                .flatMap(userFollows -> RetroTwitchUtil.getAllLiveStreams(rxRetroTwitch, userFollows, progress -> Timber.d("streams.progress=%d", progress.size())))
+                .subscribeWith(new DisposableSingleObserver<List<Stream>>() {
                     @Override
                     public void onSuccess(List<Stream> streams) {
-                        Th.l(RetroTwitchJobService.this, "streams=%d", streams.size());
+                        Timber.d("streams=%d", streams.size());
                         dataHelper.setLiveStreams(streams);
                         EventBus.getDefault().post(new DashclockUpdateEvent(DashClockExtension.UPDATE_REASON_SETTINGS_CHANGED));
                         jobFinished(params, false);
@@ -92,7 +93,7 @@ public class RetroTwitchJobService extends JobService {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Th.ex(throwable);
+                        Timber.e(throwable);
                         jobFinished(params, true);
                     }
                 });
@@ -101,7 +102,7 @@ public class RetroTwitchJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Th.l(this, "onStopJob=%d", params.getJobId());
+        Timber.d("onStopJob=%d", params.getJobId());
         if (disposable != null) {
             disposable.dispose();
         }

@@ -1,6 +1,7 @@
 package net.myacxy.squinch.settings.channelselection;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -11,11 +12,16 @@ import net.myacxy.squinch.R;
 import net.myacxy.squinch.base.MvvmFragment;
 import net.myacxy.squinch.base.SimpleViewModelLocator;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 public class ChannelSelectionFragment extends MvvmFragment implements SelectableUserFollowsAdapter.UserFollowsViewListener {
 
     public static final String TAG = ChannelSelectionFragment.class.getSimpleName();
+
+    @Inject
+    SimpleViewModelLocator simpleViewModelLocator;
 
     @BindView(R.id.rv_cs_channels)
     protected RecyclerView channels;
@@ -30,12 +36,12 @@ public class ChannelSelectionFragment extends MvvmFragment implements Selectable
 
     @Override
     protected ChannelSelectionViewModel getViewModel() {
-        SimpleUser user = SimpleViewModelLocator.getInstance().getSettingsViewModel().getSettings().getUser();
-        return SimpleViewModelLocator.getInstance().getChannelSelectionViewModel(user.getName());
+        SimpleUser user = simpleViewModelLocator.getSettingsViewModel().getSettings().getUser();
+        return simpleViewModelLocator.getChannelSelectionViewModel(user.getName());
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         SelectableUserFollowsAdapter.TouchCallback callback = new SelectableUserFollowsAdapter.TouchCallback(getViewModel(), this);

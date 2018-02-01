@@ -24,12 +24,11 @@ public class RetroTwitchUtil {
         throw new IllegalAccessError();
     }
 
-    public static Single<List<UserFollow>> getAllUserFollows(long userId, Consumer<List<UserFollow>> progress) {
+    public static Single<List<UserFollow>> getAllUserFollows(RxRetroTwitch rxRetroTwitch, long userId, Consumer<List<UserFollow>> progress) {
         RequestMeta requestMeta = new RequestMeta();
         return Observable.range(0, Integer.MAX_VALUE)
                 .concatMap(page ->
-                        RxRetroTwitch.getInstance()
-                                .users()
+                        rxRetroTwitch.users()
                                 .getUserFollows(
                                         userId,
                                         requestMeta.limit,
@@ -52,7 +51,7 @@ public class RetroTwitchUtil {
                 });
     }
 
-    public static Single<List<Stream>> getAllLiveStreams(List<UserFollow> userFollows, Consumer<List<Stream>> progress) {
+    public static Single<List<Stream>> getAllLiveStreams(RxRetroTwitch rxRetroTwitch, List<UserFollow> userFollows, Consumer<List<Stream>> progress) {
         RequestMeta requestMeta = new RequestMeta();
         return Observable.fromIterable(userFollows)
                 .map(UserFollow::getChannel)
@@ -60,8 +59,7 @@ public class RetroTwitchUtil {
                 .toObservable()
                 .concatMap(channels ->
                         Observable.range(0, Integer.MAX_VALUE)
-                                .concatMap(page -> RxRetroTwitch.getInstance()
-                                        .streams()
+                                .concatMap(page -> rxRetroTwitch.streams()
                                         .getStreams(channels,
                                                 null,
                                                 null,

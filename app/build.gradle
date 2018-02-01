@@ -110,6 +110,9 @@ dependencies {
     implementation(deps.rx.android) {
         exclude module: 'rxjava'
     }
+    implementation(deps.rx.kotlin) {
+        exclude module: 'rxjava'
+    }
     implementation deps.kotlin.stdlib
     kapt deps.android.databinding
 
@@ -125,7 +128,7 @@ dependencies {
         transitive = true
     }
     implementation deps.eventBus
-    implementation deps.logger
+    implementation deps.timber
 
     debugImplementation deps.leakCanary.real
     releaseImplementation deps.leakCanary.noOp

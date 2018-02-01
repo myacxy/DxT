@@ -37,7 +37,11 @@ buildscript {
                                     'livedata'  : "android.arch.lifecycle:livedata:1.1.0", // alternatively, just LiveData
                                     'compiler'  : "android.arch.lifecycle:compiler:1.1.0",
                                     'java8'     : "android.arch.lifecycle:common-java8:1.1.0", // Java8 support for Lifecycles (instead of compiler)
-                                    'rx'     : "android.arch.lifecycle:reactivestreams:1.1.0" // Java8 support for Lifecycles (instead of compiler)
+                                    'rx'        : "android.arch.lifecycle:reactivestreams:1.1.0" // Java8 support for Lifecycles (instead of compiler)
+                            ],
+                            'room' : [
+                                    'runtime' : "android.arch.persistence.room:runtime:1.0.0",
+                                    'compiler' : "android.arch.persistence.room:compiler:1.0.0",
                             ],
                             'coreTesting': "android.arch.core:core-testing:1.1.0",
                     ]
@@ -46,8 +50,9 @@ buildscript {
                     'stdlib': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
             ],
             'rx'              : [
-                    'core'   : 'io.reactivex.rxjava2:rxjava:2.1.1',
+                    'core'   : 'io.reactivex.rxjava2:rxjava:2.2.0',
                     'android': 'io.reactivex.rxjava2:rxandroid:2.0.1',
+                    'kotlin' : 'io.reactivex.rxjava2:rxkotlin:2.2.0',
             ],
             'rxbinding'       : [
                     'core'        : "com.jakewharton.rxbinding:rxbinding:${versions.rxbinding}",
@@ -84,7 +89,7 @@ buildscript {
             'gson'            : 'com.google.code.gson:gson:2.8.1',
             'hamcrestAll'     : 'org.hamcrest:hamcrest-all:1.3',
             'junit'           : 'junit:junit:4.12',
-            'timber'          : 'com.jakewharton.timber:timber:4.5.1',
+            'timber'          : 'com.jakewharton.timber:timber:4.6.0',
             'fresco'          : 'com.facebook.fresco:fresco:1.3.0',
             'materialEditText': 'com.rengwuxian.materialedittext:library:2.1.4',
             'crashlytics'     : 'com.crashlytics.sdk.android:crashlytics:2.6.8@aar',

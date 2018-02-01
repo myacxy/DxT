@@ -16,8 +16,11 @@ import net.myacxy.squinch.utils.JsonUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class DataHelper {
 
@@ -27,7 +30,7 @@ public class DataHelper {
 
     public DataHelper(Context context) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
-        debugLog = context.getSharedPreferences("log", Context.MODE_PRIVATE);
+        debugLog = context.getSharedPreferences("debug_log", Context.MODE_PRIVATE);
         settings = recoverSettings();
     }
 
@@ -114,21 +117,14 @@ public class DataHelper {
         Setting.LIVE_STREAMS.save(sp, streams != null ? JsonUtil.toJson(streams) : null);
     }
 
-    public List<DebugLogEntry> getDebugLogEntries() {
-        Map<String, ?> all = debugLog.getAll();
-        if (all != null) {
-            List<DebugLogEntry> entries = new ArrayList<>(all.size());
-
-            for (Map.Entry<String, ?> entry : all.entrySet()) {
-                if (entry.getValue() instanceof String) {
-                    DebugLogEntry debugLogEntry = JsonUtil.fromJson((entry.getValue()).toString(), DebugLogEntry.class);
-                    entries.add(debugLogEntry);
-                }
-            }
-            return entries;
-        }
-        return new ArrayList<>();
-
+    public Single<List<DebugLogEntry>> getDebugLogEntries() {
+        return Observable.just(
+                debugLog.getStringSet(DebugLogEntry.TYPE_EXCEPTION, Collections.emptySet()),
+                debugLog.getStringSet(DebugLogEntry.TYPE_LOG, Collections.emptySet()),
+                debugLog.getStringSet(DebugLogEntry.TYPE_USER, Collections.emptySet())
+        ).flatMap(set -> Observable.fromIterable(set)
+                .map(string -> JsonUtil.fromJson(string, DebugLogEntry.class))
+        ).toSortedList();
     }
 
     private SettingsModel recoverSettings() {
