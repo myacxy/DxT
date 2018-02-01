@@ -1,4 +1,4 @@
-package net.myacxy.squinch.di;
+package net.myacxy.squinch.base.di;
 
 import javax.inject.Scope;
 

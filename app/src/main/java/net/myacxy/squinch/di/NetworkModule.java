@@ -3,6 +3,7 @@ package net.myacxy.squinch.di;
 import net.myacxy.retrotwitch.Configuration;
 import net.myacxy.retrotwitch.v5.RxRetroTwitch;
 import net.myacxy.squinch.BuildConfig;
+import net.myacxy.squinch.base.di.PerApplication;
 
 import javax.inject.Named;
 

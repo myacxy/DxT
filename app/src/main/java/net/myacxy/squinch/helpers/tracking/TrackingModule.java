@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 
 import com.crashlytics.android.Crashlytics;
 
-import net.myacxy.squinch.di.ApplicationContext;
-import net.myacxy.squinch.di.PerApplication;
+import net.myacxy.squinch.base.di.ApplicationContext;
+import net.myacxy.squinch.base.di.PerApplication;
 
 import javax.inject.Named;
 

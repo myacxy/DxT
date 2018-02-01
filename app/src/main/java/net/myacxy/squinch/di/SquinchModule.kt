@@ -7,6 +7,8 @@ import dagger.Provides
 import net.myacxy.retrotwitch.v5.RxRetroTwitch
 import net.myacxy.squinch.SquinchApplication
 import net.myacxy.squinch.base.SimpleViewModelLocator
+import net.myacxy.squinch.base.di.ApplicationContext
+import net.myacxy.squinch.base.di.PerApplication
 import net.myacxy.squinch.helpers.DataHelper
 import javax.inject.Named
 
