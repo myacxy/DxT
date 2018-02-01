@@ -7,6 +7,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import net.myacxy.squinch.SquinchApplication
 import net.myacxy.squinch.base.di.PerApplication
+import net.myacxy.squinch.data.di.DatabaseModule
 import net.myacxy.squinch.helpers.tracking.TrackingModule
 import net.myacxy.squinch.settings.di.MainSettingsModule
 
@@ -15,6 +16,7 @@ import net.myacxy.squinch.settings.di.MainSettingsModule
     AndroidSupportInjectionModule::class,
     SquinchModule::class,
     ServicesModule::class,
+    DatabaseModule::class,
     TrackingModule::class,
     NetworkModule::class,
     MainSettingsModule::class

@@ -25,6 +25,8 @@ android {
 dependencies {
     api project(':base')
 
+    implementation deps.rx.java
+
     implementation deps.android.arch.room.runtime
     kapt deps.android.arch.room.compiler
 
