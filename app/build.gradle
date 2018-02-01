@@ -96,6 +96,7 @@ if (propFile.canRead()) {
 }
 
 dependencies {
+    implementation project(':data')
     implementation files('libs/retrotwitch-rxjava.jar')
 
     implementation deps.android.support.appCompat
@@ -107,20 +108,7 @@ dependencies {
 
     implementation deps.butterknife.runtime
     kapt deps.butterknife.compiler
-    implementation(deps.rx.android) {
-        exclude module: 'rxjava'
-    }
-    implementation(deps.rx.kotlin) {
-        exclude module: 'rxjava'
-    }
-    implementation deps.kotlin.stdlib
     kapt deps.android.databinding
-
-    implementation deps.dagger.runtime
-    kapt deps.dagger.compiler
-    implementation deps.dagger.android.runtime
-    implementation deps.dagger.android.support
-    kapt deps.dagger.android.compiler
 
     implementation deps.dashclock
     implementation deps.fresco
