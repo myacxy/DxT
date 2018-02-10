@@ -20,12 +20,15 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     api deps.kotlin.stdlib
-
-//    api deps.rx.java
+    //    api deps.rx.java
     api(deps.rx.android) {
         exclude module: 'rxjava'
     }
@@ -40,6 +43,5 @@ dependencies {
     kapt deps.dagger.android.compiler
 
     api deps.timber
-
     testImplementation deps.junit
 }

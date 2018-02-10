@@ -26,23 +26,30 @@ public class TrackingModule {
 
     @Provides
     @PerApplication
-    @Named("debug")
-    public Tree debugTree() {
+    @Named("device")
+    public Tracker deviceTracker(@Named("debug_log") SharedPreferences sharedPreferences) {
+        return new SharedPreferencesTracker(sharedPreferences);
+    }
+
+    @Provides
+    @PerApplication
+    @Named("device")
+    public Tree device(@Named("device") Tracker tracker) {
+        return new SharedPreferencesTracker.DeviceLogTree(tracker);
+    }
+
+    @Provides
+    @PerApplication
+    @Named("logcat")
+    public Tree logcatTree() {
         return new TimberTracker.DebugTree();
     }
 
     @Provides
     @PerApplication
     @Named("logcat")
-    public Tracker logcatTracker(@Named("debug") Tree debugTree) {
-        return new TimberTracker(debugTree);
-    }
-
-    @Provides
-    @PerApplication
-    @Named("device")
-    public Tracker deviceTracker(@Named("debug_log") SharedPreferences sharedPreferences) {
-        return new SharedPreferencesTracker(sharedPreferences);
+    public Tracker logcatTracker(@Named("logcat") Tree logcatTree, @Named("device") Tree deviceTree) {
+        return new TimberTracker(logcatTree, deviceTree);
     }
 
     @Provides

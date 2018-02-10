@@ -11,6 +11,12 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode 1
         versionName "0.1"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -20,6 +26,10 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -28,6 +38,9 @@ dependencies {
     implementation deps.rx.java
 
     implementation deps.android.arch.room.runtime
+    implementation(deps.android.arch.room.rxjava) {
+        exclude module: 'rxjava'
+    }
     kapt deps.android.arch.room.compiler
 
     testImplementation deps.junit

@@ -7,8 +7,10 @@ import net.myacxy.squinch.utils.JsonUtil;
 import net.myacxy.squinch.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -99,5 +101,28 @@ public class SharedPreferencesTracker implements Tracker {
                         Timber.e(throwable);
                     }
                 });
+    }
+
+    public static class DeviceLogTree extends Timber.Tree {
+
+        private final Tracker tracker;
+
+        public DeviceLogTree(Tracker tracker) {
+            this.tracker = tracker;
+        }
+
+        @Override
+        protected void log(int priority, @Nullable String tag, @NotNull String message, @Nullable Throwable t) {
+            Map<String, Integer> ints = Collections.singletonMap("priority", priority);
+            Map<String, Boolean> booleans = Collections.emptyMap();
+            Map<String, String> strings = new HashMap<String, String>(2) {{
+                put("tag", tag);
+                put("message", message);
+            }};
+            tracker.log(booleans, ints, strings);
+            if (t != null) {
+                tracker.exception(t);
+            }
+        }
     }
 }

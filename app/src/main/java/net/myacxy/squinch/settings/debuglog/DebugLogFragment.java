@@ -102,7 +102,10 @@ public class DebugLogFragment extends MvvmFragment {
         }
 
         private void stickToLastItem() {
-            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+            int position = recyclerView.getAdapter().getItemCount() - 1;
+            if (position >= 0) {
+                recyclerView.smoothScrollToPosition(position);
+            }
         }
     }
 }
